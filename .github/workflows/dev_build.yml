@@ -1,0 +1,20 @@
+name: build
+
+on:
+  push:
+    branches: [ main ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Build docker image
+        run: docker build -t dulceday_server .
+      - name: Save built docker image
+        run: |
+          docker save dulceday_server -o ./dulceday_day.tar
+          mkdir dist
+          mv ./dulceday_day.tar ./dist/dulceday_day.tar
+          mv ./deploy/production/docker-compose.yml ./dist/docker-compose.yml
+

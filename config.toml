@@ -1,0 +1,42 @@
+[appConfigs]
+    [appConfigs.development]
+    AppName = "DulceDayServer"
+    AuthTokenExpiresTime = 2592000000000000 # time.Hour * 24 * 30
+    AuthTokenSecret = "qweasd123"
+    AppAddress = "8080"
+
+    [appConfigs.production]
+    AppName = "DulceDayServer"
+    AuthTokenExpiresTime = 2592000000000000 # time.Hour * 24 * 30
+    AuthTokenSecret = "qweasd123"
+    AppAddress = "7001"
+
+
+[dataBaseConfigs]
+    [dataBaseConfigs.development]
+    Host = "localhost"
+    Port = "20205"
+    Collection = "DulceDay"
+    User = "root"
+    Password = "123456"
+    QueryParameters = "charset=utf8mb4&parseTime=True&loc=Local"
+
+    [dataBaseConfigs.production]
+    Host = "localhost"
+    Port = "7002"
+    Collection = "DulceDay"
+    User = "root"
+    Password = "123456"
+    QueryParameters = "charset=utf8mb4&parseTime=True&loc=Local"
+
+
+[cacheConfigs]
+    [cacheConfigs.development]
+    Host = "localhost"
+    Port = "6379"
+    BlackListName = "BlackList"
+
+    [cacheConfigs.production]
+    Host = "localhost"
+    Port = "7003"
+    BlackListName = "BlackList"

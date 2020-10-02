@@ -1,0 +1,44 @@
+version: '2.1'
+services:
+  golang_app:
+    image: dulceday_server
+    ports:
+      - '7003:7003'
+    expose:
+      - '7003'
+    depends_on:
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    working_dir: /root
+    command: -port 7003 -persistence_host database -persistence_port 3306 -persistence_password 123456 -release
+  db:
+    image: mysql
+    restart: always
+    environment:
+      MYSQL_DATABASE: 'DulceDay'
+      MYSQL_USER: 'root'
+      MYSQL_PASSWORD: '123456'
+      MYSQL_ROOT_PASSWORD: '123456'
+      MYSQL_ALLOW_EMPTY_PASSWORD: 'true'
+    ports:
+      - '7001:3306'
+    volumes:
+      - database:/var/lib/mysql
+    command: --default-authentication-plugin=mysql_native_password
+    healthcheck:
+      test: ["CMD", "mysqladmin" ,"ping", "-h", "localhost"]
+      timeout: 20s
+      retries: 10
+  redis:
+    image: redis:alpine
+    ports:
+      - '7002:6379'
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 1s
+      timeout: 3s
+      retries: 10
+volumes:
+  persistence:

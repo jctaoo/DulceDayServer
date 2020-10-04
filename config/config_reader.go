@@ -18,6 +18,7 @@ type appConfig struct {
 	AppAddress string
 	AuthTokenExpiresTime int64
 	AuthTokenSecret string
+	DefaultDeviceName string
 }
 
 type dataBaseConfig struct {
@@ -32,7 +33,11 @@ type dataBaseConfig struct {
 type cacheConfig struct {
 	Host string
 	Port string
-	BlackListName string
+	DB int
+	BlackListName,
+	RevokeTokenListName,
+	IPBlackListName,
+	InActiveTokenListName string
 }
 
 func ReadConfig(tomlPath string, isProduction bool) {
@@ -55,7 +60,8 @@ func ReadConfig(tomlPath string, isProduction bool) {
 		SiteConfig.AppName = config.AppConfigs["production"].AppName
 		SiteConfig.AppAddress = config.AppConfigs["production"].AppAddress
 		SiteConfig.AuthTokenSecret = config.AppConfigs["production"].AuthTokenSecret
-		SiteConfig.AuthTokenSecret = config.AppConfigs["production"].AuthTokenSecret
+		SiteConfig.AuthTokenExpiresTime = config.AppConfigs["production"].AuthTokenExpiresTime
+		SiteConfig.DefaultDeviceName = config.AppConfigs["production"].DefaultDeviceName
 		SiteConfig.DataBaseConfig.Host = config.DataBaseConfigs["production"].Host
 		SiteConfig.DataBaseConfig.Port = config.DataBaseConfigs["production"].Port
 		SiteConfig.DataBaseConfig.Collection = config.DataBaseConfigs["production"].Collection
@@ -64,12 +70,17 @@ func ReadConfig(tomlPath string, isProduction bool) {
 		SiteConfig.DataBaseConfig.QueryParameters = config.DataBaseConfigs["production"].QueryParameters
 		SiteConfig.CacheConfig.Host = config.CacheConfigs["production"].Host
 		SiteConfig.CacheConfig.Port = config.CacheConfigs["production"].Port
+		SiteConfig.CacheConfig.DB = config.CacheConfigs["production"].DB
 		SiteConfig.CacheConfig.BlackListName = config.CacheConfigs["production"].BlackListName
+		SiteConfig.CacheConfig.RevokeTokenListName = config.CacheConfigs["production"].RevokeTokenListName
+		SiteConfig.CacheConfig.IPBlackListName = config.CacheConfigs["production"].IPBlackListName
+		SiteConfig.CacheConfig.InActiveTokenListName = config.CacheConfigs["production"].InActiveTokenListName
 	} else {
 		SiteConfig.AppName = config.AppConfigs["development"].AppName
 		SiteConfig.AppAddress = config.AppConfigs["development"].AppAddress
 		SiteConfig.AuthTokenSecret = config.AppConfigs["development"].AuthTokenSecret
-		SiteConfig.AuthTokenSecret = config.AppConfigs["development"].AuthTokenSecret
+		SiteConfig.AuthTokenExpiresTime = config.AppConfigs["development"].AuthTokenExpiresTime
+		SiteConfig.DefaultDeviceName = config.AppConfigs["development"].DefaultDeviceName
 		SiteConfig.DataBaseConfig.Host = config.DataBaseConfigs["development"].Host
 		SiteConfig.DataBaseConfig.Port = config.DataBaseConfigs["development"].Port
 		SiteConfig.DataBaseConfig.Collection = config.DataBaseConfigs["development"].Collection
@@ -78,6 +89,10 @@ func ReadConfig(tomlPath string, isProduction bool) {
 		SiteConfig.DataBaseConfig.QueryParameters = config.DataBaseConfigs["development"].QueryParameters
 		SiteConfig.CacheConfig.Host = config.CacheConfigs["development"].Host
 		SiteConfig.CacheConfig.Port = config.CacheConfigs["development"].Port
+		SiteConfig.CacheConfig.DB = config.CacheConfigs["development"].DB
 		SiteConfig.CacheConfig.BlackListName = config.CacheConfigs["development"].BlackListName
+		SiteConfig.CacheConfig.RevokeTokenListName = config.CacheConfigs["development"].RevokeTokenListName
+		SiteConfig.CacheConfig.IPBlackListName = config.CacheConfigs["development"].IPBlackListName
+		SiteConfig.CacheConfig.InActiveTokenListName = config.CacheConfigs["development"].InActiveTokenListName
 	}
 }

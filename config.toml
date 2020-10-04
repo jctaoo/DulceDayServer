@@ -1,21 +1,23 @@
 [appConfigs]
     [appConfigs.development]
     AppName = "DulceDayServer"
-    AuthTokenExpiresTime = 2592000000000000 # time.Hour * 24 * 30
+    AuthTokenExpiresTime = 2592000000000000
     AuthTokenSecret = "qweasd123"
     AppAddress = "8080"
+	DefaultDeviceName = "Known"
 
     [appConfigs.production]
     AppName = "DulceDayServer"
-    AuthTokenExpiresTime = 2592000000000000 # time.Hour * 24 * 30
+    AuthTokenExpiresTime = 2592000000000000
     AuthTokenSecret = "qweasd123"
     AppAddress = "7001"
+	DefaultDeviceName = "Known"
 
 
 [dataBaseConfigs]
     [dataBaseConfigs.development]
     Host = "localhost"
-    Port = "20205"
+    Port = "3306"
     Collection = "DulceDay"
     User = "root"
     Password = "123456"
@@ -34,9 +36,17 @@
     [cacheConfigs.development]
     Host = "localhost"
     Port = "6379"
+    DB = 1
     BlackListName = "BlackList"
+	RevokeTokenListName = "RevokeTokens"
+	IPBlackListName = "IPBlackList"
+	InActiveTokenListName = "InActiveTokens"
 
     [cacheConfigs.production]
     Host = "localhost"
     Port = "7003"
+    DB = 1
     BlackListName = "BlackList"
+	RevokeTokenListName = "RevokeTokens"
+	IPBlackListName = "IPBlackList"
+	InActiveTokenListName = "InActiveTokens"

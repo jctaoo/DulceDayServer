@@ -17,8 +17,16 @@ type DataBaseConfig struct {
 type CacheConfig struct {
 	Host string
 	Port string
-	// 黑名单列表名字
-	BlackListName string
+	DB int
+
+	// 用户 ID 黑名单列表名字
+	BlackListName,
+	// 撤销 Token 列表名字
+	RevokeTokenListName,
+	// IP 黑名单名字
+	IPBlackListName,
+	// 未激活 Token 列表名字
+	InActiveTokenListName string
 }
 
 // like `user=gorm password=gorm dbname=gorm port=9920`

@@ -13,4 +13,6 @@ type Config struct {
 	DataBaseConfig DataBaseConfig
 	// 缓存数据库设置
 	CacheConfig CacheConfig
+	// 默认设备名
+	DefaultDeviceName string
 }

@@ -9,26 +9,26 @@ import (
 	"DulceDayServer/api/base"
 	"DulceDayServer/api/user"
 	"DulceDayServer/database"
-	"DulceDayServer/services"
+	user2 "DulceDayServer/services/user"
 	"github.com/google/wire"
 )
 
 // Injectors from wire.go:
 
 func UserEndpoints() user.Endpoints {
+	encryptionAdaptorImpl := user2.NewEncryptionAdaptorImpl()
 	db := database.NewDB()
-	authServiceImpl := services.NewAuthService(db)
-	genericServiceImpl := services.NewGenericService(db)
+	client := database.NewCache()
+	tokenStoreImpl := user2.NewTokenStoreImpl(db, client)
+	tokenAdaptorImpl := user2.NewTokenAdaptorImpl()
+	tokenGranterImpl := user2.NewTokenGranterImpl(tokenStoreImpl, tokenAdaptorImpl)
+	storeImpl := user2.NewStoreImpl(db, client)
+	serviceImpl := user2.NewServiceImpl(encryptionAdaptorImpl, tokenGranterImpl, storeImpl)
 	httpPackageImpl := base.NewHttpStatusPackage()
-	endpointsImpl := user.NewEndpointsImpl(authServiceImpl, genericServiceImpl, httpPackageImpl)
+	endpointsImpl := user.NewEndpointsImpl(serviceImpl, httpPackageImpl)
 	return endpointsImpl
-}
-
-func HttpStatusPackage() base.HttpPackage {
-	httpPackageImpl := base.NewHttpStatusPackage()
-	return httpPackageImpl
 }
 
 // wire.go:
 
-var userEndpointSet = wire.NewSet(services.NewAuthService, services.NewGenericService, database.NewDB, base.NewHttpStatusPackage, wire.Bind(new(base.HttpPackage), new(*base.HttpPackageImpl)), wire.Bind(new(services.AuthService), new(*services.AuthServiceImpl)), wire.Bind(new(services.GenericService), new(*services.GenericServiceImpl)))
+var userEndpointsSet = wire.NewSet(database.NewCache, database.NewDB, user2.NewServiceImpl, wire.Bind(new(user2.Service), new(*user2.ServiceImpl)), user2.NewEncryptionAdaptorImpl, wire.Bind(new(user2.EncryptionAdaptor), new(*user2.EncryptionAdaptorImpl)), user2.NewTokenGranterImpl, wire.Bind(new(user2.TokenGranter), new(*user2.TokenGranterImpl)), user2.NewStoreImpl, wire.Bind(new(user2.Store), new(*user2.StoreImpl)), user2.NewTokenStoreImpl, wire.Bind(new(user2.TokenStore), new(*user2.TokenStoreImpl)), user2.NewTokenAdaptorImpl, wire.Bind(new(user2.TokenAdaptor), new(*user2.TokenAdaptorImpl)), base.NewHttpStatusPackage, wire.Bind(new(base.HttpPackage), new(*base.HttpPackageImpl)))

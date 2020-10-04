@@ -10,8 +10,6 @@ import (
 	"path"
 )
 
-
-
 func main() {
 	fmt.Println("Starting...")
 

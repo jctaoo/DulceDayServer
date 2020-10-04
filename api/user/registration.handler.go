@@ -22,17 +22,12 @@ func (e *EndpointsImpl) register(context *gin.Context) {
 			Email:    email,
 		}
 		// 检查用户是否存在, 并且检查用户是否合规
-		if user.ValidateNew() && !e.genericService.CheckExisting(user) {
+		if user.ValidateNew() && !e.service.CheckUserExisting(user) {
 			// 生成唯一id，可以由自定义修改
-			newIdentifier := e.genericService.GenerateIdentifier()
+			newIdentifier := e.service.GenerateUserIdentifier()
 			user.Identifier = newIdentifier
 			// 存储用户
-			err := e.genericService.NewUser(user)
-			// 存储新用户时发生错误，返回服务器内部错误
-			if err != nil {
-				code, data := e.httpStatusPackage.ServerErrorJSON()
-				context.JSON(code, data)
-			}
+			user = e.service.NewUser(user)
 			// 用户创建成功
 			successMessage := fmt.Sprintf("注册成功，Hi %s!", user.Username)
 			code, data := e.httpStatusPackage.CreatedJSON(successMessage)

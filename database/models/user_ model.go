@@ -5,13 +5,14 @@ import (
 )
 
 type User struct {
-	gorm.Model `json:"-"`
+	gorm.Model
 
-	Identifier string `json:"identifier"`
-	Username string `json:"username"`
-	Password string `json:"-"`
-	Email string `json:"email"`
+	Identifier string
+	Username string
+	Password string
+	Email string
 	Tokens []TokenAuth
+	Authority  AuthorityLevel
 }
 
 func (u User) Validate() bool {
@@ -20,4 +21,8 @@ func (u User) Validate() bool {
 
 func (u User) ValidateNew() bool {
 	return u.Username != "" && u.Password != ""
+}
+
+func (u User) IsEmpty() bool {
+	return u.Identifier == "" && u.Validate()
 }

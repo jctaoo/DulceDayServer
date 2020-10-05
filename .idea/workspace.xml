@@ -1,0 +1,221 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ChangeListManager">
+    <list default="true" id="9642d7d6-4b54-4604-9785-a10f147bf5fa" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/.idea/DulceDayServer.iml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/modules.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/api/base/base_response.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/docs.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/swagger.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/swagger.yaml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/api/base/http_package.go" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/api/user/endpoints.go" beforeDir="false" afterPath="$PROJECT_DIR$/api/user/endpoints.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/api/user/login.handler.go" beforeDir="false" afterPath="$PROJECT_DIR$/api/user/login.handler.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/api/user/registration.handler.go" beforeDir="false" afterPath="$PROJECT_DIR$/api/user/registration.handler.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/go.mod" beforeDir="false" afterPath="$PROJECT_DIR$/go.mod" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/go.sum" beforeDir="false" afterPath="$PROJECT_DIR$/go.sum" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/main.go" beforeDir="false" afterPath="$PROJECT_DIR$/main.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/wire.go" beforeDir="false" afterPath="$PROJECT_DIR$/wire.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/wire_gen.go" beforeDir="false" afterPath="$PROJECT_DIR$/wire_gen.go" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Go Application" />
+        <option value="HTML File" />
+        <option value="Go File" />
+      </list>
+    </option>
+  </component>
+  <component name="GOROOT" path="/usr/local/Cellar/go/1.15/libexec" />
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="GoLibraries">
+    <option name="indexEntireGoPath" value="false" />
+  </component>
+  <component name="ProjectId" id="1hsEeRoyxHvbvwzX5X5sW9jeDc4" />
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true">
+    <ConfirmationsSetting value="2" id="Add" />
+  </component>
+  <component name="ProjectViewState">
+    <option name="autoscrollFromSource" value="true" />
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent">
+    <property name="ASKED_ADD_EXTERNAL_FILES" value="true" />
+    <property name="DatabaseDriversLRU" value="mysql" />
+    <property name="DefaultGoTemplateProperty" value="Go File" />
+    <property name="DefaultHtmlFileTemplate" value="HTML File" />
+    <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
+    <property name="WebServerToolWindowFactoryState" value="false" />
+    <property name="full.screen.before.presentation.mode" value="false" />
+    <property name="go.import.settings.migrated" value="true" />
+    <property name="last_opened_file_path" value="$USER_HOME$" />
+    <property name="node.js.detected.package.eslint" value="true" />
+    <property name="node.js.detected.package.tslint" value="true" />
+    <property name="node.js.path.for.package.eslint" value="project" />
+    <property name="node.js.path.for.package.tslint" value="project" />
+    <property name="node.js.selected.package.eslint" value="(autodetect)" />
+    <property name="node.js.selected.package.tslint" value="(autodetect)" />
+    <property name="nodejs_package_manager_path" value="npm" />
+    <property name="restartRequiresConfirmation" value="false" />
+    <property name="settings.editor.selected.configurable" value="preferences.lookFeel" />
+  </component>
+  <component name="RecentsManager">
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/api" />
+      <recent name="$PROJECT_DIR$/api/base" />
+      <recent name="$PROJECT_DIR$/database/models" />
+      <recent name="$PROJECT_DIR$/db/models" />
+      <recent name="$PROJECT_DIR$/models" />
+    </key>
+  </component>
+  <component name="RunManager" selected="Go Build.go build DulceDayServer">
+    <configuration name="go build DulceDayServer" type="GoApplicationRunConfiguration" factoryName="Go Application" temporary="true" nameIsGenerated="true">
+      <module name="DulceDayServer" />
+      <working_directory value="$PROJECT_DIR$" />
+      <kind value="PACKAGE" />
+      <filePath value="$PROJECT_DIR$/main.go" />
+      <package value="DulceDayServer" />
+      <directory value="$PROJECT_DIR$" />
+      <method v="2" />
+    </configuration>
+    <configuration name="Dockerfile" type="docker-deploy" factoryName="dockerfile" temporary="true">
+      <deployment type="dockerfile">
+        <settings>
+          <option name="sourceFilePath" value="Dockerfile" />
+        </settings>
+      </deployment>
+      <method v="2" />
+    </configuration>
+    <configuration name="docker-compose.yml: Compose Deployment" type="docker-deploy" factoryName="docker-compose.yml" temporary="true">
+      <deployment type="docker-compose.yml">
+        <settings>
+          <option name="sourceFilePath" value="deploy/production/docker-compose.yml" />
+        </settings>
+      </deployment>
+      <method v="2" />
+    </configuration>
+    <recent_temporary>
+      <list>
+        <item itemvalue="Go Build.go build DulceDayServer" />
+        <item itemvalue="Docker.docker-compose.yml: Compose Deployment" />
+        <item itemvalue="Docker.Dockerfile" />
+      </list>
+    </recent_temporary>
+  </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+  </component>
+  <component name="UnknownFeatures">
+    <option featureType="com.intellij.fileTypeFactory" implementationName="*.vue" />
+  </component>
+  <component name="VcsManagerConfiguration">
+    <option name="ADD_EXTERNAL_FILES_SILENTLY" value="true" />
+  </component>
+  <component name="VgoProject">
+    <integration-enabled>true</integration-enabled>
+  </component>
+  <component name="WindowStateProjectService">
+    <state x="320" y="112" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1600886692116">
+      <screen x="0" y="0" width="1440" height="900" />
+    </state>
+    <state x="320" y="112" key="#com.intellij.execution.impl.EditConfigurationsDialog/0.0.1440.900@0.0.1440.900" timestamp="1600886692116" />
+    <state x="1008" y="516" key="#com.intellij.fileTypes.FileTypeChooser" timestamp="1601659159364">
+      <screen x="0" y="25" width="2560" height="1370" />
+    </state>
+    <state x="1008" y="516" key="#com.intellij.fileTypes.FileTypeChooser/-1280.980.1280.775/0.25.2560.1370@0.25.2560.1370" timestamp="1601659159364" />
+    <state x="498" y="160" key="#com.intellij.ide.util.MemberChooser" timestamp="1600882762266">
+      <screen x="0" y="0" width="1440" height="900" />
+    </state>
+    <state x="859" y="126" key="#com.intellij.ide.util.MemberChooser.inPresentationMode" timestamp="1601654231883">
+      <screen x="0" y="25" width="2560" height="1370" />
+    </state>
+    <state x="859" y="126" key="#com.intellij.ide.util.MemberChooser.inPresentationMode/-1280.980.1280.775/0.25.2560.1370@0.25.2560.1370" timestamp="1601654231883" />
+    <state x="859" y="106" key="#com.intellij.ide.util.MemberChooser.inPresentationMode/0.0.2560.1440@0.0.2560.1440" timestamp="1601613433894" />
+    <state x="498" y="160" key="#com.intellij.ide.util.MemberChooser/0.0.1440.900@0.0.1440.900" timestamp="1600882762266" />
+    <state x="458" y="201" key="#com.intellij.refactoring.safeDelete.UnsafeUsagesDialog" timestamp="1600885200658">
+      <screen x="0" y="0" width="1440" height="900" />
+    </state>
+    <state x="458" y="201" key="#com.intellij.refactoring.safeDelete.UnsafeUsagesDialog/0.0.1440.900@0.0.1440.900" timestamp="1600885200658" />
+    <state width="2518" height="548" key="GridCell.Tab.0.bottom" timestamp="1601857390503">
+      <screen x="0" y="25" width="2560" height="1370" />
+    </state>
+    <state width="2560" height="378" key="GridCell.Tab.0.bottom.inPresentationMode" timestamp="1601861216744">
+      <screen x="0" y="0" width="2560" height="1440" />
+    </state>
+    <state width="2560" height="378" key="GridCell.Tab.0.bottom.inPresentationMode/-1280.955.1280.800/0.0.2560.1440@0.0.2560.1440" timestamp="1601861216744" />
+    <state width="2518" height="548" key="GridCell.Tab.0.bottom.inPresentationMode/-1280.980.1280.775/0.25.2560.1370@0.25.2560.1370" timestamp="1601857638530" />
+    <state width="2518" height="198" key="GridCell.Tab.0.bottom.inPresentationMode/0.25.2560.1370@0.25.2560.1370" timestamp="1601612248892" />
+    <state width="2518" height="548" key="GridCell.Tab.0.bottom/-1280.980.1280.775/0.25.2560.1370@0.25.2560.1370" timestamp="1601857390503" />
+    <state width="1398" height="426" key="GridCell.Tab.0.bottom/0.0.1440.900@0.0.1440.900" timestamp="1600969855056" />
+    <state width="1398" height="277" key="GridCell.Tab.0.bottom/0.25.1440.830@0.25.1440.830" timestamp="1600969811145" />
+    <state width="2518" height="548" key="GridCell.Tab.0.center" timestamp="1601857390502">
+      <screen x="0" y="25" width="2560" height="1370" />
+    </state>
+    <state width="2560" height="378" key="GridCell.Tab.0.center.inPresentationMode" timestamp="1601861216742">
+      <screen x="0" y="0" width="2560" height="1440" />
+    </state>
+    <state width="2560" height="378" key="GridCell.Tab.0.center.inPresentationMode/-1280.955.1280.800/0.0.2560.1440@0.0.2560.1440" timestamp="1601861216742" />
+    <state width="2518" height="548" key="GridCell.Tab.0.center.inPresentationMode/-1280.980.1280.775/0.25.2560.1370@0.25.2560.1370" timestamp="1601857638529" />
+    <state width="2518" height="198" key="GridCell.Tab.0.center.inPresentationMode/0.25.2560.1370@0.25.2560.1370" timestamp="1601612248891" />
+    <state width="2518" height="548" key="GridCell.Tab.0.center/-1280.980.1280.775/0.25.2560.1370@0.25.2560.1370" timestamp="1601857390502" />
+    <state width="1398" height="426" key="GridCell.Tab.0.center/0.0.1440.900@0.0.1440.900" timestamp="1600969855053" />
+    <state width="1398" height="277" key="GridCell.Tab.0.center/0.25.1440.830@0.25.1440.830" timestamp="1600969811144" />
+    <state width="2518" height="548" key="GridCell.Tab.0.left" timestamp="1601857390501">
+      <screen x="0" y="25" width="2560" height="1370" />
+    </state>
+    <state width="2560" height="378" key="GridCell.Tab.0.left.inPresentationMode" timestamp="1601861216740">
+      <screen x="0" y="0" width="2560" height="1440" />
+    </state>
+    <state width="2560" height="378" key="GridCell.Tab.0.left.inPresentationMode/-1280.955.1280.800/0.0.2560.1440@0.0.2560.1440" timestamp="1601861216740" />
+    <state width="2518" height="548" key="GridCell.Tab.0.left.inPresentationMode/-1280.980.1280.775/0.25.2560.1370@0.25.2560.1370" timestamp="1601857638528" />
+    <state width="2518" height="198" key="GridCell.Tab.0.left.inPresentationMode/0.25.2560.1370@0.25.2560.1370" timestamp="1601612248891" />
+    <state width="2518" height="548" key="GridCell.Tab.0.left/-1280.980.1280.775/0.25.2560.1370@0.25.2560.1370" timestamp="1601857390501" />
+    <state width="1398" height="426" key="GridCell.Tab.0.left/0.0.1440.900@0.0.1440.900" timestamp="1600969855052" />
+    <state width="1398" height="277" key="GridCell.Tab.0.left/0.25.1440.830@0.25.1440.830" timestamp="1600969811143" />
+    <state width="2518" height="548" key="GridCell.Tab.0.right" timestamp="1601857390503">
+      <screen x="0" y="25" width="2560" height="1370" />
+    </state>
+    <state width="2560" height="378" key="GridCell.Tab.0.right.inPresentationMode" timestamp="1601861216743">
+      <screen x="0" y="0" width="2560" height="1440" />
+    </state>
+    <state width="2560" height="378" key="GridCell.Tab.0.right.inPresentationMode/-1280.955.1280.800/0.0.2560.1440@0.0.2560.1440" timestamp="1601861216743" />
+    <state width="2518" height="548" key="GridCell.Tab.0.right.inPresentationMode/-1280.980.1280.775/0.25.2560.1370@0.25.2560.1370" timestamp="1601857638529" />
+    <state width="2518" height="198" key="GridCell.Tab.0.right.inPresentationMode/0.25.2560.1370@0.25.2560.1370" timestamp="1601612248892" />
+    <state width="2518" height="548" key="GridCell.Tab.0.right/-1280.980.1280.775/0.25.2560.1370@0.25.2560.1370" timestamp="1601857390503" />
+    <state width="1398" height="426" key="GridCell.Tab.0.right/0.0.1440.900@0.0.1440.900" timestamp="1600969855054" />
+    <state width="1398" height="277" key="GridCell.Tab.0.right/0.25.1440.830@0.25.1440.830" timestamp="1600969811145" />
+    <state x="407" y="109" key="SettingsEditor" timestamp="1601659165785">
+      <screen x="0" y="25" width="2560" height="1370" />
+    </state>
+    <state x="189" y="0" key="SettingsEditor.inPresentationMode" timestamp="1601612312803">
+      <screen x="0" y="0" width="2560" height="1440" />
+    </state>
+    <state x="189" y="0" key="SettingsEditor.inPresentationMode/0.0.2560.1440@0.0.2560.1440" timestamp="1601612312803" />
+    <state x="407" y="109" key="SettingsEditor/-1280.980.1280.775/0.25.2560.1370@0.25.2560.1370" timestamp="1601659165785" />
+    <state x="229" y="55" key="SettingsEditor/0.0.1440.900@0.0.1440.900" timestamp="1600972630179" />
+    <state x="229" y="76" key="SettingsEditor/0.25.1440.830@0.25.1440.830" timestamp="1600838911774" />
+    <state x="407" y="109" key="SettingsEditor/0.25.2560.1370@0.25.2560.1370" timestamp="1601612248058" />
+    <state width="500" height="445" key="SwitcherDM" timestamp="1600838216281">
+      <screen x="0" y="25" width="1440" height="830" />
+    </state>
+    <state width="500" height="445" key="SwitcherDM/0.25.1440.830@0.25.1440.830" timestamp="1600838216281" />
+    <state x="385" y="196" key="search.everywhere.popup" timestamp="1600879410736">
+      <screen x="0" y="0" width="1440" height="900" />
+    </state>
+    <state x="385" y="196" key="search.everywhere.popup/0.0.1440.900@0.0.1440.900" timestamp="1600879410736" />
+  </component>
+</project>

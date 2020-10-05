@@ -2,12 +2,12 @@ package user
 
 import (
 	"DulceDayServer/api/base"
-	"DulceDayServer/services"
+	"DulceDayServer/services/user"
 	"github.com/gin-gonic/gin"
 )
 
 type Endpoints interface {
-	base.BaseEndpoints
+	base.Endpoints
 	// 登陆
 	login(context *gin.Context)
 	// 注册
@@ -16,16 +16,12 @@ type Endpoints interface {
 
 type EndpointsImpl struct {
 	Endpoints
-	authService       services.AuthService
-	genericService    services.GenericService
-	httpStatusPackage base.HttpPackage
+	service           user.Service
 }
 
-func NewEndpointsImpl(authService services.AuthService, genericService services.GenericService, httpStatusPackage base.HttpPackage) *EndpointsImpl {
+func NewEndpointsImpl(genericService user.Service) *EndpointsImpl {
 	return &EndpointsImpl{
-		authService: authService,
-		genericService: genericService,
-		httpStatusPackage: httpStatusPackage,
+		service:           genericService,
 	}
 }
 

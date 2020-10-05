@@ -2,6 +2,6 @@ package base
 
 import "github.com/gin-gonic/gin"
 
-type BaseEndpoints interface {
+type Endpoints interface {
 	MapHandlersToRoutes(router *gin.RouterGroup) *gin.RouterGroup
 }

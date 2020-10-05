@@ -17,13 +17,11 @@ type Endpoints interface {
 type EndpointsImpl struct {
 	Endpoints
 	service           user.Service
-	httpStatusPackage base.HttpPackage
 }
 
-func NewEndpointsImpl(genericService user.Service, httpStatusPackage base.HttpPackage) *EndpointsImpl {
+func NewEndpointsImpl(genericService user.Service) *EndpointsImpl {
 	return &EndpointsImpl{
 		service:           genericService,
-		httpStatusPackage: httpStatusPackage,
 	}
 }
 

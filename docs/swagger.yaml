@@ -1,0 +1,107 @@
+basePath: /v1
+definitions:
+  base.Response:
+    properties:
+      code:
+        type: integer
+      message:
+        type: string
+    type: object
+  user.loginResponse:
+    properties:
+      code:
+        type: integer
+      message:
+        type: string
+    type: object
+  user.registerResponse:
+    properties:
+      code:
+        type: integer
+      message:
+        type: string
+    type: object
+host: localhost:8080
+info:
+  contact:
+    email: support@swagger.io
+    name: API Support
+    url: http://www.swagger.io/support
+  description: 一个轻社区app, 内置直播, 帮助用户找到身边的兴趣圈
+  license: {}
+  termsOfService: http://swagger.io/terms/
+  title: DulceDayServer
+  version: "1.0"
+paths:
+  /v1/login:
+    post:
+      parameters:
+      - description: 唯一的用户名，类似推特中 @ 后面的以及微信号
+        in: body
+        name: username
+        schema:
+          type: string
+      - description: 密码
+        in: body
+        name: password
+        required: true
+        schema:
+          type: string
+      - description: 邮箱地址
+        in: body
+        name: email
+        schema:
+          type: string
+      - description: 登陆的设备，如果是浏览器，则 '浏览器(通过IP获取的城市名)'
+        in: body
+        name: device_name
+        schema:
+          type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/user.loginResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/base.Response'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/base.Response'
+      summary: 登陆
+  /v1/register:
+    post:
+      parameters:
+      - description: 唯一的用户名，类似推特中 @ 后面的以及微信号
+        in: body
+        name: username
+        schema:
+          type: string
+      - description: 密码
+        in: body
+        name: password
+        required: true
+        schema:
+          type: string
+      - description: 邮箱地址
+        in: body
+        name: email
+        schema:
+          type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/user.registerResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/base.Response'
+      summary: 注册
+swagger: "2.0"

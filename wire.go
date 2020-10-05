@@ -3,11 +3,10 @@
 package main
 
 import (
-	"DulceDayServer/api/base"
 	"DulceDayServer/api/user"
 	"DulceDayServer/database"
-	"github.com/google/wire"
 	serviceUser "DulceDayServer/services/user"
+	"github.com/google/wire"
 )
 
 var userEndpointsSet = wire.NewSet(
@@ -31,9 +30,6 @@ var userEndpointsSet = wire.NewSet(
 
 	serviceUser.NewTokenAdaptorImpl,
 	wire.Bind(new(serviceUser.TokenAdaptor), new(*serviceUser.TokenAdaptorImpl)),
-
-	base.NewHttpStatusPackage,
-	wire.Bind(new(base.HttpPackage), new(*base.HttpPackageImpl)),
 )
 
 func UserEndpoints() user.Endpoints {

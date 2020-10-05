@@ -6,11 +6,14 @@
 package main
 
 import (
-	"DulceDayServer/api/base"
 	"DulceDayServer/api/user"
 	"DulceDayServer/database"
 	user2 "DulceDayServer/services/user"
 	"github.com/google/wire"
+)
+
+import (
+	_ "DulceDayServer/docs"
 )
 
 // Injectors from wire.go:
@@ -24,11 +27,10 @@ func UserEndpoints() user.Endpoints {
 	tokenGranterImpl := user2.NewTokenGranterImpl(tokenStoreImpl, tokenAdaptorImpl)
 	storeImpl := user2.NewStoreImpl(db, client)
 	serviceImpl := user2.NewServiceImpl(encryptionAdaptorImpl, tokenGranterImpl, storeImpl)
-	httpPackageImpl := base.NewHttpStatusPackage()
-	endpointsImpl := user.NewEndpointsImpl(serviceImpl, httpPackageImpl)
+	endpointsImpl := user.NewEndpointsImpl(serviceImpl)
 	return endpointsImpl
 }
 
 // wire.go:
 
-var userEndpointsSet = wire.NewSet(database.NewCache, database.NewDB, user2.NewServiceImpl, wire.Bind(new(user2.Service), new(*user2.ServiceImpl)), user2.NewEncryptionAdaptorImpl, wire.Bind(new(user2.EncryptionAdaptor), new(*user2.EncryptionAdaptorImpl)), user2.NewTokenGranterImpl, wire.Bind(new(user2.TokenGranter), new(*user2.TokenGranterImpl)), user2.NewStoreImpl, wire.Bind(new(user2.Store), new(*user2.StoreImpl)), user2.NewTokenStoreImpl, wire.Bind(new(user2.TokenStore), new(*user2.TokenStoreImpl)), user2.NewTokenAdaptorImpl, wire.Bind(new(user2.TokenAdaptor), new(*user2.TokenAdaptorImpl)), base.NewHttpStatusPackage, wire.Bind(new(base.HttpPackage), new(*base.HttpPackageImpl)))
+var userEndpointsSet = wire.NewSet(database.NewCache, database.NewDB, user2.NewServiceImpl, wire.Bind(new(user2.Service), new(*user2.ServiceImpl)), user2.NewEncryptionAdaptorImpl, wire.Bind(new(user2.EncryptionAdaptor), new(*user2.EncryptionAdaptorImpl)), user2.NewTokenGranterImpl, wire.Bind(new(user2.TokenGranter), new(*user2.TokenGranterImpl)), user2.NewStoreImpl, wire.Bind(new(user2.Store), new(*user2.StoreImpl)), user2.NewTokenStoreImpl, wire.Bind(new(user2.TokenStore), new(*user2.TokenStoreImpl)), user2.NewTokenAdaptorImpl, wire.Bind(new(user2.TokenAdaptor), new(*user2.TokenAdaptorImpl)))

@@ -3,6 +3,10 @@
 
 ## 前置条件
 - 安装 docker 以及 docker-compose
+- [开发阶段] 运行 deploy/development/deploy_environment.sh
+- [开发阶段] 安装 swagger 命令行工具: `go get -u github.com/swaggo/swag/cmd/swag`
+- [开发阶段] 安装 wire 命令行工具: `go get github.com/google/wire/cmd/wire`
+> 注意：在做完相应改动后应该及时运行 wire 和 swag init，因此建议在运行和提交之前运行这两个命令
 
 ## 目录说明
 - web: web 站点，目前采用 vue vite 开发，承载网站首页，隐私条款等等

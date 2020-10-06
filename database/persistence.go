@@ -12,7 +12,6 @@ import (
 
 func NewDB() *gorm.DB {
 	dsn := config.SiteConfig.DataBaseConfig.GetDSN()
-	fmt.Println("dsn: " + dsn)
 	db, dbErr := gorm.Open(mysql.Open(dsn), &gorm.Config{})
 	if dbErr != nil {
 		fmt.Println("Some Error Occurred When Connect DB. ", dbErr)

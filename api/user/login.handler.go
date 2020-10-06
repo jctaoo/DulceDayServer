@@ -48,7 +48,7 @@ func (e *EndpointsImpl) login(context *gin.Context) {
 			// 鉴权
 			token, err := e.service.AuthenticateWithPassword(username, email, password, ip, deviceName)
 			if err != nil {
-				// todo log
+				common.HttpLogger(context, err, parameter).Info("用户登陆时发生鉴权错误")
 				context.JSON(http.StatusUnauthorized, loginResponse{
 					BaseResponse: common.BaseResponse{
 						Code: 4000,

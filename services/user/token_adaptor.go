@@ -5,6 +5,7 @@ import (
 	"DulceDayServer/database/models"
 	"fmt"
 	"github.com/dgrijalva/jwt-go"
+	"github.com/sirupsen/logrus"
 	"time"
 )
 
@@ -51,7 +52,7 @@ func (t TokenAdaptorImpl) generateTokenStr(tokenAuth *models.TokenAuth, user *mo
 	tokenClaims := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
 	token, err := tokenClaims.SignedString(jwtSecret)
 	if err != nil {
-		// todo log
+		logrus.WithFields(logrus.Fields{"tokenAuth": tokenAuth, "user": user}).WithError(err).Error("生成 TokenStr 发生错误")
 	}
 	return token
 }

@@ -3,6 +3,7 @@ package config
 import (
 	"fmt"
 	"github.com/BurntSushi/toml"
+	"github.com/sirupsen/logrus"
 	"io/ioutil"
 	"os"
 )
@@ -40,7 +41,7 @@ type cacheConfig struct {
 	InActiveTokenListName string
 }
 
-func ReadConfig(tomlPath string, isProduction bool) {
+func ReadConfigOrExit(tomlPath string, isProduction bool) {
 	var configStr string
 	{
 		file, err := os.Open(tomlPath)
@@ -54,7 +55,9 @@ func ReadConfig(tomlPath string, isProduction bool) {
 
 	var config tomlConfig
 	if _, err := toml.Decode(configStr, &config); err != nil {
-		// TODO
+		logrus.Error("解析配置时发生错误: ", err)
+		os.Exit(-1)
+		return
 	}
 	if isProduction {
 		SiteConfig.AppName = config.AppConfigs["production"].AppName

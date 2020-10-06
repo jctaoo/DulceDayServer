@@ -5,6 +5,7 @@ import (
 	"DulceDayServer/database/models"
 	"context"
 	"github.com/go-redis/redis/v8"
+	"github.com/sirupsen/logrus"
 	"gorm.io/gorm"
 )
 
@@ -52,7 +53,7 @@ func (t TokenStoreImpl) revokeToken(token *models.TokenAuth) {
 	revokeListName := config.SiteConfig.CacheConfig.RevokeTokenListName
 	_, err := t.rdb.ZAdd(context.Background(), revokeListName, &redis.Z{Member: token.TokenStr, Score: 20}).Result()
 	if err != nil {
-		// todo log
+		logrus.WithFields(logrus.Fields{"token": token}).WithError(err).Error("撤回 Token 发生错误")
 	}
 }
 
@@ -60,7 +61,7 @@ func (t TokenStoreImpl) checkTokenIsRevoke(tokenStr string) bool {
 	revokeListName := config.SiteConfig.CacheConfig.RevokeTokenListName
 	val, err := t.rdb.ZScore(context.Background(), revokeListName, tokenStr).Result()
 	if err != nil {
-		// todo log
+		logrus.WithFields(logrus.Fields{"tokenStr": tokenStr}).WithError(err).Error("检查 Token 是否被撤回时发生错误")
 		return false
 	}
 	if val == kTokenRevokeListScore {
@@ -73,7 +74,7 @@ func (t TokenStoreImpl) removeTokenFromRevokeList(tokenStr string) {
 	revokeListName := config.SiteConfig.CacheConfig.RevokeTokenListName
 	_, err := t.rdb.ZRem(context.Background(), revokeListName, tokenStr).Result()
 	if err != nil {
-		// todo log
+		logrus.WithFields(logrus.Fields{"tokenStr": tokenStr}).WithError(err).Error("将 Token 移除 RevokeList 时发生错误")
 	}
 }
 
@@ -81,7 +82,7 @@ func (t TokenStoreImpl) checkTokenIsInActive(tokenStr string) bool {
 	revokeListName := config.SiteConfig.CacheConfig.InActiveTokenListName
 	val, err := t.rdb.ZScore(context.Background(), revokeListName, tokenStr).Result()
 	if err != nil {
-		// todo log
+		logrus.WithFields(logrus.Fields{"tokenStr": tokenStr}).WithError(err).Error("检查 Token 是否被激活时发生错误")
 		return false
 	}
 	if val == kTokenInActiveListScore {
@@ -94,7 +95,7 @@ func (t TokenStoreImpl) removeTokenFromInActiveList(tokenStr string) {
 	revokeListName := config.SiteConfig.CacheConfig.InActiveTokenListName
 	_, err := t.rdb.ZRem(context.Background(), revokeListName, tokenStr).Result()
 	if err != nil {
-		// todo log
+		logrus.WithFields(logrus.Fields{"tokenStr": tokenStr}).WithError(err).Error("激活 Token 时发生错误")
 	}
 }
 

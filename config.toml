@@ -1,14 +1,14 @@
 [appConfigs]
     [appConfigs.development]
     AppName = "DulceDayServer"
-    AuthTokenExpiresTime = 2592000000000000
+    AuthTokenExpiresTime = 2592000
     AuthTokenSecret = "qweasd123"
     AppAddress = "8080"
 	DefaultDeviceName = "Known"
 
     [appConfigs.production]
     AppName = "DulceDayServer"
-    AuthTokenExpiresTime = 2592000000000000
+    AuthTokenExpiresTime = 2592000
     AuthTokenSecret = "qweasd123"
     AppAddress = "7001"
 	DefaultDeviceName = "Known"

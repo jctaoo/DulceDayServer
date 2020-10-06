@@ -9,7 +9,8 @@ import (
 type Endpoints interface {
 	common.BaseEndpoints
 	// 登陆
-	login(context *gin.Context)
+	loginWithEmail(context *gin.Context)
+	loginWithUsername(context *gin.Context)
 	// 注册
 	register(context *gin.Context)
 }
@@ -28,6 +29,7 @@ func NewEndpointsImpl(genericService user.Service) *EndpointsImpl {
 func (e EndpointsImpl) MapHandlersToRoutes(router *gin.RouterGroup) *gin.RouterGroup {
 	userGroup := router.Group("/user")
 	userGroup.POST("/register", e.register)
-	userGroup.POST("/login", e.login)
+	userGroup.POST("/login/email", e.loginWithEmail)
+	userGroup.POST("/login/username", e.loginWithUsername)
 	return userGroup
 }

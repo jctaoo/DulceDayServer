@@ -5,7 +5,6 @@ import (
 	"DulceDayServer/database/models"
 	"context"
 	"github.com/go-redis/redis/v8"
-	"github.com/sirupsen/logrus"
 	"gorm.io/gorm"
 )
 
@@ -36,10 +35,7 @@ func (u StoreImpl) newUser(user *models.User) *models.User {
 
 func (u StoreImpl) checkUserInBlackList(userId string) bool {
 	userIdBlackListName := config.SiteConfig.CacheConfig.BlackListName
-	val, err := u.rdb.ZScore(context.Background(), userIdBlackListName, userId).Result()
-	if err != nil {
-		logrus.WithFields(logrus.Fields{"userId": userId}).WithError(err).Error("检查用户是否在黑名单中时发生错误")
-	}
+	val := u.rdb.ZScore(context.Background(), userIdBlackListName, userId).Val()
 	if val == kUserIdBlackListScore {
 		return true
 	}
@@ -48,18 +44,12 @@ func (u StoreImpl) checkUserInBlackList(userId string) bool {
 
 func (u StoreImpl) addUserInBlackList(user *models.User) {
 	userIdBlackListName := config.SiteConfig.CacheConfig.BlackListName
-	_, err := u.rdb.ZAdd(context.Background(), userIdBlackListName, &redis.Z{Member: user.Identifier, Score: kUserIdBlackListScore}).Result()
-	if err != nil {
-		logrus.WithFields(logrus.Fields{"user": user}).WithError(err).Error("将用户添加到黑名单中时发生错误")
-	}
+	u.rdb.ZAdd(context.Background(), userIdBlackListName, &redis.Z{Member: user.Identifier, Score: kUserIdBlackListScore})
 }
 
 func (u StoreImpl) removeUserFromBlackList(user *models.User) {
 	userIdBlackListName := config.SiteConfig.CacheConfig.BlackListName
-	_, err := u.rdb.ZRem(context.Background(), userIdBlackListName, user.Identifier).Result()
-	if err != nil {
-		logrus.WithFields(logrus.Fields{"user": user}).WithError(err).Error("将用移出黑名单中时发生错误")
-	}
+	u.rdb.ZRem(context.Background(), userIdBlackListName, user.Identifier)
 }
 
 func (u StoreImpl) findUserByUserName(username string) *models.User {
@@ -86,6 +76,6 @@ func (u StoreImpl) checkUserExisting(user *models.User) bool {
 	if !user.Validate() {
 		return false
 	}
-	rows := u.db.Where("Username = ?", user.Username).Find(&resUsers).RowsAffected
+	rows := u.db.Where("Username = ? OR Email = ?", user.Username, user.Email).Find(&resUsers).RowsAffected
 	return rows > 0
 }

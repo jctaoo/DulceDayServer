@@ -50,7 +50,7 @@ func main() {
 	// 日志配置
 	log.SetFormatter(&log.TextFormatter{FullTimestamp: true, TimestampFormat: "2006-01-02 15:04:05", ForceColors: true})
 	log.SetOutput(ansicolor.NewAnsiColorWriter(os.Stdout)) // todo log to file in release
-	log.SetLevel(log.InfoLevel)
+	log.SetLevel(log.DebugLevel)
 	log.SetReportCaller(true)
 
 	// gin 的初始化配置

@@ -5,6 +5,7 @@ import "DulceDayServer/database/models"
 type Service interface {
 	GetProfileByUsername(username string) *models.UserProfile
 	CreateNewProfile(username string) *models.UserProfile
+	UpdateProfile(username string, new *models.UserProfile)
 }
 
 type ServiceImpl struct {
@@ -21,4 +22,8 @@ func (s ServiceImpl) GetProfileByUsername(username string) *models.UserProfile {
 
 func (s ServiceImpl) CreateNewProfile(username string) *models.UserProfile {
 	return s.store.createNewProfile(username)
+}
+
+func (s ServiceImpl) UpdateProfile(username string, new *models.UserProfile) {
+	s.store.updateUserProfile(&models.UserProfile{Username: username}, new)
 }

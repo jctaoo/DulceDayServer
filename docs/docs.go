@@ -135,6 +135,44 @@ var doc = `{
                 }
             }
         },
+        "/user/profile/update": {
+            "put": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "summary": "更新用户信息",
+                "parameters": [
+                    {
+                        "description": "参数",
+                        "name": "userProfile",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/user_profile.updateProfileParameter"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/user_profile.updateProfileResponse"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/common.BaseResponse"
+                        }
+                    }
+                }
+            }
+        },
         "/user/profile/{username}": {
             "get": {
                 "produces": [
@@ -324,6 +362,44 @@ var doc = `{
                     "type": "integer"
                 },
                 "message": {
+                    "type": "string"
+                },
+                "profile": {
+                    "type": "object",
+                    "$ref": "#/definitions/models.UserProfile"
+                }
+            }
+        },
+        "user_profile.updateProfileParameter": {
+            "type": "object",
+            "properties": {
+                "nickname": {
+                    "description": "昵称",
+                    "type": "string",
+                    "example": "jc😄taoo"
+                },
+                "username": {
+                    "description": "用户名",
+                    "type": "string",
+                    "example": "alen"
+                }
+            }
+        },
+        "user_profile.updateProfileResponse": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "type": "integer"
+                },
+                "message": {
+                    "type": "string"
+                },
+                "nickname": {
+                    "description": "更改后的昵称",
+                    "type": "string"
+                },
+                "username": {
+                    "description": "更改后的用户名",
                     "type": "string"
                 }
             }

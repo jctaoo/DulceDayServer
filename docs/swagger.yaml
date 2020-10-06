@@ -93,6 +93,33 @@ definitions:
         type: integer
       message:
         type: string
+      profile:
+        $ref: '#/definitions/models.UserProfile'
+        type: object
+    type: object
+  user_profile.updateProfileParameter:
+    properties:
+      nickname:
+        description: 昵称
+        example: "jc\U0001F604taoo"
+        type: string
+      username:
+        description: 用户名
+        example: alen
+        type: string
+    type: object
+  user_profile.updateProfileResponse:
+    properties:
+      code:
+        type: integer
+      message:
+        type: string
+      nickname:
+        description: 更改后的昵称
+        type: string
+      username:
+        description: 更改后的用户名
+        type: string
     type: object
 host: localhost:8080
 info:
@@ -187,6 +214,29 @@ paths:
           schema:
             $ref: '#/definitions/user_profile.getProfileResponse'
       summary: 获取用户信息
+  /user/profile/update:
+    put:
+      parameters:
+      - description: 参数
+        in: body
+        name: userProfile
+        required: true
+        schema:
+          $ref: '#/definitions/user_profile.updateProfileParameter'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/user_profile.updateProfileResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/common.BaseResponse'
+      security:
+      - ApiKeyAuth: []
+      summary: 更新用户信息
   /user/register:
     post:
       parameters:

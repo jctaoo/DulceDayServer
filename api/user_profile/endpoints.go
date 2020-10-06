@@ -28,7 +28,7 @@ func (e EndpointsImpl) MapHandlersToRoutes(router *gin.RouterGroup) *gin.RouterG
 	userGroup := router.Group("/user/profile")
 	userGroup.GET("/", common.MiddleWareAuth(e.userService), e.getSelfProfile)
 	userGroup.GET("/:username", e.getProfile)
-	userGroup.PUT("/update", e.updateProfile)
+	userGroup.PUT("/update", common.MiddleWareAuth(e.userService), e.updateProfile)
 	return userGroup
 }
 

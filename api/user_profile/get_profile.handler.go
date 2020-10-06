@@ -18,7 +18,7 @@ type getProfileResponse struct {
 // @Security ApiKeyAuth
 // @Success 200 {object} getProfileResponse 获取成功
 // @Failure 401 {object} common.BaseResponse 获取失败, 授权失败
-// @Router /user/Profile [get]
+// @Router /user/profile [get]
 func (e *EndpointsImpl) getSelfProfile(context *gin.Context) {
 	// todo 如果 context 里没有对应的值会 panic
 	if helpers.IsAuth(context) {
@@ -47,13 +47,7 @@ func (e *EndpointsImpl) getSelfProfile(context *gin.Context) {
 			})
 		}
 	} else {
-		// 未登录错误
-		context.JSON(http.StatusUnauthorized, getProfileResponse{
-			BaseResponse: common.BaseResponse{
-				Code: 40001,
-				Message: "未登录",
-			},
-		})
+		common.HandleUnAuth(context)
 	}
 }
 
@@ -65,7 +59,7 @@ type getProfilePathParameter struct {
 // @Produce json
 // @Param username path string false "用户名"
 // @Success 200 {object} getProfileResponse 获取成功
-// @Router /user/Profile/{username} [get]
+// @Router /user/profile/{username} [get]
 func (e *EndpointsImpl) getProfile(context *gin.Context) {
 	pathParam := getProfilePathParameter{}
 	if err := context.ShouldBindUri(pathParam); err == nil {

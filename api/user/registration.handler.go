@@ -34,7 +34,7 @@ func (e *EndpointsImpl) register(context *gin.Context) {
 		}
 		// 检查用户是否存在
 		if !e.service.CheckUserExisting(user) {
-			// 生成唯一id，可以由自定义修改
+			// 生成唯一id
 			newIdentifier := e.service.GenerateUserIdentifier()
 			user.Identifier = newIdentifier
 			// 存储用户

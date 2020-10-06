@@ -1,13 +1,13 @@
 package user
 
 import (
-	"DulceDayServer/api/base"
+	"DulceDayServer/api/common"
 	"DulceDayServer/services/user"
 	"github.com/gin-gonic/gin"
 )
 
 type Endpoints interface {
-	base.Endpoints
+	common.BaseEndpoints
 	// 登陆
 	login(context *gin.Context)
 	// 注册

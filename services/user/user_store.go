@@ -85,6 +85,6 @@ func (u StoreImpl) checkUserExisting(user *models.User) bool {
 	if !user.Validate() {
 		return false
 	}
-	rows := u.db.Where(user).Find(&resUsers).RowsAffected
+	rows := u.db.Where("Username = ?", user.Username).Find(&resUsers).RowsAffected
 	return rows > 0
 }

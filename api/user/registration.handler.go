@@ -1,20 +1,21 @@
 package user
 
 import (
-	"DulceDayServer/api/base"
+	"DulceDayServer/api/common"
 	"DulceDayServer/database/models"
 	"github.com/gin-gonic/gin"
+	"github.com/go-playground/validator/v10"
 	"net/http"
 )
 
 type registerParameter struct {
 	Username string `json:"username,omitempty"`
-	Password string `json:"password"`
-	Email string `json:"email,omitempty"`
+	Password string `json:"password" binding:"required"`
+	Email string `json:"email,omitempty" binding:"email"`
 }
 
 type registerResponse struct {
-	base.Response
+	common.BaseResponse
 }
 
 // @Summary 注册
@@ -23,11 +24,11 @@ type registerResponse struct {
 // @Param password body string true "密码"
 // @Param email body string false "邮箱地址"
 // @Success 200 {object} registerResponse 注册成功
-// @Failure 400 {object} base.Response 登陆失败, 信息不合规
+// @Failure 400 {object} common.BaseResponse 登陆失败, 信息不合规
 // @Router /v1/register [post]
 func (e *EndpointsImpl) register(context *gin.Context) {
 	parameter := registerParameter{}
-	if context.BindJSON(&parameter) == nil {
+	if err := context.ShouldBindJSON(&parameter); err == nil {
 		email, username, password := parameter.Email, parameter.Username, parameter.Password
 		user := &models.User{
 			Username: username,
@@ -43,7 +44,7 @@ func (e *EndpointsImpl) register(context *gin.Context) {
 			user = e.service.NewUser(user)
 			// 用户创建成功
 			context.JSON(http.StatusCreated, registerResponse{
-				Response: base.Response{
+				BaseResponse: common.BaseResponse{
 					Code: 2001,
 					Message: "注册成功",
 				},
@@ -51,18 +52,27 @@ func (e *EndpointsImpl) register(context *gin.Context) {
 		} else {
 			// 如果用户已经存在或者不合规 (详见 user.Validate)
 			context.JSON(http.StatusBadRequest, registerResponse{
-				Response: base.Response{
+				BaseResponse: common.BaseResponse{
 					Code: 4000,
 					Message: "用户已经存在或用户参数不符合标准",
 				},
 			})
 		}
 	} else {
-		context.JSON(http.StatusBadRequest, registerResponse{
-			Response: base.Response{
-				Code: 4001,
-				Message: "缺少必要的参数用于注册新的用户",
-			},
-		})
+		if errs, ok := err.(validator.ValidationErrors); ok {
+			context.JSON(http.StatusBadRequest, registerResponse{
+				BaseResponse: common.BaseResponse{
+					Code: 4001,
+					Message: common.TranslateValidateErr(errs, context),
+				},
+			})
+		} else {
+			context.JSON(http.StatusBadRequest, registerResponse{
+				BaseResponse: common.BaseResponse{
+					Code: 4002,
+					Message: err.Error(),
+				},
+			})
+		}
 	}
 }

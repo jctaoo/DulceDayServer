@@ -67,11 +67,11 @@ paths:
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/base.Response'
+            $ref: '#/definitions/common.Response'
         "401":
           description: Unauthorized
           schema:
-            $ref: '#/definitions/base.Response'
+            $ref: '#/definitions/common.Response'
       summary: 登陆
   /v1/register:
     post:
@@ -102,6 +102,6 @@ paths:
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/base.Response'
+            $ref: '#/definitions/common.Response'
       summary: 注册
 swagger: "2.0"

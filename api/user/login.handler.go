@@ -1,7 +1,7 @@
 package user
 
 import (
-	"DulceDayServer/api/base"
+	"DulceDayServer/api/common"
 	"DulceDayServer/config"
 	"DulceDayServer/database/models"
 	"github.com/gin-gonic/gin"
@@ -16,7 +16,7 @@ type loginParameter struct {
 }
 
 type loginResponse struct {
-	base.Response
+	common.BaseResponse
 	token string
 }
 
@@ -27,8 +27,8 @@ type loginResponse struct {
 // @Param email body string false "邮箱地址"
 // @Param device_name body string false "登陆的设备，如果是浏览器，则 '浏览器(通过IP获取的城市名)'"
 // @Success 200 {object} loginResponse 登陆成功
-// @Failure 400 {object} base.Response 登陆失败, 信息不合规
-// @Failure 401 {object} base.Response 登陆失败, 鉴权失败
+// @Failure 400 {object} common.BaseResponse 登陆失败, 信息不合规
+// @Failure 401 {object} common.BaseResponse 登陆失败, 鉴权失败
 // @Router /v1/login [post]
 func (e *EndpointsImpl) login(context *gin.Context) {
 	parameter := loginParameter{}
@@ -50,14 +50,14 @@ func (e *EndpointsImpl) login(context *gin.Context) {
 			if err != nil {
 				// todo log
 				context.JSON(http.StatusUnauthorized, loginResponse{
-					Response: base.Response{
+					BaseResponse: common.BaseResponse{
 						Code: 4000,
 						Message: "鉴权错误",
 					},
 				})
 			} else {
 				context.JSON(http.StatusOK, loginResponse{
-					Response: base.Response{
+					BaseResponse: common.BaseResponse{
 						Code: 2000,
 						Message: "登陆成功",
 					},
@@ -67,7 +67,7 @@ func (e *EndpointsImpl) login(context *gin.Context) {
 		} else {
 			// 如果用户已经存在或者不合规 (详见 user.Validate)
 			context.JSON(http.StatusBadRequest, loginResponse{
-				Response: base.Response{
+				BaseResponse: common.BaseResponse{
 					Code: 4002,
 					Message: "用户参数不符合标准",
 				},
@@ -75,7 +75,7 @@ func (e *EndpointsImpl) login(context *gin.Context) {
 		}
 	} else {
 		context.JSON(http.StatusBadRequest, loginResponse{
-			Response: base.Response{
+			BaseResponse: common.BaseResponse{
 				Code: 4003,
 				Message: "缺少必要的参数用于登陆",
 			},

@@ -2,6 +2,7 @@ package main
 
 import (
 	"DulceDayServer/api"
+	"DulceDayServer/api/common"
 	"DulceDayServer/config"
 	_ "DulceDayServer/docs"
 	"flag"
@@ -40,10 +41,15 @@ func main() {
 	config.ReadConfig(path.Join(wd, "config.toml"), release)
 
 	// gin 的初始化配置
-	engine := gin.Default()
+	engine := gin.New()
 	if release {
 		gin.SetMode(gin.ReleaseMode)
+	} else {
+		gin.SetMode(gin.DebugMode)
 	}
+
+	// 配置国际化
+	common.ValidatorTransInit()
 
 	// api 配置
 	v1 := engine.Group("/v1")

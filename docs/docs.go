@@ -81,13 +81,13 @@ var doc = `{
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/base.Response"
+                            "$ref": "#/definitions/common.BaseResponse"
                         }
                     },
                     "401": {
                         "description": "Unauthorized",
                         "schema": {
-                            "$ref": "#/definitions/base.Response"
+                            "$ref": "#/definitions/common.BaseResponse"
                         }
                     }
                 }
@@ -136,7 +136,7 @@ var doc = `{
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/base.Response"
+                            "$ref": "#/definitions/common.BaseResponse"
                         }
                     }
                 }
@@ -144,7 +144,7 @@ var doc = `{
         }
     },
     "definitions": {
-        "base.Response": {
+        "common.BaseResponse": {
             "type": "object",
             "properties": {
                 "code": {

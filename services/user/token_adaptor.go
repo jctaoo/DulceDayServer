@@ -17,13 +17,15 @@ type TokenAdaptor interface {
 
 // JWT 荷载
 type customClaims struct {
-	userAuthority models.AuthorityLevel
-	userIdentifier string
+	UserAuthority  models.AuthorityLevel
+	UserIdentifier string
+	Username       string
 	jwt.StandardClaims
 }
 
 type TokenClaims struct {
 	UserAuthority models.AuthorityLevel
+	Username string
 	UserIdentifier string
 }
 
@@ -39,8 +41,9 @@ func NewTokenAdaptorImpl() *TokenAdaptorImpl {
 func (t TokenAdaptorImpl) generateTokenStr(tokenAuth *models.TokenAuth, user *models.User) string {
 	expiresTime := time.Now().Unix() + config.SiteConfig.AuthTokenExpiresTime
 	claims := customClaims{
-		userAuthority: user.Authority,
-		userIdentifier: user.Identifier,
+		UserAuthority:  user.Authority,
+		UserIdentifier: user.Identifier,
+		Username:       user.Username,
 		StandardClaims: jwt.StandardClaims{
 			ExpiresAt: expiresTime,               // 失效时间
 			IssuedAt:  time.Now().Unix(),         // 签发时间
@@ -58,7 +61,7 @@ func (t TokenAdaptorImpl) generateTokenStr(tokenAuth *models.TokenAuth, user *mo
 }
 
 func (t TokenAdaptorImpl) verifyToken(tokenStr string) (isValidate bool, claims TokenClaims) {
-	token, err := jwt.Parse(tokenStr, func(token *jwt.Token) (interface{}, error) {
+	token, err := jwt.ParseWithClaims(tokenStr, &customClaims{}, func(token *jwt.Token) (interface{}, error) {
 		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
 			return nil, fmt.Errorf("unexpected signing method: %v", token.Header["alg"])
 		}
@@ -68,10 +71,11 @@ func (t TokenAdaptorImpl) verifyToken(tokenStr string) (isValidate bool, claims 
 	if err != nil {
 		return false, TokenClaims{}
 	}
-	if claims, ok := token.Claims.(customClaims); ok && token.Valid {
+	if claims, ok := token.Claims.(*customClaims); ok && token.Valid {
 		return true, TokenClaims{
-			UserIdentifier: claims.userIdentifier,
-			UserAuthority: claims.userAuthority,
+			UserIdentifier: claims.UserIdentifier,
+			UserAuthority: claims.UserAuthority,
+			Username: claims.Username,
 		}
 	} else {
 		return false, TokenClaims{}

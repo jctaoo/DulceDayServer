@@ -6,7 +6,7 @@
 - 登录/鉴权：根据要登陆的用户 (包括设备名，IP)
   1. 检验 UserId 字符串是否在 BlackList 中
   2. 检查密码是否正确
-  3. 查看是否有相应的 Token 记录，如果有，就更新 Token 并返回新的 Token 字符串和 IP，否则写入新的 Token 记录
+  3. 查看是否有相应的 Token 记录，如果有，就将原 Token 放入 Revoke 列表, 更新 Token 并返回新的 Token 字符串和 IP，否则写入新的 Token 记录
 - 授权：
   1. 检验 Token 字符串是否在 RevokeTokens 中
   2. 检验 Token 字符串是否在 InActiveTokens 中

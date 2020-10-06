@@ -8,15 +8,15 @@ import (
 )
 
 type loginWithEmailParameter struct {
-	Password string `json:"password" binding:"required"`
-	Email string `json:"email" binding:"email,required"`
-	DeviceName string `json:"device_name,omitempty"`
+	Password string `json:"password" binding:"required" example:"qwerty123"` // 密码
+	Email string `json:"email" binding:"email,required" example:"haha@test.com"` // 邮箱
+	DeviceName string `json:"device_name,omitempty" example:"bob的iPhone"` // 登录的设备的名字，浏览器为 “浏览器(ip所在的城市)”
 }
 
 type loginWithUsernameParameter struct {
-	Password string `json:"password" binding:"required"`
-	Username string `json:"username" binding:"required"`
-	DeviceName string `json:"device_name,omitempty"`
+	Password string `json:"password" binding:"required" example:"qwerty123"`  // 密码
+	Username string `json:"username" binding:"required" example:"bob"`  // 用户名
+	DeviceName string `json:"device_name,omitempty" example:"bob的iPhone"` // 登录的设备的名字，浏览器为 “浏览器(ip所在的城市)”
 }
 
 type loginResponse struct {
@@ -26,13 +26,11 @@ type loginResponse struct {
 
 // @Summary 使用邮箱登陆
 // @Produce json
-// @Param password body string true "密码"
-// @Param email body string true "邮箱地址"
-// @Param device_name body string false "登陆的设备，如果是浏览器，则 '浏览器(通过IP获取的城市名)'"
+// @Param user body loginWithEmailParameter true "参数"
 // @Success 200 {object} loginResponse 登陆成功
 // @Failure 400 {object} common.BaseResponse 登陆失败, 信息不合规
 // @Failure 401 {object} common.BaseResponse 登陆失败, 鉴权失败
-// @Router /v1/login [post]
+// @Router /user/login/email [post]
 func (e *EndpointsImpl) loginWithEmail(context *gin.Context) {
 	parameter := loginWithEmailParameter{}
 	if err := context.ShouldBindJSON(&parameter); err == nil {
@@ -44,15 +42,13 @@ func (e *EndpointsImpl) loginWithEmail(context *gin.Context) {
 	}
 }
 
-// @Summary 使用邮箱登陆
+// @Summary 使用用户名登陆
 // @Produce json
-// @Param username body string true "唯一的用户名，类似推特中 @ 后面的以及微信号"
-// @Param password body string true "密码"
-// @Param device_name body string false "登陆的设备，如果是浏览器，则 '浏览器(通过IP获取的城市名)'"
+// @Param user body loginWithUsernameParameter true "参数"
 // @Success 200 {object} loginResponse 登陆成功
 // @Failure 400 {object} common.BaseResponse 登陆失败, 信息不合规
 // @Failure 401 {object} common.BaseResponse 登陆失败, 鉴权失败
-// @Router /v1/login [post]
+// @Router /user/login/username [post]
 func (e *EndpointsImpl) loginWithUsername(context *gin.Context) {
 	parameter := loginWithUsernameParameter{}
 	if err := context.ShouldBindJSON(&parameter); err == nil {

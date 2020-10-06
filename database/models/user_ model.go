@@ -4,7 +4,7 @@ import (
 	"gorm.io/gorm"
 )
 
-// 用于登录的 User, 区别于用于表现用户信息的 UserDetail
+// 用于登录的 User, 区别于用于表现用户信息的 UserProfile
 type User struct {
 	gorm.Model `json:"-"`
 

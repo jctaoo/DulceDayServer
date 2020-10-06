@@ -7,8 +7,10 @@ package main
 
 import (
 	"DulceDayServer/api/user"
+	"DulceDayServer/api/user_profile"
 	"DulceDayServer/database"
 	user2 "DulceDayServer/services/user"
+	user_profile2 "DulceDayServer/services/user_profile"
 	"github.com/google/wire"
 )
 
@@ -31,6 +33,25 @@ func UserEndpoints() user.Endpoints {
 	return endpointsImpl
 }
 
+func UserProfileEndpoints() user_profile.Endpoints {
+	db := database.NewDB()
+	client := database.NewCache()
+	userProfileStoreImpl := user_profile2.NewUserProfileStoreImpl(db, client)
+	serviceImpl := user_profile2.NewUserProfileServiceImpl(userProfileStoreImpl)
+	encryptionAdaptorImpl := user2.NewEncryptionAdaptorImpl()
+	tokenStoreImpl := user2.NewTokenStoreImpl(db, client)
+	tokenAdaptorImpl := user2.NewTokenAdaptorImpl()
+	tokenGranterImpl := user2.NewTokenGranterImpl(tokenStoreImpl, tokenAdaptorImpl)
+	storeImpl := user2.NewStoreImpl(db, client)
+	userServiceImpl := user2.NewServiceImpl(encryptionAdaptorImpl, tokenGranterImpl, storeImpl)
+	endpointsImpl := user_profile.NewEndpointsImpl(serviceImpl, userServiceImpl)
+	return endpointsImpl
+}
+
 // wire.go:
 
-var userEndpointsSet = wire.NewSet(database.NewCache, database.NewDB, user2.NewServiceImpl, wire.Bind(new(user2.Service), new(*user2.ServiceImpl)), user2.NewEncryptionAdaptorImpl, wire.Bind(new(user2.EncryptionAdaptor), new(*user2.EncryptionAdaptorImpl)), user2.NewTokenGranterImpl, wire.Bind(new(user2.TokenGranter), new(*user2.TokenGranterImpl)), user2.NewStoreImpl, wire.Bind(new(user2.Store), new(*user2.StoreImpl)), user2.NewTokenStoreImpl, wire.Bind(new(user2.TokenStore), new(*user2.TokenStoreImpl)), user2.NewTokenAdaptorImpl, wire.Bind(new(user2.TokenAdaptor), new(*user2.TokenAdaptorImpl)))
+var userServiceEndpointSet = wire.NewSet(user2.NewServiceImpl, wire.Bind(new(user2.Service), new(*user2.ServiceImpl)), user2.NewEncryptionAdaptorImpl, wire.Bind(new(user2.EncryptionAdaptor), new(*user2.EncryptionAdaptorImpl)), user2.NewTokenGranterImpl, wire.Bind(new(user2.TokenGranter), new(*user2.TokenGranterImpl)), user2.NewStoreImpl, wire.Bind(new(user2.Store), new(*user2.StoreImpl)), user2.NewTokenStoreImpl, wire.Bind(new(user2.TokenStore), new(*user2.TokenStoreImpl)), user2.NewTokenAdaptorImpl, wire.Bind(new(user2.TokenAdaptor), new(*user2.TokenAdaptorImpl)))
+
+var userEndpointsSet = wire.NewSet(database.NewCache, database.NewDB, userServiceEndpointSet)
+
+var userProfileEndpointsSet = wire.NewSet(database.NewCache, database.NewDB, user_profile2.NewUserProfileServiceImpl, wire.Bind(new(user_profile2.Service), new(*user_profile2.ServiceImpl)), user_profile2.NewUserProfileStoreImpl, wire.Bind(new(user_profile2.UserProfileStore), new(*user_profile2.UserProfileStoreImpl)), userServiceEndpointSet)

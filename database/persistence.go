@@ -21,7 +21,7 @@ func NewDB() *gorm.DB {
 		sqlDB.SetMaxIdleConns(10)
 		sqlDB.SetMaxOpenConns(100)
 		sqlDB.SetConnMaxLifetime(time.Hour)
-		err := db.AutoMigrate(&models.User{}, &models.TokenAuth{})
+		err := db.AutoMigrate(&models.User{}, &models.TokenAuth{}, &models.UserProfile{})
 		if err != nil {
 			fmt.Println("Some Error Occurred When Migrate Table")
 		}

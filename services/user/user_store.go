@@ -54,7 +54,7 @@ func (u StoreImpl) removeUserFromBlackList(user *models.User) {
 
 func (u StoreImpl) findUserByUserName(username string) *models.User {
 	user := &models.User{}
-	u.db.Where("username = ?", username).First(user)
+	u.db.Where("Username = ?", username).First(user)
 	return user
 }
 
@@ -76,6 +76,6 @@ func (u StoreImpl) checkUserExisting(user *models.User) bool {
 	if !user.Validate() {
 		return false
 	}
-	rows := u.db.Where("Username = ? OR Email = ?", user.Username, user.Email).Find(&resUsers).RowsAffected
+	rows := u.db.Where("Username = ? OR email = ?", user.Username, user.Email).Find(&resUsers).RowsAffected
 	return rows > 0
 }

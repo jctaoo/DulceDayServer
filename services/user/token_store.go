@@ -52,16 +52,16 @@ func (t TokenStoreImpl) deleteToken(token *models.TokenAuth) {
 
 func (t TokenStoreImpl) revokeToken(token *models.TokenAuth) {
 	revokeListName := config.SiteConfig.CacheConfig.RevokeTokenListName
-	t.rdb.ZAdd(context.Background(), revokeListName, &redis.Z{Member: token.TokenStr, Score: 20})
+	t.rdb.ZAdd(context.Background(), revokeListName, &redis.Z{Member: token.TokenStr, Score: kTokenRevokeListScore})
 }
 
 func (t TokenStoreImpl) checkTokenIsRevoke(tokenStr string) bool {
 	revokeListName := config.SiteConfig.CacheConfig.RevokeTokenListName
 	val := t.rdb.ZScore(context.Background(), revokeListName, tokenStr).Val()
 	if val == kTokenRevokeListScore {
-		return false
+		return true
 	}
-	return true
+	return false
 }
 
 func (t TokenStoreImpl) removeTokenFromRevokeList(tokenStr string) {
@@ -73,9 +73,9 @@ func (t TokenStoreImpl) checkTokenIsInActive(tokenStr string) bool {
 	revokeListName := config.SiteConfig.CacheConfig.InActiveTokenListName
 	val := t.rdb.ZScore(context.Background(), revokeListName, tokenStr).Val()
 	if val == kTokenInActiveListScore {
-		return false
+		return true
 	}
-	return true
+	return false
 }
 
 func (t TokenStoreImpl) removeTokenFromInActiveList(tokenStr string) {

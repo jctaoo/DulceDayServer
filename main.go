@@ -6,12 +6,12 @@ import (
 	"DulceDayServer/config"
 	_ "DulceDayServer/docs"
 	"flag"
+	"fmt"
 	"github.com/gin-gonic/gin"
 	"github.com/shiena/ansicolor"
 	log "github.com/sirupsen/logrus"
 	"github.com/swaggo/gin-swagger"
 	"github.com/swaggo/gin-swagger/swaggerFiles"
-	"net/http"
 	"os"
 	"path"
 )
@@ -25,10 +25,14 @@ import (
 // @contact.url http://www.swagger.io/support
 // @contact.email support@swagger.io
 
+// @securityDefinitions.apikey ApiKeyAuth
+// @in header
+// @name Authorization
+
 // @host localhost:8080
 // @BasePath /v1
 func main() {
-	log.Info("开始运行...")
+	fmt.Println("starting...")
 
 	// 从命令行参数获取是否为生产模式
 	var release = false
@@ -50,7 +54,7 @@ func main() {
 	log.SetReportCaller(true)
 
 	// gin 的初始化配置
-	engine := gin.New()
+	engine := gin.Default()
 	if release {
 		gin.SetMode(gin.ReleaseMode)
 	} else {
@@ -58,7 +62,7 @@ func main() {
 	}
 
 	// gin 通用中间件配置
-	engine.Use(common.MiddleWareLog())
+	//engine.Use(common.MiddleWareLog())
 
 	// 配置国际化
 	common.ValidatorTransInit()
@@ -67,6 +71,7 @@ func main() {
 	v1 := engine.Group("/v1")
 	api.SiteEndpoints{
 		UserEndpoints: UserEndpoints(),
+		UserProfileEndpoints: UserProfileEndpoints(),
 	}.RouteGroups(v1)
 
 	// api 文档配置
@@ -74,7 +79,7 @@ func main() {
 	engine.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler, url))
 
 	// 运行 gin
-	err = http.ListenAndServe(":" + config.SiteConfig.AppAddress, engine)
+	err = engine.Run(":" + config.SiteConfig.AppAddress)
 	if err != nil {
 		log.Error("运行失败")
 		return

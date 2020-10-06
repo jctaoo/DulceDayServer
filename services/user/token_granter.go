@@ -2,6 +2,7 @@ package user
 
 import (
 	"DulceDayServer/database/models"
+	"github.com/sirupsen/logrus"
 )
 
 type TokenGranter interface {
@@ -32,7 +33,9 @@ func (t TokenGranterImpl) grantToken(user *models.User, ip string, deviceName st
 	// 查看是否有相应的 Token 记录
 	tokenAuth := t.tokenStore.findTokenByUserAndDeviceName(user, deviceName)
 	if !tokenAuth.IsEmpty() {
-		// 如果有，就更新 Token 并返回新的 Token 字符串和 IP
+		// 如果有，就将原 Token 放入 Revoke 列表，更新 Token 并返回新的 Token 字符串和 IP
+		logrus.WithField("token", tokenAuth.TokenStr).Debug("由于用户重新生成Token，原Token被撤回")
+		t.tokenStore.revokeToken(tokenAuth)
 		newToken := t.tokenAdaptor.generateTokenStr(tokenAuth, user)
 		// 更新
 		t.tokenStore.updateToken(tokenAuth, ip, newToken)

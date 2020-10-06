@@ -1,10 +1,19 @@
 basePath: /v1
 definitions:
-  base.Response:
+  common.BaseResponse:
     properties:
       code:
         type: integer
       message:
+        type: string
+    type: object
+  models.UserProfile:
+    properties:
+      nickname:
+        type: string
+      uid:
+        type: string
+      username:
         type: string
     type: object
   user.loginResponse:
@@ -13,8 +22,72 @@ definitions:
         type: integer
       message:
         type: string
+      token:
+        type: string
+    type: object
+  user.loginWithEmailParameter:
+    properties:
+      device_name:
+        description: 登录的设备的名字，浏览器为 “浏览器(ip所在的城市)”
+        example: bob的iPhone
+        type: string
+      email:
+        description: 邮箱
+        example: haha@test.com
+        type: string
+      password:
+        description: 密码
+        example: qwerty123
+        type: string
+    required:
+    - email
+    - password
+    type: object
+  user.loginWithUsernameParameter:
+    properties:
+      device_name:
+        description: 登录的设备的名字，浏览器为 “浏览器(ip所在的城市)”
+        example: bob的iPhone
+        type: string
+      password:
+        description: 密码
+        example: qwerty123
+        type: string
+      username:
+        description: 用户名
+        example: bob
+        type: string
+    required:
+    - password
+    - username
+    type: object
+  user.registerParameter:
+    properties:
+      email:
+        description: 邮箱
+        example: haha@test.com
+        type: string
+      password:
+        description: 密码
+        example: qwerty123
+        type: string
+      username:
+        description: 用户名
+        example: bob
+        type: string
+    required:
+    - email
+    - password
+    - username
     type: object
   user.registerResponse:
+    properties:
+      code:
+        type: integer
+      message:
+        type: string
+    type: object
+  user_profile.getProfileResponse:
     properties:
       code:
         type: integer
@@ -33,30 +106,15 @@ info:
   title: DulceDayServer
   version: "1.0"
 paths:
-  /v1/login:
+  /user/login/email:
     post:
       parameters:
-      - description: 唯一的用户名，类似推特中 @ 后面的以及微信号
+      - description: 参数
         in: body
-        name: username
-        schema:
-          type: string
-      - description: 密码
-        in: body
-        name: password
+        name: user
         required: true
         schema:
-          type: string
-      - description: 邮箱地址
-        in: body
-        name: email
-        schema:
-          type: string
-      - description: 登陆的设备，如果是浏览器，则 '浏览器(通过IP获取的城市名)'
-        in: body
-        name: device_name
-        schema:
-          type: string
+          $ref: '#/definitions/user.loginWithEmailParameter'
       produces:
       - application/json
       responses:
@@ -67,31 +125,77 @@ paths:
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/common.Response'
+            $ref: '#/definitions/common.BaseResponse'
         "401":
           description: Unauthorized
           schema:
-            $ref: '#/definitions/common.Response'
-      summary: 登陆
-  /v1/register:
+            $ref: '#/definitions/common.BaseResponse'
+      summary: 使用邮箱登陆
+  /user/login/username:
     post:
       parameters:
-      - description: 唯一的用户名，类似推特中 @ 后面的以及微信号
+      - description: 参数
         in: body
-        name: username
-        schema:
-          type: string
-      - description: 密码
-        in: body
-        name: password
+        name: user
         required: true
         schema:
-          type: string
-      - description: 邮箱地址
+          $ref: '#/definitions/user.loginWithUsernameParameter'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/user.loginResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/common.BaseResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/common.BaseResponse'
+      summary: 使用用户名登陆
+  /user/profile:
+    get:
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/user_profile.getProfileResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/common.BaseResponse'
+      security:
+      - ApiKeyAuth: []
+      summary: 获取登录用户信息
+  /user/profile/{username}:
+    get:
+      parameters:
+      - description: 用户名
+        in: path
+        name: username
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/user_profile.getProfileResponse'
+      summary: 获取用户信息
+  /user/register:
+    post:
+      parameters:
+      - description: 参数
         in: body
-        name: email
+        name: user
+        required: true
         schema:
-          type: string
+          $ref: '#/definitions/user.registerParameter'
       produces:
       - application/json
       responses:
@@ -102,6 +206,11 @@ paths:
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/common.Response'
+            $ref: '#/definitions/common.BaseResponse'
       summary: 注册
+securityDefinitions:
+  ApiKeyAuth:
+    in: header
+    name: Authorization
+    type: apiKey
 swagger: "2.0"

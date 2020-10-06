@@ -7,7 +7,7 @@ import (
 
 type Service interface {
 	// 鉴权, 并返回 Token 字符串
-	// username: 可空
+	// Username: 可空
 	// email: 可空
 	// password: 密码
 	AuthenticateWithPassword(username string, email string, password string, ip string, deviceName string) (token string, err error)

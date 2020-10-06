@@ -8,9 +8,9 @@ import (
 )
 
 type registerParameter struct {
-	Username string `json:"username" binding:"gte=1,required"`
-	Password string `json:"password" binding:"required,min=8,max=18"`
-	Email string `json:"email" binding:"email,required"`
+	Username string `json:"username" binding:"gte=1,required" example:"bob"` // 用户名
+	Password string `json:"password" binding:"required,min=8,max=18" example:"qwerty123"` // 密码
+	Email string `json:"email" binding:"email,required" example:"haha@test.com"` // 邮箱
 }
 
 type registerResponse struct {
@@ -19,12 +19,10 @@ type registerResponse struct {
 
 // @Summary 注册
 // @Produce json
-// @Param username body string true "唯一的用户名，类似推特中 @ 后面的以及微信号"
-// @Param password body string true "密码"
-// @Param email body string true "邮箱地址"
+// @Param user body registerParameter true "参数"
 // @Success 200 {object} registerResponse 注册成功
 // @Failure 400 {object} common.BaseResponse 登陆失败, 信息不合规
-// @Router /v1/register [post]
+// @Router /user/register [post]
 func (e *EndpointsImpl) register(context *gin.Context) {
 	parameter := registerParameter{}
 	if err := context.ShouldBindJSON(&parameter); err == nil {

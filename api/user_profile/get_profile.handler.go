@@ -20,34 +20,29 @@ type getProfileResponse struct {
 // @Failure 401 {object} common.BaseResponse 获取失败, 授权失败
 // @Router /user/profile [get]
 func (e *EndpointsImpl) getSelfProfile(context *gin.Context) {
-	// todo 如果 context 里没有对应的值会 panic
-	if helpers.IsAuth(context) {
-		username := helpers.AuthUsername(context)
-		userProfile := e.service.GetProfileByUsername(username)
-		if !userProfile.IsEmpty() {
-			context.JSON(http.StatusOK, getProfileResponse{
-				BaseResponse: common.BaseResponse{
-					Code: 1000,
-					Message: "获取成功",
-				},
-				Profile: *userProfile,
-			})
-		} else {
-			// 创建对应 UserProfile
-			common.HttpLogger(context, nil, gin.H{
-				"username": username,
-			}).Info(username + "创建新的 UserProfile")
-			userProfile = e.service.CreateNewProfile(username)
-			context.JSON(http.StatusOK, getProfileResponse{
-				BaseResponse: common.BaseResponse{
-					Code: 1000,
-					Message: "获取成功",
-				},
-				Profile: *userProfile,
-			})
-		}
+	username := helpers.AuthUsername(context)
+	userProfile := e.service.GetProfileByUsername(username)
+	if !userProfile.IsEmpty() {
+		context.JSON(http.StatusOK, getProfileResponse{
+			BaseResponse: common.BaseResponse{
+				Code: 1000,
+				Message: "获取成功",
+			},
+			Profile: *userProfile,
+		})
 	} else {
-		common.HandleUnAuth(context)
+		// 创建对应 UserProfile
+		common.HttpLogger(context, nil, gin.H{
+			"username": username,
+		}).Info(username + "创建新的 UserProfile")
+		userProfile = e.service.CreateNewProfile(username)
+		context.JSON(http.StatusOK, getProfileResponse{
+			BaseResponse: common.BaseResponse{
+				Code: 1000,
+				Message: "获取成功",
+			},
+			Profile: *userProfile,
+		})
 	}
 }
 

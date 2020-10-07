@@ -12,6 +12,8 @@ import (
 // 与存储无关的无状态 Token 适配器
 type TokenAdaptor interface {
 	generateTokenStr(tokenAuth *models.TokenAuth, user *models.User) string
+	// 为敏感验证生成 TokenStr
+	generateTokenStrForSensitiveVerification(tokenAuth *models.TokenAuth, user *models.User) string
 	verifyToken(tokenStr string) (isValidate bool, claims TokenClaims)
 }
 
@@ -20,6 +22,7 @@ type customClaims struct {
 	UserAuthority  models.AuthorityLevel
 	UserIdentifier string
 	Username       string
+	SensitiveVerification bool
 	jwt.StandardClaims
 }
 
@@ -27,6 +30,7 @@ type TokenClaims struct {
 	UserAuthority models.AuthorityLevel
 	Username string
 	UserIdentifier string
+	SensitiveVerification bool
 }
 
 // 采用 JWT 实现的 TokenAdaptor
@@ -38,12 +42,13 @@ func NewTokenAdaptorImpl() *TokenAdaptorImpl {
 	return &TokenAdaptorImpl{}
 }
 
-func (t TokenAdaptorImpl) generateTokenStr(tokenAuth *models.TokenAuth, user *models.User) string {
+func (t TokenAdaptorImpl) genericGenerateTokenStr(tokenAuth *models.TokenAuth, user *models.User, sensitiveVerification bool) string  {
 	expiresTime := time.Now().Unix() + config.SiteConfig.AuthTokenExpiresTime
 	claims := customClaims{
 		UserAuthority:  user.Authority,
 		UserIdentifier: user.Identifier,
 		Username:       user.Username,
+		SensitiveVerification: sensitiveVerification,
 		StandardClaims: jwt.StandardClaims{
 			ExpiresAt: expiresTime,               // 失效时间
 			IssuedAt:  time.Now().Unix(),         // 签发时间
@@ -58,6 +63,14 @@ func (t TokenAdaptorImpl) generateTokenStr(tokenAuth *models.TokenAuth, user *mo
 		logrus.WithFields(logrus.Fields{"tokenAuth": tokenAuth, "user": user}).WithError(err).Error("生成 TokenStr 发生错误")
 	}
 	return token
+}
+
+func (t TokenAdaptorImpl) generateTokenStr(tokenAuth *models.TokenAuth, user *models.User) string {
+	return t.genericGenerateTokenStr(tokenAuth, user, false)
+}
+
+func (t TokenAdaptorImpl) generateTokenStrForSensitiveVerification(tokenAuth *models.TokenAuth, user *models.User) string {
+	return t.genericGenerateTokenStr(tokenAuth, user, true)
 }
 
 func (t TokenAdaptorImpl) verifyToken(tokenStr string) (isValidate bool, claims TokenClaims) {
@@ -76,6 +89,7 @@ func (t TokenAdaptorImpl) verifyToken(tokenStr string) (isValidate bool, claims 
 			UserIdentifier: claims.UserIdentifier,
 			UserAuthority: claims.UserAuthority,
 			Username: claims.Username,
+			SensitiveVerification: claims.SensitiveVerification,
 		}
 	} else {
 		return false, TokenClaims{}

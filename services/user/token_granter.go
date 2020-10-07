@@ -1,18 +1,25 @@
 package user
 
 import (
+	"DulceDayServer/config"
 	"DulceDayServer/database/models"
 	"github.com/sirupsen/logrus"
+	"time"
 )
 
 type TokenGranter interface {
 	// 授予 Token (鉴权的末尾--颁发 Token)
 	grantToken(user *models.User, ip string, deviceName string) string
+	// 为敏感信息授予 Token
+	grantTokenForSensitiveVerification(user *models.User, ip string, deviceName string) string
+	// 检验敏感信息 Token
+	checkTokenForSensitiveVerification(tokenStr string, ip string, deviceName string) (isValidate bool, claims TokenClaims, err error)
 
 	// 授权
 	authorize(tokenStr string) (isValidate bool, claims TokenClaims, err error)
 
 	RevokeToken(token *models.TokenAuth)
+	RevokeTokenStr(tokenStr string)
 	CheckTokenIsRevoke(tokenStr string) bool
 	RemoveTokenFromRevokeList(tokenStr string)
 
@@ -52,6 +59,31 @@ func (t TokenGranterImpl) grantToken(user *models.User, ip string, deviceName st
 	}
 }
 
+func (t TokenGranterImpl) grantTokenForSensitiveVerification(user *models.User, ip string, deviceName string) string {
+	// 生成 TokenAuth 存入持久化数据库
+	tokenAuth := models.NewTokenAuthWithoutTokenStr(user, ip, deviceName)
+	tokenAuth.ExpireTime = time.Unix(time.Now().Unix() + config.SiteConfig.VerificationTokenExpiresTime, 0)
+	tokenStr := t.tokenAdaptor.generateTokenStrForSensitiveVerification(tokenAuth, user) // 生成 TokenStr，其中 TokenStr 中放入是否属于铭感验证的标识
+	tokenAuth.TokenStr = tokenStr
+	t.tokenStore.addNewTokenToUser(tokenAuth, user)
+
+	// 将 TokenStr 记录进 InActiveTokens 中
+	t.tokenStore.inactiveToken(tokenAuth)
+
+	return tokenStr
+}
+
+func (t TokenGranterImpl) checkTokenForSensitiveVerification(tokenStr string, ip string, deviceName string) (isValidate bool, claims TokenClaims, err error) {
+	// 校验 IP 和 deviceName
+	tokenAuth := t.tokenStore.findTokenByTokenStr(tokenStr)
+	if tokenAuth.Ip != ip || tokenAuth.DeviceName != deviceName {
+		isValidate = false
+		err = ErrorBadIpOrDeviceName{}
+		return
+	}
+	return t.authorize(tokenStr)
+}
+
 func (t TokenGranterImpl) authorize(tokenStr string) (isValidate bool, claims TokenClaims, err error) {
 	// 检验 Token 字符串是否在 RevokeTokens 中
 	if t.CheckTokenIsRevoke(tokenStr) {
@@ -74,6 +106,11 @@ func (t TokenGranterImpl) RevokeToken(token *models.TokenAuth) {
 	t.tokenStore.revokeToken(token)
 	// 删除相应 Token 记录 (软删)
 	t.tokenStore.deleteToken(token)
+}
+
+func (t TokenGranterImpl) RevokeTokenStr(tokenStr string) {
+	tokenAuth := t.tokenStore.findTokenByTokenStr(tokenStr)
+	t.RevokeToken(tokenAuth)
 }
 
 func (t TokenGranterImpl) CheckTokenIsRevoke(tokenStr string) bool {

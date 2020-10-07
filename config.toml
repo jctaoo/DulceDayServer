@@ -2,6 +2,7 @@
     [appConfigs.development]
     AppName = "DulceDayServer"
     AuthTokenExpiresTime = 2592000
+    VerificationTokenExpiresTime = 1800
     AuthTokenSecret = "qweasd123"
     AppAddress = "8080"
 	DefaultDeviceName = "Known"
@@ -9,6 +10,7 @@
     [appConfigs.production]
     AppName = "DulceDayServer"
     AuthTokenExpiresTime = 2592000
+    VerificationTokenExpiresTime = 1800
     AuthTokenSecret = "qweasd123"
     AppAddress = "7001"
 	DefaultDeviceName = "Known"
@@ -41,6 +43,7 @@
 	RevokeTokenListName = "RevokeTokens"
 	IPBlackListName = "IPBlackList"
 	InActiveTokenListName = "InActiveTokens"
+	VerificationCodeListName = "VerificationCode"
 
     [cacheConfigs.production]
     Host = "localhost"
@@ -50,3 +53,4 @@
 	RevokeTokenListName = "RevokeTokens"
 	IPBlackListName = "IPBlackList"
 	InActiveTokenListName = "InActiveTokens"
+	VerificationCodeListName = "VerificationCode"

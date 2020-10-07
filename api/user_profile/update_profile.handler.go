@@ -9,13 +9,11 @@ import (
 )
 
 type updateProfileParameter struct {
-	Username string `json:"username" binding:"gte=1" example:"alen"` // 用户名
 	Nickname string `json:"nickname" binding:"gte=3" example:"jc😄taoo"` // 昵称
 }
 
 type updateProfileResponse struct {
 	common.BaseResponse
-	Username string `json:"username"` // 更改后的用户名
 	Nickname string `json:"nickname"` // 更改后的昵称
 }
 
@@ -28,14 +26,9 @@ type updateProfileResponse struct {
 // @Router /user/profile/update [put]
 func (e *EndpointsImpl) updateProfile(context *gin.Context) {
 	var parameter updateProfileParameter
-	var username string
-	if username = helpers.AuthUsername(context); !helpers.IsAuth(context) || username == "" {
-		common.HandleUnAuth(context)
-		return
-	}
+	username := helpers.AuthUsername(context)
 	if err := context.ShouldBindJSON(&parameter); err == nil {
 		newProfile := &models.UserProfile{
-			Username: parameter.Username,
 			Nickname: parameter.Nickname,
 		}
 		e.service.UpdateProfile(username, newProfile)
@@ -44,7 +37,6 @@ func (e *EndpointsImpl) updateProfile(context *gin.Context) {
 				Code: 2000,
 				Message: "修改成功",
 			},
-			Username: newProfile.Username,
 			Nickname: newProfile.Nickname,
 		})
 	} else {

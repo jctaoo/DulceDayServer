@@ -18,10 +18,12 @@ type TokenStore interface {
 	revokeToken(token *models.TokenAuth)
 	checkTokenIsRevoke(tokenStr string) bool
 	removeTokenFromRevokeList(tokenStr string)
+	inactiveToken(token *models.TokenAuth)
 	checkTokenIsInActive(tokenStr string) bool
 	removeTokenFromInActiveList(tokenStr string)
 
 	findTokenByUserAndDeviceName(user *models.User, deviceName string) *models.TokenAuth
+	findTokenByTokenStr(tokenStr string) *models.TokenAuth
 }
 
 // 该实现采用 Redis 来实现 Token 的存储
@@ -69,6 +71,11 @@ func (t TokenStoreImpl) removeTokenFromRevokeList(tokenStr string) {
 	t.rdb.ZRem(context.Background(), revokeListName, tokenStr)
 }
 
+func (t TokenStoreImpl) inactiveToken(token *models.TokenAuth) {
+	revokeListName := config.SiteConfig.CacheConfig.InActiveTokenListName
+	t.rdb.ZAdd(context.Background(), revokeListName, &redis.Z{Member: token.TokenStr, Score: kTokenInActiveListScore})
+}
+
 func (t TokenStoreImpl) checkTokenIsInActive(tokenStr string) bool {
 	revokeListName := config.SiteConfig.CacheConfig.InActiveTokenListName
 	val := t.rdb.ZScore(context.Background(), revokeListName, tokenStr).Val()
@@ -86,5 +93,11 @@ func (t TokenStoreImpl) removeTokenFromInActiveList(tokenStr string) {
 func (t TokenStoreImpl) findTokenByUserAndDeviceName(user *models.User, deviceName string) *models.TokenAuth {
 	token := &models.TokenAuth{}
 	t.db.Where(&models.TokenAuth{UserID: user.ID, DeviceName: deviceName}).Take(token)
+	return token
+}
+
+func (t TokenStoreImpl) findTokenByTokenStr(tokenStr string) *models.TokenAuth {
+	token := &models.TokenAuth{}
+	t.db.Where(&models.TokenAuth{TokenStr: tokenStr}).Take(token)
 	return token
 }

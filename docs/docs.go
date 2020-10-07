@@ -69,6 +69,50 @@ var doc = `{
                 }
             }
         },
+        "/user/login/sensitive/email": {
+            "post": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "summary": "使用邮箱进行敏感登陆验证, 需要事先登录",
+                "parameters": [
+                    {
+                        "description": "参数",
+                        "name": "user",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/user.sEmailLoginParameter"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/user.loginResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/common.BaseResponse"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/common.BaseResponse"
+                        }
+                    }
+                }
+            }
+        },
         "/user/login/username": {
             "post": {
                 "produces": [
@@ -229,6 +273,50 @@ var doc = `{
                     }
                 }
             }
+        },
+        "/user/register/sensitive/email": {
+            "post": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "summary": "敏感注册，用于生成验证码等, 需要事先登录",
+                "parameters": [
+                    {
+                        "description": "参数",
+                        "name": "user",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/user.sEmailRegisterParameter"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/user.loginResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/common.BaseResponse"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/common.BaseResponse"
+                        }
+                    }
+                }
+            }
         }
     },
     "definitions": {
@@ -352,6 +440,48 @@ var doc = `{
                 },
                 "message": {
                     "type": "string"
+                }
+            }
+        },
+        "user.sEmailLoginParameter": {
+            "type": "object",
+            "required": [
+                "email",
+                "verificationCode"
+            ],
+            "properties": {
+                "device_name": {
+                    "description": "登录的设备的名字，浏览器为 “浏览器(ip所在的城市)”",
+                    "type": "string",
+                    "example": "bob的iPhone"
+                },
+                "email": {
+                    "description": "邮箱",
+                    "type": "string",
+                    "example": "haha@test.com"
+                },
+                "verificationCode": {
+                    "description": "验证码",
+                    "type": "string",
+                    "example": "623597"
+                }
+            }
+        },
+        "user.sEmailRegisterParameter": {
+            "type": "object",
+            "required": [
+                "email"
+            ],
+            "properties": {
+                "device_name": {
+                    "description": "登录的设备的名字，浏览器为 “浏览器(ip所在的城市)”",
+                    "type": "string",
+                    "example": "bob的iPhone"
+                },
+                "email": {
+                    "description": "邮箱",
+                    "type": "string",
+                    "example": "haha@test.com"
                 }
             }
         },

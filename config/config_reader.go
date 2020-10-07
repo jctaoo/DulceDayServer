@@ -18,6 +18,7 @@ type appConfig struct {
 	AppName string
 	AppAddress string
 	AuthTokenExpiresTime int64
+	VerificationTokenExpiresTime int64
 	AuthTokenSecret string
 	DefaultDeviceName string
 }
@@ -39,6 +40,7 @@ type cacheConfig struct {
 	RevokeTokenListName,
 	IPBlackListName,
 	InActiveTokenListName string
+	VerificationCodeListName string
 }
 
 func ReadConfigOrExit(tomlPath string, isProduction bool) {
@@ -64,6 +66,7 @@ func ReadConfigOrExit(tomlPath string, isProduction bool) {
 		SiteConfig.AppAddress = config.AppConfigs["production"].AppAddress
 		SiteConfig.AuthTokenSecret = config.AppConfigs["production"].AuthTokenSecret
 		SiteConfig.AuthTokenExpiresTime = config.AppConfigs["production"].AuthTokenExpiresTime
+		SiteConfig.VerificationTokenExpiresTime = config.AppConfigs["production"].VerificationTokenExpiresTime
 		SiteConfig.DefaultDeviceName = config.AppConfigs["production"].DefaultDeviceName
 		SiteConfig.DataBaseConfig.Host = config.DataBaseConfigs["production"].Host
 		SiteConfig.DataBaseConfig.Port = config.DataBaseConfigs["production"].Port
@@ -78,11 +81,13 @@ func ReadConfigOrExit(tomlPath string, isProduction bool) {
 		SiteConfig.CacheConfig.RevokeTokenListName = config.CacheConfigs["production"].RevokeTokenListName
 		SiteConfig.CacheConfig.IPBlackListName = config.CacheConfigs["production"].IPBlackListName
 		SiteConfig.CacheConfig.InActiveTokenListName = config.CacheConfigs["production"].InActiveTokenListName
+		SiteConfig.CacheConfig.VerificationCodeListName = config.CacheConfigs["production"].VerificationCodeListName
 	} else {
 		SiteConfig.AppName = config.AppConfigs["development"].AppName
 		SiteConfig.AppAddress = config.AppConfigs["development"].AppAddress
 		SiteConfig.AuthTokenSecret = config.AppConfigs["development"].AuthTokenSecret
 		SiteConfig.AuthTokenExpiresTime = config.AppConfigs["development"].AuthTokenExpiresTime
+		SiteConfig.VerificationTokenExpiresTime = config.AppConfigs["development"].VerificationTokenExpiresTime
 		SiteConfig.DefaultDeviceName = config.AppConfigs["development"].DefaultDeviceName
 		SiteConfig.DataBaseConfig.Host = config.DataBaseConfigs["development"].Host
 		SiteConfig.DataBaseConfig.Port = config.DataBaseConfigs["development"].Port
@@ -97,5 +102,6 @@ func ReadConfigOrExit(tomlPath string, isProduction bool) {
 		SiteConfig.CacheConfig.RevokeTokenListName = config.CacheConfigs["development"].RevokeTokenListName
 		SiteConfig.CacheConfig.IPBlackListName = config.CacheConfigs["development"].IPBlackListName
 		SiteConfig.CacheConfig.InActiveTokenListName = config.CacheConfigs["development"].InActiveTokenListName
+		SiteConfig.CacheConfig.VerificationCodeListName = config.CacheConfigs["development"].VerificationCodeListName
 	}
 }

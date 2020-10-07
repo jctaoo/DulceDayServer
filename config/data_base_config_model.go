@@ -27,6 +27,8 @@ type CacheConfig struct {
 	IPBlackListName,
 	// 未激活 Token 列表名字
 	InActiveTokenListName string
+	// 验证码列表名字
+	VerificationCodeListName string
 }
 
 // like `user=gorm password=gorm dbname=gorm port=9920`

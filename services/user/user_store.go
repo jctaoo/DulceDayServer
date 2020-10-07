@@ -6,6 +6,7 @@ import (
 	"context"
 	"github.com/go-redis/redis/v8"
 	"gorm.io/gorm"
+	"strings"
 )
 
 type Store interface {
@@ -17,6 +18,10 @@ type Store interface {
 	findUserByIdentifier(identifier string) *models.User
 	findUserByEmail(email string) *models.User
 	checkUserExisting(user *models.User) bool
+
+	saveVerificationCode(key string, value string, tokenStr string)
+	getVerificationCode(key string) (verificationCode string, tokenStr string)
+	removeVerificationCode(key string)
 }
 
 type StoreImpl struct {
@@ -79,3 +84,26 @@ func (u StoreImpl) checkUserExisting(user *models.User) bool {
 	rows := u.db.Where("Username = ? OR email = ?", user.Username, user.Email).Find(&resUsers).RowsAffected
 	return rows > 0
 }
+
+func (u StoreImpl) saveVerificationCode(key string, value string, tokenStr string) {
+	verificationCodeListName := config.SiteConfig.CacheConfig.VerificationCodeListName
+	u.rdb.HSet(context.Background(), verificationCodeListName, map[string]interface{}{key: value + ":" + tokenStr})
+}
+
+func (u StoreImpl) getVerificationCode(key string) (verificationCode string, tokenStr string) {
+	verificationCodeListName := config.SiteConfig.CacheConfig.VerificationCodeListName
+	codeAndToken := u.rdb.HGet(context.Background(), verificationCodeListName, key).Val()
+	if codeAndToken == "" {
+		return "", ""
+	}
+	splitCodeAndToken := strings.Split(codeAndToken, ":")
+	verificationCode = splitCodeAndToken[0]
+	tokenStr = splitCodeAndToken[1]
+	return
+}
+
+func (u StoreImpl) removeVerificationCode(key string) {
+	verificationCodeListName := config.SiteConfig.CacheConfig.VerificationCodeListName
+	u.rdb.HDel(context.Background(), verificationCodeListName, key)
+}
+

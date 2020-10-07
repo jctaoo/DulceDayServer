@@ -15,6 +15,20 @@
     "host": "localhost:8080",
     "basePath": "/v1",
     "paths": {
+        "/static/{key}": {
+            "get": {
+                "summary": "获取静态资源",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "资源路径",
+                        "name": "key",
+                        "in": "path",
+                        "required": true
+                    }
+                ]
+            }
+        },
         "/user/login/email": {
             "post": {
                 "produces": [
@@ -213,7 +227,8 @@
                         "type": "string",
                         "description": "用户名",
                         "name": "username",
-                        "in": "path"
+                        "in": "path",
+                        "required": true
                     }
                 ],
                 "responses": {
@@ -492,11 +507,6 @@
                     "description": "昵称",
                     "type": "string",
                     "example": "jc😄taoo"
-                },
-                "username": {
-                    "description": "用户名",
-                    "type": "string",
-                    "example": "alen"
                 }
             }
         },
@@ -511,10 +521,6 @@
                 },
                 "nickname": {
                     "description": "更改后的昵称",
-                    "type": "string"
-                },
-                "username": {
-                    "description": "更改后的用户名",
                     "type": "string"
                 }
             }

@@ -54,3 +54,18 @@
 	IPBlackListName = "IPBlackList"
 	InActiveTokenListName = "InActiveTokens"
 	VerificationCodeListName = "VerificationCode"
+
+[aliOssStaticStorageConfigs]
+    [aliOssStaticStorageConfigs.development]
+	Endpoint = "oss-cn-chengdu.aliyuncs.com"
+	AccessKeyId = "LTAI4GFLqVA5bKyiiwgAFjhA"
+	AccessKeySecret = "gLz2Fr6fll32uPuuA0XsWoUYeEcpLv"
+    BucketName = "dulceday"
+    ResourceExpiresSec = 60
+
+    [aliOssStaticStorageConfigs.production]
+    Endpoint = "oss-cn-chengdu.aliyuncs.com"
+    AccessKeyId = "LTAI4GFLqVA5bKyiiwgAFjhA"
+    AccessKeySecret = "gLz2Fr6fll32uPuuA0XsWoUYeEcpLv"
+    BucketName = "dulceday"
+    ResourceExpiresSec = 60

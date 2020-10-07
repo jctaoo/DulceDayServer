@@ -134,10 +134,6 @@ definitions:
         description: 昵称
         example: "jc\U0001F604taoo"
         type: string
-      username:
-        description: 用户名
-        example: alen
-        type: string
     type: object
   user_profile.updateProfileResponse:
     properties:
@@ -147,9 +143,6 @@ definitions:
         type: string
       nickname:
         description: 更改后的昵称
-        type: string
-      username:
-        description: 更改后的用户名
         type: string
     type: object
 host: localhost:8080
@@ -164,6 +157,15 @@ info:
   title: DulceDayServer
   version: "1.0"
 paths:
+  /static/{key}:
+    get:
+      parameters:
+      - description: 资源路径
+        in: path
+        name: key
+        required: true
+        type: string
+      summary: 获取静态资源
   /user/login/email:
     post:
       parameters:
@@ -263,6 +265,7 @@ paths:
       - description: 用户名
         in: path
         name: username
+        required: true
         type: string
       produces:
       - application/json

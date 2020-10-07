@@ -6,12 +6,21 @@ import (
 	"DulceDayServer/api/user"
 	"DulceDayServer/api/user_profile"
 	"DulceDayServer/database"
+	"DulceDayServer/services/static_storage"
+	apiStaticStorage "DulceDayServer/api/static_storage"
 	serviceUser "DulceDayServer/services/user"
 	serviceUserProfile "DulceDayServer/services/user_profile"
 	"github.com/google/wire"
 )
 
-var userServiceEndpointSet = wire.NewSet(
+var universalSet = wire.NewSet(database.NewCache, database.NewDB, database.NewAliOSS)
+
+var aliossStaticStorageServiceSet = wire.NewSet(
+	static_storage.NewAliOSSStaticStorageService,
+	wire.Bind(new(static_storage.Service), new(*static_storage.AliOSSStaticStorageService)),
+)
+
+var userServiceSet = wire.NewSet(
 	serviceUser.NewServiceImpl,
 	wire.Bind(new(serviceUser.Service), new(*serviceUser.ServiceImpl)),
 
@@ -31,11 +40,17 @@ var userServiceEndpointSet = wire.NewSet(
 	wire.Bind(new(serviceUser.TokenAdaptor), new(*serviceUser.TokenAdaptorImpl)),
 )
 
-var userEndpointsSet = wire.NewSet(
-	database.NewCache,
-	database.NewDB,
+var userProfileServiceSet = wire.NewSet(
+	serviceUserProfile.NewUserProfileServiceImpl,
+	wire.Bind(new(serviceUserProfile.Service), new(*serviceUserProfile.ServiceImpl)),
 
-	userServiceEndpointSet,
+	serviceUserProfile.NewUserProfileStoreImpl,
+	wire.Bind(new(serviceUserProfile.UserProfileStore), new(*serviceUserProfile.UserProfileStoreImpl)),
+)
+
+var userEndpointsSet = wire.NewSet(
+	universalSet,
+	userServiceSet,
 )
 
 func UserEndpoints() user.Endpoints {
@@ -49,16 +64,10 @@ func UserEndpoints() user.Endpoints {
 }
 
 var userProfileEndpointsSet = wire.NewSet(
-	database.NewCache,
-	database.NewDB,
-
-	serviceUserProfile.NewUserProfileServiceImpl,
-	wire.Bind(new(serviceUserProfile.Service), new(*serviceUserProfile.ServiceImpl)),
-
-	serviceUserProfile.NewUserProfileStoreImpl,
-	wire.Bind(new(serviceUserProfile.UserProfileStore), new(*serviceUserProfile.UserProfileStoreImpl)),
-
-	userServiceEndpointSet,
+	universalSet,
+	userServiceSet,
+	userProfileServiceSet,
+	aliossStaticStorageServiceSet,
 )
 
 func UserProfileEndpoints() user_profile.Endpoints {
@@ -71,3 +80,17 @@ func UserProfileEndpoints() user_profile.Endpoints {
 	)
 }
 
+var staticStorageEndpointsSet = wire.NewSet(
+	universalSet,
+	aliossStaticStorageServiceSet,
+)
+
+func StaticStorageEndpoints() apiStaticStorage.Endpoints {
+	panic(
+		wire.Build(
+			apiStaticStorage.NewEndpointsImpl,
+			staticStorageEndpointsSet,
+			wire.Bind(new(apiStaticStorage.Endpoints), new(*apiStaticStorage.EndpointsImpl)),
+		),
+	)
+}

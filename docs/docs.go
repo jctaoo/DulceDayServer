@@ -30,6 +30,20 @@ var doc = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
+        "/static/{key}": {
+            "get": {
+                "summary": "获取静态资源",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "资源路径",
+                        "name": "key",
+                        "in": "path",
+                        "required": true
+                    }
+                ]
+            }
+        },
         "/user/login/email": {
             "post": {
                 "produces": [
@@ -228,7 +242,8 @@ var doc = `{
                         "type": "string",
                         "description": "用户名",
                         "name": "username",
-                        "in": "path"
+                        "in": "path",
+                        "required": true
                     }
                 ],
                 "responses": {
@@ -507,11 +522,6 @@ var doc = `{
                     "description": "昵称",
                     "type": "string",
                     "example": "jc😄taoo"
-                },
-                "username": {
-                    "description": "用户名",
-                    "type": "string",
-                    "example": "alen"
                 }
             }
         },
@@ -526,10 +536,6 @@ var doc = `{
                 },
                 "nickname": {
                     "description": "更改后的昵称",
-                    "type": "string"
-                },
-                "username": {
-                    "description": "更改后的用户名",
                     "type": "string"
                 }
             }

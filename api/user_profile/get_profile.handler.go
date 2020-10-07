@@ -52,7 +52,7 @@ type getProfilePathParameter struct {
 
 // @Summary 获取用户信息
 // @Produce json
-// @Param username path string false "用户名"
+// @Param username path string true "用户名"
 // @Success 200 {object} getProfileResponse 获取成功
 // @Router /user/profile/{username} [get]
 func (e *EndpointsImpl) getProfile(context *gin.Context) {

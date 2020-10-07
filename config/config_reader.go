@@ -12,6 +12,7 @@ type tomlConfig struct {
 	AppConfigs map[string]appConfig
 	DataBaseConfigs map[string]dataBaseConfig
 	CacheConfigs map[string]cacheConfig
+	AliOssStaticStorageConfigs map[string]aliOssStaticStorageConfig
 }
 
 type appConfig struct {
@@ -41,6 +42,14 @@ type cacheConfig struct {
 	IPBlackListName,
 	InActiveTokenListName string
 	VerificationCodeListName string
+}
+
+type aliOssStaticStorageConfig struct {
+	Endpoint string
+	AccessKeyId string
+	AccessKeySecret string
+	BucketName string
+	ResourceExpiresSec int
 }
 
 func ReadConfigOrExit(tomlPath string, isProduction bool) {
@@ -82,6 +91,11 @@ func ReadConfigOrExit(tomlPath string, isProduction bool) {
 		SiteConfig.CacheConfig.IPBlackListName = config.CacheConfigs["production"].IPBlackListName
 		SiteConfig.CacheConfig.InActiveTokenListName = config.CacheConfigs["production"].InActiveTokenListName
 		SiteConfig.CacheConfig.VerificationCodeListName = config.CacheConfigs["production"].VerificationCodeListName
+		SiteConfig.AliOssStaticStorageConfig.AccessKeyId = config.AliOssStaticStorageConfigs["production"].AccessKeyId
+		SiteConfig.AliOssStaticStorageConfig.AccessKeySecret = config.AliOssStaticStorageConfigs["production"].AccessKeySecret
+		SiteConfig.AliOssStaticStorageConfig.Endpoint = config.AliOssStaticStorageConfigs["production"].Endpoint
+		SiteConfig.AliOssStaticStorageConfig.BucketName = config.AliOssStaticStorageConfigs["production"].BucketName
+		SiteConfig.AliOssStaticStorageConfig.ResourceExpiresSec = config.AliOssStaticStorageConfigs["production"].ResourceExpiresSec
 	} else {
 		SiteConfig.AppName = config.AppConfigs["development"].AppName
 		SiteConfig.AppAddress = config.AppConfigs["development"].AppAddress
@@ -103,5 +117,10 @@ func ReadConfigOrExit(tomlPath string, isProduction bool) {
 		SiteConfig.CacheConfig.IPBlackListName = config.CacheConfigs["development"].IPBlackListName
 		SiteConfig.CacheConfig.InActiveTokenListName = config.CacheConfigs["development"].InActiveTokenListName
 		SiteConfig.CacheConfig.VerificationCodeListName = config.CacheConfigs["development"].VerificationCodeListName
+		SiteConfig.AliOssStaticStorageConfig.AccessKeyId = config.AliOssStaticStorageConfigs["development"].AccessKeyId
+		SiteConfig.AliOssStaticStorageConfig.AccessKeySecret = config.AliOssStaticStorageConfigs["development"].AccessKeySecret
+		SiteConfig.AliOssStaticStorageConfig.Endpoint = config.AliOssStaticStorageConfigs["development"].Endpoint
+		SiteConfig.AliOssStaticStorageConfig.BucketName = config.AliOssStaticStorageConfigs["development"].BucketName
+		SiteConfig.AliOssStaticStorageConfig.ResourceExpiresSec = config.AliOssStaticStorageConfigs["development"].ResourceExpiresSec
 	}
 }

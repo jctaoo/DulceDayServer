@@ -30,44 +30,34 @@ var doc = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
-        "/v1/login": {
+        "/static/{key}": {
+            "get": {
+                "summary": "获取静态资源",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "资源路径",
+                        "name": "key",
+                        "in": "path",
+                        "required": true
+                    }
+                ]
+            }
+        },
+        "/user/login/email": {
             "post": {
                 "produces": [
                     "application/json"
                 ],
-                "summary": "登陆",
+                "summary": "使用邮箱登陆",
                 "parameters": [
                     {
-                        "description": "唯一的用户名，类似推特中 @ 后面的以及微信号",
-                        "name": "username",
-                        "in": "body",
-                        "schema": {
-                            "type": "string"
-                        }
-                    },
-                    {
-                        "description": "密码",
-                        "name": "password",
+                        "description": "参数",
+                        "name": "user",
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "type": "string"
-                        }
-                    },
-                    {
-                        "description": "邮箱地址",
-                        "name": "email",
-                        "in": "body",
-                        "schema": {
-                            "type": "string"
-                        }
-                    },
-                    {
-                        "description": "登陆的设备，如果是浏览器，则 '浏览器(通过IP获取的城市名)'",
-                        "name": "device_name",
-                        "in": "body",
-                        "schema": {
-                            "type": "string"
+                            "$ref": "#/definitions/user.loginWithEmailParameter"
                         }
                     }
                 ],
@@ -81,19 +71,228 @@ var doc = `{
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/base.Response"
+                            "$ref": "#/definitions/common.BaseResponse"
                         }
                     },
                     "401": {
                         "description": "Unauthorized",
                         "schema": {
-                            "$ref": "#/definitions/base.Response"
+                            "$ref": "#/definitions/common.BaseResponse"
                         }
                     }
                 }
             }
         },
-        "/v1/register": {
+        "/user/login/sensitive/email": {
+            "post": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "summary": "使用邮箱进行敏感登陆验证, 需要事先登录",
+                "parameters": [
+                    {
+                        "description": "参数",
+                        "name": "user",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/user.sEmailLoginParameter"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/user.loginResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/common.BaseResponse"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/common.BaseResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/user/login/username": {
+            "post": {
+                "produces": [
+                    "application/json"
+                ],
+                "summary": "使用用户名登陆",
+                "parameters": [
+                    {
+                        "description": "参数",
+                        "name": "user",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/user.loginWithUsernameParameter"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/user.loginResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/common.BaseResponse"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/common.BaseResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/user/profile": {
+            "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "summary": "获取登录用户信息",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/user_profile.getProfileResponse"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/common.BaseResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/user/profile/update": {
+            "put": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "summary": "更新用户信息",
+                "parameters": [
+                    {
+                        "description": "参数",
+                        "name": "userProfile",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/user_profile.updateProfileParameter"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/user_profile.updateProfileResponse"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/common.BaseResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/user/profile/update/avatar": {
+            "put": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "summary": "更新头像 (文件传输 go-swagger 无法胜任，请使用 postman 等工具)",
+                "parameters": [
+                    {
+                        "type": "file",
+                        "description": "头像图片",
+                        "name": "file",
+                        "in": "formData",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/user_profile.updateAvatarResponse"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/common.BaseResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/user/profile/{username}": {
+            "get": {
+                "produces": [
+                    "application/json"
+                ],
+                "summary": "获取用户信息",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "用户名",
+                        "name": "username",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/user_profile.getProfileResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/user/register": {
             "post": {
                 "produces": [
                     "application/json"
@@ -101,28 +300,12 @@ var doc = `{
                 "summary": "注册",
                 "parameters": [
                     {
-                        "description": "唯一的用户名，类似推特中 @ 后面的以及微信号",
-                        "name": "username",
-                        "in": "body",
-                        "schema": {
-                            "type": "string"
-                        }
-                    },
-                    {
-                        "description": "密码",
-                        "name": "password",
+                        "description": "参数",
+                        "name": "user",
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "type": "string"
-                        }
-                    },
-                    {
-                        "description": "邮箱地址",
-                        "name": "email",
-                        "in": "body",
-                        "schema": {
-                            "type": "string"
+                            "$ref": "#/definitions/user.registerParameter"
                         }
                     }
                 ],
@@ -136,7 +319,51 @@ var doc = `{
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/base.Response"
+                            "$ref": "#/definitions/common.BaseResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/user/register/sensitive/email": {
+            "post": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "summary": "敏感注册，用于生成验证码等, 需要事先登录",
+                "parameters": [
+                    {
+                        "description": "参数",
+                        "name": "user",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/user.sEmailRegisterParameter"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/user.loginResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/common.BaseResponse"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/common.BaseResponse"
                         }
                     }
                 }
@@ -144,13 +371,30 @@ var doc = `{
         }
     },
     "definitions": {
-        "base.Response": {
+        "common.BaseResponse": {
             "type": "object",
             "properties": {
                 "code": {
                     "type": "integer"
                 },
                 "message": {
+                    "type": "string"
+                }
+            }
+        },
+        "models.UserProfile": {
+            "type": "object",
+            "properties": {
+                "avatar_file_key": {
+                    "type": "string"
+                },
+                "nickname": {
+                    "type": "string"
+                },
+                "uid": {
+                    "type": "string"
+                },
+                "username": {
                     "type": "string"
                 }
             }
@@ -163,6 +407,82 @@ var doc = `{
                 },
                 "message": {
                     "type": "string"
+                },
+                "token": {
+                    "type": "string"
+                }
+            }
+        },
+        "user.loginWithEmailParameter": {
+            "type": "object",
+            "required": [
+                "email",
+                "password"
+            ],
+            "properties": {
+                "device_name": {
+                    "description": "登录的设备的名字，浏览器为 “浏览器(ip所在的城市)”",
+                    "type": "string",
+                    "example": "bob的iPhone"
+                },
+                "email": {
+                    "description": "邮箱",
+                    "type": "string",
+                    "example": "haha@test.com"
+                },
+                "password": {
+                    "description": "密码",
+                    "type": "string",
+                    "example": "qwerty123"
+                }
+            }
+        },
+        "user.loginWithUsernameParameter": {
+            "type": "object",
+            "required": [
+                "password",
+                "username"
+            ],
+            "properties": {
+                "device_name": {
+                    "description": "登录的设备的名字，浏览器为 “浏览器(ip所在的城市)”",
+                    "type": "string",
+                    "example": "bob的iPhone"
+                },
+                "password": {
+                    "description": "密码",
+                    "type": "string",
+                    "example": "qwerty123"
+                },
+                "username": {
+                    "description": "用户名",
+                    "type": "string",
+                    "example": "bob"
+                }
+            }
+        },
+        "user.registerParameter": {
+            "type": "object",
+            "required": [
+                "email",
+                "password",
+                "username"
+            ],
+            "properties": {
+                "email": {
+                    "description": "邮箱",
+                    "type": "string",
+                    "example": "haha@test.com"
+                },
+                "password": {
+                    "description": "密码",
+                    "type": "string",
+                    "example": "qwerty123"
+                },
+                "username": {
+                    "description": "用户名",
+                    "type": "string",
+                    "example": "bob"
                 }
             }
         },
@@ -176,6 +496,106 @@ var doc = `{
                     "type": "string"
                 }
             }
+        },
+        "user.sEmailLoginParameter": {
+            "type": "object",
+            "required": [
+                "email",
+                "verificationCode"
+            ],
+            "properties": {
+                "device_name": {
+                    "description": "登录的设备的名字，浏览器为 “浏览器(ip所在的城市)”",
+                    "type": "string",
+                    "example": "bob的iPhone"
+                },
+                "email": {
+                    "description": "邮箱",
+                    "type": "string",
+                    "example": "haha@test.com"
+                },
+                "verificationCode": {
+                    "description": "验证码",
+                    "type": "string",
+                    "example": "623597"
+                }
+            }
+        },
+        "user.sEmailRegisterParameter": {
+            "type": "object",
+            "required": [
+                "email"
+            ],
+            "properties": {
+                "device_name": {
+                    "description": "登录的设备的名字，浏览器为 “浏览器(ip所在的城市)”",
+                    "type": "string",
+                    "example": "bob的iPhone"
+                },
+                "email": {
+                    "description": "邮箱",
+                    "type": "string",
+                    "example": "haha@test.com"
+                }
+            }
+        },
+        "user_profile.getProfileResponse": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "type": "integer"
+                },
+                "message": {
+                    "type": "string"
+                },
+                "profile": {
+                    "type": "object",
+                    "$ref": "#/definitions/models.UserProfile"
+                }
+            }
+        },
+        "user_profile.updateAvatarResponse": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "type": "integer"
+                },
+                "message": {
+                    "type": "string"
+                }
+            }
+        },
+        "user_profile.updateProfileParameter": {
+            "type": "object",
+            "properties": {
+                "nickname": {
+                    "description": "昵称",
+                    "type": "string",
+                    "example": "jc😄taoo"
+                }
+            }
+        },
+        "user_profile.updateProfileResponse": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "type": "integer"
+                },
+                "message": {
+                    "type": "string"
+                },
+                "nickname": {
+                    "description": "更改后的昵称",
+                    "type": "string"
+                }
+            }
+        }
+    },
+    "securityDefinitions": {
+        "ApiKeyAuth": {
+            "type": "apiKey",
+            "name": "Authorization",
+            "in": "header"
         }
     }
 }`

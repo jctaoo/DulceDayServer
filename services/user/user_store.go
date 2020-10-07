@@ -6,6 +6,7 @@ import (
 	"context"
 	"github.com/go-redis/redis/v8"
 	"gorm.io/gorm"
+	"strings"
 )
 
 type Store interface {
@@ -17,6 +18,10 @@ type Store interface {
 	findUserByIdentifier(identifier string) *models.User
 	findUserByEmail(email string) *models.User
 	checkUserExisting(user *models.User) bool
+
+	saveVerificationCode(key string, value string, tokenStr string)
+	getVerificationCode(key string) (verificationCode string, tokenStr string)
+	removeVerificationCode(key string)
 }
 
 type StoreImpl struct {
@@ -35,10 +40,7 @@ func (u StoreImpl) newUser(user *models.User) *models.User {
 
 func (u StoreImpl) checkUserInBlackList(userId string) bool {
 	userIdBlackListName := config.SiteConfig.CacheConfig.BlackListName
-	val, err := u.rdb.ZScore(context.Background(), userIdBlackListName, userId).Result()
-	if err != nil {
-		// todo log
-	}
+	val := u.rdb.ZScore(context.Background(), userIdBlackListName, userId).Val()
 	if val == kUserIdBlackListScore {
 		return true
 	}
@@ -47,23 +49,17 @@ func (u StoreImpl) checkUserInBlackList(userId string) bool {
 
 func (u StoreImpl) addUserInBlackList(user *models.User) {
 	userIdBlackListName := config.SiteConfig.CacheConfig.BlackListName
-	_, err := u.rdb.ZAdd(context.Background(), userIdBlackListName, &redis.Z{Member: user.Identifier, Score: kUserIdBlackListScore}).Result()
-	if err != nil {
-		// todo log
-	}
+	u.rdb.ZAdd(context.Background(), userIdBlackListName, &redis.Z{Member: user.Identifier, Score: kUserIdBlackListScore})
 }
 
 func (u StoreImpl) removeUserFromBlackList(user *models.User) {
 	userIdBlackListName := config.SiteConfig.CacheConfig.BlackListName
-	_, err := u.rdb.ZRem(context.Background(), userIdBlackListName, user.Identifier).Result()
-	if err != nil {
-		// todo log
-	}
+	u.rdb.ZRem(context.Background(), userIdBlackListName, user.Identifier)
 }
 
 func (u StoreImpl) findUserByUserName(username string) *models.User {
 	user := &models.User{}
-	u.db.Where("username = ?", username).First(user)
+	u.db.Where("Username = ?", username).First(user)
 	return user
 }
 
@@ -85,6 +81,29 @@ func (u StoreImpl) checkUserExisting(user *models.User) bool {
 	if !user.Validate() {
 		return false
 	}
-	rows := u.db.Where(user).Find(&resUsers).RowsAffected
+	rows := u.db.Where("Username = ? OR email = ?", user.Username, user.Email).Find(&resUsers).RowsAffected
 	return rows > 0
 }
+
+func (u StoreImpl) saveVerificationCode(key string, value string, tokenStr string) {
+	verificationCodeListName := config.SiteConfig.CacheConfig.VerificationCodeListName
+	u.rdb.HSet(context.Background(), verificationCodeListName, map[string]interface{}{key: value + ":" + tokenStr})
+}
+
+func (u StoreImpl) getVerificationCode(key string) (verificationCode string, tokenStr string) {
+	verificationCodeListName := config.SiteConfig.CacheConfig.VerificationCodeListName
+	codeAndToken := u.rdb.HGet(context.Background(), verificationCodeListName, key).Val()
+	if codeAndToken == "" {
+		return "", ""
+	}
+	splitCodeAndToken := strings.Split(codeAndToken, ":")
+	verificationCode = splitCodeAndToken[0]
+	tokenStr = splitCodeAndToken[1]
+	return
+}
+
+func (u StoreImpl) removeVerificationCode(key string) {
+	verificationCodeListName := config.SiteConfig.CacheConfig.VerificationCodeListName
+	u.rdb.HDel(context.Background(), verificationCodeListName, key)
+}
+

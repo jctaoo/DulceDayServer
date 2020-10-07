@@ -6,9 +6,13 @@
 package main
 
 import (
+	static_storage2 "DulceDayServer/api/static_storage"
 	"DulceDayServer/api/user"
+	"DulceDayServer/api/user_profile"
 	"DulceDayServer/database"
+	"DulceDayServer/services/static_storage"
 	user2 "DulceDayServer/services/user"
+	user_profile2 "DulceDayServer/services/user_profile"
 	"github.com/google/wire"
 )
 
@@ -31,6 +35,53 @@ func UserEndpoints() user.Endpoints {
 	return endpointsImpl
 }
 
+func UserProfileEndpoints() user_profile.Endpoints {
+	db := database.NewDB()
+	client := database.NewCache()
+	userProfileStoreImpl := user_profile2.NewUserProfileStoreImpl(db, client)
+	serviceImpl := user_profile2.NewUserProfileServiceImpl(userProfileStoreImpl)
+	encryptionAdaptorImpl := user2.NewEncryptionAdaptorImpl()
+	tokenStoreImpl := user2.NewTokenStoreImpl(db, client)
+	tokenAdaptorImpl := user2.NewTokenAdaptorImpl()
+	tokenGranterImpl := user2.NewTokenGranterImpl(tokenStoreImpl, tokenAdaptorImpl)
+	storeImpl := user2.NewStoreImpl(db, client)
+	userServiceImpl := user2.NewServiceImpl(encryptionAdaptorImpl, tokenGranterImpl, storeImpl)
+	bucket := database.NewAliOSS()
+	aliOSSStaticStorageService := static_storage.NewAliOSSStaticStorageService(bucket)
+	endpointsImpl := user_profile.NewEndpointsImpl(serviceImpl, userServiceImpl, aliOSSStaticStorageService)
+	return endpointsImpl
+}
+
+func StaticStorageEndpoints() static_storage2.Endpoints {
+	bucket := database.NewAliOSS()
+	aliOSSStaticStorageService := static_storage.NewAliOSSStaticStorageService(bucket)
+	endpointsImpl := static_storage2.NewEndpointsImpl(aliOSSStaticStorageService)
+	return endpointsImpl
+}
+
 // wire.go:
 
-var userEndpointsSet = wire.NewSet(database.NewCache, database.NewDB, user2.NewServiceImpl, wire.Bind(new(user2.Service), new(*user2.ServiceImpl)), user2.NewEncryptionAdaptorImpl, wire.Bind(new(user2.EncryptionAdaptor), new(*user2.EncryptionAdaptorImpl)), user2.NewTokenGranterImpl, wire.Bind(new(user2.TokenGranter), new(*user2.TokenGranterImpl)), user2.NewStoreImpl, wire.Bind(new(user2.Store), new(*user2.StoreImpl)), user2.NewTokenStoreImpl, wire.Bind(new(user2.TokenStore), new(*user2.TokenStoreImpl)), user2.NewTokenAdaptorImpl, wire.Bind(new(user2.TokenAdaptor), new(*user2.TokenAdaptorImpl)))
+var universalSet = wire.NewSet(database.NewCache, database.NewDB, database.NewAliOSS)
+
+var aliossStaticStorageServiceSet = wire.NewSet(static_storage.NewAliOSSStaticStorageService, wire.Bind(new(static_storage.Service), new(*static_storage.AliOSSStaticStorageService)))
+
+var userServiceSet = wire.NewSet(user2.NewServiceImpl, wire.Bind(new(user2.Service), new(*user2.ServiceImpl)), user2.NewEncryptionAdaptorImpl, wire.Bind(new(user2.EncryptionAdaptor), new(*user2.EncryptionAdaptorImpl)), user2.NewTokenGranterImpl, wire.Bind(new(user2.TokenGranter), new(*user2.TokenGranterImpl)), user2.NewStoreImpl, wire.Bind(new(user2.Store), new(*user2.StoreImpl)), user2.NewTokenStoreImpl, wire.Bind(new(user2.TokenStore), new(*user2.TokenStoreImpl)), user2.NewTokenAdaptorImpl, wire.Bind(new(user2.TokenAdaptor), new(*user2.TokenAdaptorImpl)))
+
+var userProfileServiceSet = wire.NewSet(user_profile2.NewUserProfileServiceImpl, wire.Bind(new(user_profile2.Service), new(*user_profile2.ServiceImpl)), user_profile2.NewUserProfileStoreImpl, wire.Bind(new(user_profile2.UserProfileStore), new(*user_profile2.UserProfileStoreImpl)))
+
+var userEndpointsSet = wire.NewSet(
+	universalSet,
+	userServiceSet,
+)
+
+var userProfileEndpointsSet = wire.NewSet(
+	universalSet,
+	userServiceSet,
+	userProfileServiceSet,
+	aliossStaticStorageServiceSet,
+)
+
+var staticStorageEndpointsSet = wire.NewSet(
+	universalSet,
+	aliossStaticStorageServiceSet,
+)

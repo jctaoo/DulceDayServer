@@ -1,6 +1,6 @@
-package base
+package common
 
-type Response struct {
+type BaseResponse struct {
 	Code int `json:"code"`
 	Message string `json:"message"`
 }

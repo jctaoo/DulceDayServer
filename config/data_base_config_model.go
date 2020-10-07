@@ -2,6 +2,15 @@ package config
 
 import "fmt"
 
+// 静态文件存储配置 (alioss, aws s3 等) 这里是 AliOSS
+type AliOssStaticStorageConfig struct {
+	Endpoint string
+	AccessKeyId string
+	AccessKeySecret string
+	BucketName string
+	ResourceExpiresSec int
+}
+
 // 持久化数据库配置
 type DataBaseConfig struct {
 	Host string
@@ -27,6 +36,8 @@ type CacheConfig struct {
 	IPBlackListName,
 	// 未激活 Token 列表名字
 	InActiveTokenListName string
+	// 验证码列表名字
+	VerificationCodeListName string
 }
 
 // like `user=gorm password=gorm dbname=gorm port=9920`

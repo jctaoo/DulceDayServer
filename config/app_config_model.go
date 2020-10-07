@@ -17,6 +17,8 @@ type Config struct {
 	CacheConfig CacheConfig
 	// 默认设备名
 	DefaultDeviceName string
+	// 头像大小限制
+	AvatarSizeMB int
 	// 静态存储配置
 	AliOssStaticStorageConfig AliOssStaticStorageConfig
 }

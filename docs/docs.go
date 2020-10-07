@@ -231,6 +231,42 @@ var doc = `{
                 }
             }
         },
+        "/user/profile/update/avatar": {
+            "put": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "summary": "更新头像 (文件传输 go-swagger 无法胜任，请使用 postman 等工具)",
+                "parameters": [
+                    {
+                        "type": "file",
+                        "description": "头像图片",
+                        "name": "file",
+                        "in": "formData",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/user_profile.updateAvatarResponse"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/common.BaseResponse"
+                        }
+                    }
+                }
+            }
+        },
         "/user/profile/{username}": {
             "get": {
                 "produces": [
@@ -349,6 +385,9 @@ var doc = `{
         "models.UserProfile": {
             "type": "object",
             "properties": {
+                "avatar_file_key": {
+                    "type": "string"
+                },
                 "nickname": {
                     "type": "string"
                 },
@@ -512,6 +551,17 @@ var doc = `{
                 "profile": {
                     "type": "object",
                     "$ref": "#/definitions/models.UserProfile"
+                }
+            }
+        },
+        "user_profile.updateAvatarResponse": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "type": "integer"
+                },
+                "message": {
+                    "type": "string"
                 }
             }
         },

@@ -9,6 +9,8 @@ definitions:
     type: object
   models.UserProfile:
     properties:
+      avatar_file_key:
+        type: string
       nickname:
         type: string
       uid:
@@ -127,6 +129,13 @@ definitions:
       profile:
         $ref: '#/definitions/models.UserProfile'
         type: object
+    type: object
+  user_profile.updateAvatarResponse:
+    properties:
+      code:
+        type: integer
+      message:
+        type: string
     type: object
   user_profile.updateProfileParameter:
     properties:
@@ -298,6 +307,28 @@ paths:
       security:
       - ApiKeyAuth: []
       summary: 更新用户信息
+  /user/profile/update/avatar:
+    put:
+      parameters:
+      - description: 头像图片
+        in: formData
+        name: file
+        required: true
+        type: file
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/user_profile.updateAvatarResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/common.BaseResponse'
+      security:
+      - ApiKeyAuth: []
+      summary: 更新头像 (文件传输 go-swagger 无法胜任，请使用 postman 等工具)
   /user/register:
     post:
       parameters:

@@ -22,6 +22,7 @@ func MiddleWareAuth(service serviceUser.Service) gin.HandlerFunc {
 				Code: 40001,
 				Message: "未登录",
 			})
+			context.Abort()
 			return
 		}
 
@@ -36,6 +37,7 @@ func MiddleWareAuth(service serviceUser.Service) gin.HandlerFunc {
 				Code: 40001,
 				Message: "未登录",
 			})
+			context.Abort()
 			return
 		}
 		if isValidate {
@@ -54,6 +56,7 @@ func MiddleWareAuth(service serviceUser.Service) gin.HandlerFunc {
 				Code: 40001,
 				Message: "未登录",
 			})
+			context.Abort()
 			return
 		}
 	}

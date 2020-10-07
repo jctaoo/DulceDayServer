@@ -22,6 +22,7 @@ type appConfig struct {
 	VerificationTokenExpiresTime int64
 	AuthTokenSecret string
 	DefaultDeviceName string
+	AvatarSizeMB int
 }
 
 type dataBaseConfig struct {
@@ -77,6 +78,7 @@ func ReadConfigOrExit(tomlPath string, isProduction bool) {
 		SiteConfig.AuthTokenExpiresTime = config.AppConfigs["production"].AuthTokenExpiresTime
 		SiteConfig.VerificationTokenExpiresTime = config.AppConfigs["production"].VerificationTokenExpiresTime
 		SiteConfig.DefaultDeviceName = config.AppConfigs["production"].DefaultDeviceName
+		SiteConfig.AvatarSizeMB = config.AppConfigs["production"].AvatarSizeMB
 		SiteConfig.DataBaseConfig.Host = config.DataBaseConfigs["production"].Host
 		SiteConfig.DataBaseConfig.Port = config.DataBaseConfigs["production"].Port
 		SiteConfig.DataBaseConfig.Collection = config.DataBaseConfigs["production"].Collection
@@ -103,6 +105,7 @@ func ReadConfigOrExit(tomlPath string, isProduction bool) {
 		SiteConfig.AuthTokenExpiresTime = config.AppConfigs["development"].AuthTokenExpiresTime
 		SiteConfig.VerificationTokenExpiresTime = config.AppConfigs["development"].VerificationTokenExpiresTime
 		SiteConfig.DefaultDeviceName = config.AppConfigs["development"].DefaultDeviceName
+		SiteConfig.AvatarSizeMB = config.AppConfigs["development"].AvatarSizeMB
 		SiteConfig.DataBaseConfig.Host = config.DataBaseConfigs["development"].Host
 		SiteConfig.DataBaseConfig.Port = config.DataBaseConfigs["development"].Port
 		SiteConfig.DataBaseConfig.Collection = config.DataBaseConfigs["development"].Collection

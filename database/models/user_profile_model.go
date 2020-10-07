@@ -8,6 +8,7 @@ type UserProfile struct {
 	Uid string `json:"uid"`
 	Username string `json:"username"`
 	Nickname string `json:"nickname"`
+	AvatarFileKey string `json:"avatar_file_key"`
 }
 
 func (u UserProfile) IsEmpty() bool {

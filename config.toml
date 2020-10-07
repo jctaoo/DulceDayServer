@@ -6,6 +6,7 @@
     AuthTokenSecret = "qweasd123"
     AppAddress = "8080"
 	DefaultDeviceName = "Known"
+    AvatarSizeMB = 2
 
     [appConfigs.production]
     AppName = "DulceDayServer"
@@ -14,6 +15,7 @@
     AuthTokenSecret = "qweasd123"
     AppAddress = "7001"
 	DefaultDeviceName = "Known"
+    AvatarSizeMB = 2
 
 
 [dataBaseConfigs]

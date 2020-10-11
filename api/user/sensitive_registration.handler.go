@@ -26,13 +26,18 @@ type sRegisterResponse struct {
 // @Router /user/register/sensitive/email [post]
 func (e *EndpointsImpl) registerForSensitiveWithEmail(context *gin.Context) {
 	parameter := sEmailRegisterParameter{}
-	username := helpers.AuthUsername(context)
+	authDetail := helpers.GetAuthDetail(context)
 	if err := context.ShouldBindJSON(&parameter); err == nil {
 		ip := context.ClientIP()
-		verificationCode, err := e.service.PrepareForAuthForSensitiveVerification(username, parameter.Email, ip, parameter.DeviceName)
+		verificationCode, err := e.service.PrepareForAuthForSensitiveVerification(
+			authDetail.Username,
+			parameter.Email,
+			ip,
+			parameter.DeviceName,
+		)
 		if err != nil {
 			common.HttpLogger(context, err, gin.H{
-				"username": username,
+				"username": authDetail.Username,
 				"email": parameter.Email,
 				"deviceName": parameter.DeviceName,
 			}).Info("使用邮箱敏感注册时发生鉴权错误")
@@ -44,7 +49,7 @@ func (e *EndpointsImpl) registerForSensitiveWithEmail(context *gin.Context) {
 			})
 		} else {
 			common.HttpLogger(context, nil, gin.H{
-				"username": username,
+				"username": authDetail.Username,
 				"email": parameter.Email,
 				"deviceName": parameter.DeviceName,
 			}).Debugf("用户使用邮箱敏感注册， 邮箱为: %s, 验证码为: %s", parameter.Email, verificationCode)

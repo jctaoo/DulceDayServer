@@ -73,6 +73,7 @@ func main() {
 		UserEndpoints: UserEndpoints(),
 		UserProfileEndpoints: UserProfileEndpoints(),
 		StaticStorageEndpoints: StaticStorageEndpoints(),
+		MomentEndpoints: MomentEndpoints(),
 	}.RouteGroups(v1)
 
 	// api 文档配置

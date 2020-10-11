@@ -29,11 +29,23 @@ func NewEndpointsImpl(service user_profile.Service, userService serviceUser.Serv
 
 func (e EndpointsImpl) MapHandlersToRoutes(router *gin.RouterGroup) *gin.RouterGroup {
 	userGroup := router.Group("/user/profile")
-	userGroup.GET("/:username", e.getProfile)
+	userGroup.GET("/:Username", e.getProfile)
 
-	userGroup.GET("/", common.MiddleWareAuth(e.userService), e.getSelfProfile)
-	userGroup.PUT("/update", common.MiddleWareAuth(e.userService), e.updateProfile)
-	userGroup.PUT("/update/avatar", common.MiddleWareAuth(e.userService), e.updateAvatar)
+	userGroup.GET(
+		"/",
+		common.MiddleWareAuth(e.userService, common.MiddleWareAuthPolicyReject),
+		e.getSelfProfile,
+	)
+	userGroup.PUT(
+		"/update",
+		common.MiddleWareAuth(e.userService, common.MiddleWareAuthPolicyReject),
+		e.updateProfile,
+	)
+	userGroup.PUT(
+		"/update/avatar",
+		common.MiddleWareAuth(e.userService, common.MiddleWareAuthPolicyReject),
+		e.updateAvatar,
+	)
 
 	return userGroup
 }

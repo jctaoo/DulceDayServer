@@ -3,6 +3,7 @@
 package main
 
 import (
+	"DulceDayServer/api/moment"
 	"DulceDayServer/api/user"
 	"DulceDayServer/api/user_profile"
 	"DulceDayServer/database"
@@ -10,6 +11,7 @@ import (
 	apiStaticStorage "DulceDayServer/api/static_storage"
 	serviceUser "DulceDayServer/services/user"
 	serviceUserProfile "DulceDayServer/services/user_profile"
+	serviceMoment "DulceDayServer/services/moment"
 	"github.com/google/wire"
 )
 
@@ -91,6 +93,31 @@ func StaticStorageEndpoints() apiStaticStorage.Endpoints {
 			apiStaticStorage.NewEndpointsImpl,
 			staticStorageEndpointsSet,
 			wire.Bind(new(apiStaticStorage.Endpoints), new(*apiStaticStorage.EndpointsImpl)),
+		),
+	)
+}
+
+var momentServiceSet = wire.NewSet(
+	serviceMoment.NewServiceImpl,
+	wire.Bind(new(serviceMoment.Service), new(*serviceMoment.ServiceImpl)),
+
+	serviceMoment.NewStoreImpl,
+	wire.Bind(new(serviceMoment.Store), new(*serviceMoment.StoreImpl)),
+)
+
+var momentEndpointsSet = wire.NewSet(
+	universalSet,
+	userServiceSet,
+	momentServiceSet,
+	aliossStaticStorageServiceSet,
+)
+
+func MomentEndpoints() moment.Endpoints {
+	panic(
+		wire.Build(
+			moment.NewEndpointsImpl,
+			momentEndpointsSet,
+			wire.Bind(new(moment.Endpoints), new(*moment.EndpointsImpl)),
 		),
 	)
 }

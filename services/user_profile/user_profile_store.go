@@ -44,13 +44,15 @@ func (u UserProfileStoreImpl) findUserProfileByUserIdentifier(userIdentifier str
 }
 
 func (u UserProfileStoreImpl) findFullUserByUserIdentifier(userIdentifier string) *FullUser {
-	fullUser := FullUser{}
+	fullUser := FullUser{
+		UserProfile: &models.UserProfile{},
+	}
 	query := u.db.Table("user_profiles")
 	query = query.Select("user_profiles.uid, user_profiles.nickname, users.username, " +
 		"users.identifier as user_identifier, user_profiles.avatar_file_key")
 	query = query.Joins("LEFT OUTER JOIN users ON user_profiles.user_identifier = " +
 		"users.identifier")
-	query = query.Where("user_profiles.user_identifier = ?", userIdentifier)
+	query = query.Where("users.identifier = ?", userIdentifier)
 	query = query.Group("user_profiles.id").Group("users.id")
 	query.Scan(&fullUser)
 	return &fullUser

@@ -70,8 +70,8 @@ func (e *EndpointsImpl) updateAvatar(context *gin.Context) {
 	}
 
 	// 存放头像路径到持久化数据库中
-	username := helpers.AuthUsername(context)
-	e.service.UpdateProfile(username, &models.UserProfile{
+	authDetail := helpers.GetAuthDetail(context)
+	e.service.UpdateProfileByUserIdentifier(authDetail.UserIdentifier, &models.UserProfile{
 		AvatarFileKey: avatarKey,
 	})
 

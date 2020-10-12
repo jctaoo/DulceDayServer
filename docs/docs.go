@@ -30,6 +30,167 @@ var doc = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
+        "/moment/create": {
+            "post": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "summary": "创建动态",
+                "parameters": [
+                    {
+                        "description": "参数",
+                        "name": "newMoment",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/moment.createMomentParameter"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/moment.createMomentResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/common.BaseResponse"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/common.BaseResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/moment/get/{MomentID}": {
+            "get": {
+                "produces": [
+                    "application/json"
+                ],
+                "summary": "获取某个动态的详细信息",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "MomentID",
+                        "name": "MomentID",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/moment.getMomentResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/common.BaseResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/moment/recommend": {
+            "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "summary": "获取推荐的动态, 精准推送",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/moment.requestRecommendMomentsResponse"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/common.BaseResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/moment/recommend/hot": {
+            "get": {
+                "produces": [
+                    "application/json"
+                ],
+                "summary": "为路人获取推荐的动态",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/moment.requestRecommendMomentsResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/common.BaseResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/moment/toggle_star/{MomentID}": {
+            "put": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "produces": [
+                    "application/json",
+                    "application/json"
+                ],
+                "summary": "更改点赞👍",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "MomentID",
+                        "name": "MomentID",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/moment.toggleMomentStarResponse"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/common.BaseResponse"
+                        }
+                    }
+                }
+            }
+        },
         "/static/{key}": {
             "get": {
                 "summary": "获取静态资源",
@@ -382,19 +543,103 @@ var doc = `{
                 }
             }
         },
-        "models.UserProfile": {
+        "moment.FullMoment": {
             "type": "object",
             "properties": {
                 "avatar_file_key": {
                     "type": "string"
                 },
+                "content": {
+                    "type": "string"
+                },
+                "moment_id": {
+                    "type": "string"
+                },
                 "nickname": {
                     "type": "string"
+                },
+                "star_count": {
+                    "type": "integer"
+                },
+                "stared": {
+                    "type": "boolean"
                 },
                 "uid": {
                     "type": "string"
                 },
                 "username": {
+                    "type": "string"
+                }
+            }
+        },
+        "moment.createMomentParameter": {
+            "type": "object",
+            "required": [
+                "content"
+            ],
+            "properties": {
+                "content": {
+                    "type": "string",
+                    "example": "是第一条动态呀"
+                }
+            }
+        },
+        "moment.createMomentResponse": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "type": "integer"
+                },
+                "message": {
+                    "type": "string"
+                },
+                "moment_id": {
+                    "type": "string"
+                }
+            }
+        },
+        "moment.getMomentResponse": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "type": "integer"
+                },
+                "message": {
+                    "type": "string"
+                },
+                "moment": {
+                    "type": "object",
+                    "$ref": "#/definitions/moment.FullMoment"
+                }
+            }
+        },
+        "moment.requestRecommendMomentsResponse": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "type": "integer"
+                },
+                "message": {
+                    "type": "string"
+                },
+                "moments": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/moment.FullMoment"
+                    }
+                }
+            }
+        },
+        "moment.toggleMomentStarResponse": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "type": "integer"
+                },
+                "is_star_now": {
+                    "type": "boolean"
+                },
+                "message": {
                     "type": "string"
                 }
             }
@@ -539,18 +784,35 @@ var doc = `{
                 }
             }
         },
+        "user_profile.FullUser": {
+            "type": "object",
+            "properties": {
+                "avatar_file_key": {
+                    "type": "string"
+                },
+                "nickname": {
+                    "type": "string"
+                },
+                "uid": {
+                    "type": "string"
+                },
+                "username": {
+                    "type": "string"
+                }
+            }
+        },
         "user_profile.getProfileResponse": {
             "type": "object",
             "properties": {
                 "code": {
                     "type": "integer"
                 },
+                "data": {
+                    "type": "object",
+                    "$ref": "#/definitions/user_profile.FullUser"
+                },
                 "message": {
                     "type": "string"
-                },
-                "profile": {
-                    "type": "object",
-                    "$ref": "#/definitions/models.UserProfile"
                 }
             }
         },

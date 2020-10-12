@@ -28,7 +28,7 @@ type sLoginResponse struct {
 // @Router /user/login/sensitive/email [post]
 func (e *EndpointsImpl) loginForSensitiveWithEmail(context *gin.Context) {
 	parameter := sEmailLoginParameter{}
-	username := helpers.AuthUsername(context)
+	authDetail := helpers.GetAuthDetail(context)
 	if err := context.ShouldBindJSON(&parameter); err == nil {
 		ip := context.ClientIP()
 		deviceName := parameter.DeviceName
@@ -37,7 +37,7 @@ func (e *EndpointsImpl) loginForSensitiveWithEmail(context *gin.Context) {
 			common.HttpLogger(context, err, gin.H{
 				"verificationCode": parameter.VerificationCode,
 				"email": parameter.Email,
-				"username": username,
+				"username": authDetail.Username,
 				"deviceName": deviceName,
 			}).Info("用户使用邮箱进行敏感登陆验证时发生鉴权错误")
 			context.JSON(http.StatusUnauthorized, sLoginResponse{

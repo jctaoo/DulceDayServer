@@ -26,12 +26,12 @@ type updateProfileResponse struct {
 // @Router /user/profile/update [put]
 func (e *EndpointsImpl) updateProfile(context *gin.Context) {
 	var parameter updateProfileParameter
-	username := helpers.AuthUsername(context)
+	authDetail := helpers.GetAuthDetail(context)
 	if err := context.ShouldBindJSON(&parameter); err == nil {
 		newProfile := &models.UserProfile{
 			Nickname: parameter.Nickname,
 		}
-		e.service.UpdateProfile(username, newProfile)
+		e.service.UpdateProfileByUserIdentifier(authDetail.UserIdentifier, newProfile)
 		context.JSON(http.StatusOK, updateProfileResponse{
 			BaseResponse: common.BaseResponse{
 				Code: 2000,

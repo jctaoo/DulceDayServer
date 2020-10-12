@@ -6,10 +6,12 @@
 package main
 
 import (
+	"DulceDayServer/api/moment"
 	static_storage2 "DulceDayServer/api/static_storage"
 	"DulceDayServer/api/user"
 	"DulceDayServer/api/user_profile"
 	"DulceDayServer/database"
+	moment2 "DulceDayServer/services/moment"
 	"DulceDayServer/services/static_storage"
 	user2 "DulceDayServer/services/user"
 	user_profile2 "DulceDayServer/services/user_profile"
@@ -59,6 +61,23 @@ func StaticStorageEndpoints() static_storage2.Endpoints {
 	return endpointsImpl
 }
 
+func MomentEndpoints() moment.Endpoints {
+	db := database.NewDB()
+	client := database.NewCache()
+	storeImpl := moment2.NewStoreImpl(db, client)
+	serviceImpl := moment2.NewServiceImpl(storeImpl)
+	encryptionAdaptorImpl := user2.NewEncryptionAdaptorImpl()
+	tokenStoreImpl := user2.NewTokenStoreImpl(db, client)
+	tokenAdaptorImpl := user2.NewTokenAdaptorImpl()
+	tokenGranterImpl := user2.NewTokenGranterImpl(tokenStoreImpl, tokenAdaptorImpl)
+	userStoreImpl := user2.NewStoreImpl(db, client)
+	userServiceImpl := user2.NewServiceImpl(encryptionAdaptorImpl, tokenGranterImpl, userStoreImpl)
+	bucket := database.NewAliOSS()
+	aliOSSStaticStorageService := static_storage.NewAliOSSStaticStorageService(bucket)
+	endpointsImpl := moment.NewEndpointsImpl(serviceImpl, userServiceImpl, aliOSSStaticStorageService)
+	return endpointsImpl
+}
+
 // wire.go:
 
 var universalSet = wire.NewSet(database.NewCache, database.NewDB, database.NewAliOSS)
@@ -83,5 +102,14 @@ var userProfileEndpointsSet = wire.NewSet(
 
 var staticStorageEndpointsSet = wire.NewSet(
 	universalSet,
+	aliossStaticStorageServiceSet,
+)
+
+var momentServiceSet = wire.NewSet(moment2.NewServiceImpl, wire.Bind(new(moment2.Service), new(*moment2.ServiceImpl)), moment2.NewStoreImpl, wire.Bind(new(moment2.Store), new(*moment2.StoreImpl)))
+
+var momentEndpointsSet = wire.NewSet(
+	universalSet,
+	userServiceSet,
+	momentServiceSet,
 	aliossStaticStorageServiceSet,
 )

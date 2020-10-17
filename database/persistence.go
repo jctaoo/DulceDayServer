@@ -31,6 +31,7 @@ func NewDB() *gorm.DB {
 			&models.UserProfile{},
 			&models.Moment{},
 			&models.MomentStarUser{},
+			&models.PurchaseItem{},
 		)
 
 		if err != nil {

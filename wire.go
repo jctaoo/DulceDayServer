@@ -4,6 +4,7 @@ package main
 
 import (
 	"DulceDayServer/api/moment"
+	"DulceDayServer/api/store"
 	"DulceDayServer/api/user"
 	"DulceDayServer/api/user_profile"
 	"DulceDayServer/database"
@@ -12,6 +13,7 @@ import (
 	serviceUser "DulceDayServer/services/user"
 	serviceUserProfile "DulceDayServer/services/user_profile"
 	serviceMoment "DulceDayServer/services/moment"
+	serviceStore "DulceDayServer/services/store"
 	"github.com/google/wire"
 )
 
@@ -118,6 +120,29 @@ func MomentEndpoints() moment.Endpoints {
 			moment.NewEndpointsImpl,
 			momentEndpointsSet,
 			wire.Bind(new(moment.Endpoints), new(*moment.EndpointsImpl)),
+		),
+	)
+}
+
+var storeServiceSet = wire.NewSet(
+	serviceStore.NewPurchasesProviderImpl,
+	wire.Bind(new(serviceStore.PurchasesProvider), new(*serviceStore.PurchasesProviderImpl)),
+
+	serviceStore.NewRepositoryImpl,
+	wire.Bind(new(serviceStore.Repository), new(*serviceStore.RepositoryImpl)),
+)
+
+var storeEndpointsSet = wire.NewSet(
+	universalSet,
+	storeServiceSet,
+)
+
+func StoreEndpoints() store.Endpoints {
+	panic(
+		wire.Build(
+			store.NewEndpointsImpl,
+			storeEndpointsSet,
+			wire.Bind(new(store.Endpoints), new(*store.EndpointsImpl)),
 		),
 	)
 }

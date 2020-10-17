@@ -1,3 +1,8 @@
+[appStoreConnect]
+apiKey = "S5FZB2J5J3"
+issId = "63e80dab-eafb-4837-aa56-88138fb3beab"
+appId = "1530675138"
+
 [appConfigs]
     [appConfigs.development]
     AppName = "DulceDayServer"

@@ -8,11 +8,13 @@ package main
 import (
 	"DulceDayServer/api/moment"
 	static_storage2 "DulceDayServer/api/static_storage"
+	"DulceDayServer/api/store"
 	"DulceDayServer/api/user"
 	"DulceDayServer/api/user_profile"
 	"DulceDayServer/database"
 	moment2 "DulceDayServer/services/moment"
 	"DulceDayServer/services/static_storage"
+	store2 "DulceDayServer/services/store"
 	user2 "DulceDayServer/services/user"
 	user_profile2 "DulceDayServer/services/user_profile"
 	"github.com/google/wire"
@@ -78,6 +80,15 @@ func MomentEndpoints() moment.Endpoints {
 	return endpointsImpl
 }
 
+func StoreEndpoints() store.Endpoints {
+	db := database.NewDB()
+	client := database.NewCache()
+	repositoryImpl := store2.NewRepositoryImpl(db, client)
+	purchasesProviderImpl := store2.NewPurchasesProviderImpl(repositoryImpl)
+	endpointsImpl := store.NewEndpointsImpl(purchasesProviderImpl)
+	return endpointsImpl
+}
+
 // wire.go:
 
 var universalSet = wire.NewSet(database.NewCache, database.NewDB, database.NewAliOSS)
@@ -112,4 +123,11 @@ var momentEndpointsSet = wire.NewSet(
 	userServiceSet,
 	momentServiceSet,
 	aliossStaticStorageServiceSet,
+)
+
+var storeServiceSet = wire.NewSet(store2.NewPurchasesProviderImpl, wire.Bind(new(store2.PurchasesProvider), new(*store2.PurchasesProviderImpl)), store2.NewRepositoryImpl, wire.Bind(new(store2.Repository), new(*store2.RepositoryImpl)))
+
+var storeEndpointsSet = wire.NewSet(
+	universalSet,
+	storeServiceSet,
 )

@@ -21,7 +21,7 @@ type getMomentResponse struct {
 // @Produce json
 // @Param MomentID path string true "MomentID"
 // @Success 200 {object} getMomentResponse 获取成功
-// @Failure 400 {object} common.BaseResponse 登陆失败, 信息不合规
+// @Failure 400 {object} common.BaseResponse 获取失败, 信息不合规
 // @Router /moment/get/{MomentID} [get]
 func (e EndpointsImpl) getMoment(context *gin.Context) {
 	pathParameter := &getMomentPathParameter{}

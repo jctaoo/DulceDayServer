@@ -52,7 +52,7 @@ func (t TokenAdaptorImpl) genericGenerateTokenStr(tokenAuth *models.TokenAuth, u
 		StandardClaims: jwt.StandardClaims{
 			ExpiresAt: expiresTime,               // 失效时间
 			IssuedAt:  time.Now().Unix(),         // 签发时间
-			Issuer:    config.SiteConfig.AppName, // 签发人
+			Issuer:    config.SiteConfig.AppName, // 签发人 // todo https://appstoreconnect.apple.com/access/api
 			NotBefore: time.Now().Unix(),         // 生效时间
 		},
 	}

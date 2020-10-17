@@ -205,6 +205,22 @@ var doc = `{
                 ]
             }
         },
+        "/store/purchases": {
+            "get": {
+                "produces": [
+                    "application/json"
+                ],
+                "summary": "获取所有内购商品",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/store.requestPurchasesResponse"
+                        }
+                    }
+                }
+            }
+        },
         "/user/login/email": {
             "post": {
                 "produces": [
@@ -449,6 +465,12 @@ var doc = `{
                         "schema": {
                             "$ref": "#/definitions/user_profile.getProfileResponse"
                         }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/common.BaseResponse"
+                        }
                     }
                 }
             }
@@ -539,6 +561,27 @@ var doc = `{
                     "type": "integer"
                 },
                 "message": {
+                    "type": "string"
+                }
+            }
+        },
+        "models.PurchaseItem": {
+            "type": "object",
+            "properties": {
+                "description": {
+                    "description": "描述",
+                    "type": "string"
+                },
+                "name": {
+                    "description": "商品名称",
+                    "type": "string"
+                },
+                "type": {
+                    "description": "商品类型，详见 PurchaseType",
+                    "type": "integer"
+                },
+                "usd_price": {
+                    "description": "价格（单位为美元）\n存放为字符串类型以保证精度",
                     "type": "string"
                 }
             }
@@ -641,6 +684,24 @@ var doc = `{
                 },
                 "message": {
                     "type": "string"
+                }
+            }
+        },
+        "store.requestPurchasesResponse": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "type": "integer"
+                },
+                "message": {
+                    "type": "string"
+                },
+                "purchases": {
+                    "description": "商品信息",
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/models.PurchaseItem"
+                    }
                 }
             }
         },

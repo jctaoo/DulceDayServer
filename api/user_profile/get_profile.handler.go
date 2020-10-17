@@ -56,6 +56,7 @@ type getProfilePathParameter struct {
 // @Produce json
 // @Param username path string true "用户名"
 // @Success 200 {object} getProfileResponse 获取成功
+// @Failure 400 {object} common.BaseResponse 获取失败, 信息不合规
 // @Router /user/profile/{username} [get]
 func (e *EndpointsImpl) getProfile(context *gin.Context) {
 	pathParam := getProfilePathParameter{}

@@ -7,6 +7,23 @@ definitions:
       message:
         type: string
     type: object
+  models.PurchaseItem:
+    properties:
+      description:
+        description: 描述
+        type: string
+      name:
+        description: 商品名称
+        type: string
+      type:
+        description: 商品类型，详见 PurchaseType
+        type: integer
+      usd_price:
+        description: |-
+          价格（单位为美元）
+          存放为字符串类型以保证精度
+        type: string
+    type: object
   moment.FullMoment:
     properties:
       avatar_file_key:
@@ -72,6 +89,18 @@ definitions:
         type: boolean
       message:
         type: string
+    type: object
+  store.requestPurchasesResponse:
+    properties:
+      code:
+        type: integer
+      message:
+        type: string
+      purchases:
+        description: 商品信息
+        items:
+          $ref: '#/definitions/models.PurchaseItem'
+        type: array
     type: object
   user.loginResponse:
     properties:
@@ -341,6 +370,16 @@ paths:
         required: true
         type: string
       summary: 获取静态资源
+  /store/purchases:
+    get:
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/store.requestPurchasesResponse'
+      summary: 获取所有内购商品
   /user/login/email:
     post:
       parameters:
@@ -449,6 +488,10 @@ paths:
           description: OK
           schema:
             $ref: '#/definitions/user_profile.getProfileResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/common.BaseResponse'
       summary: 获取用户信息
   /user/profile/update:
     put:

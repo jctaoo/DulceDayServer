@@ -1,11 +1,15 @@
 package user_profile
 
-import "DulceDayServer/database/models"
+import (
+	"DulceDayServer/database/models"
+)
 
 type Service interface {
-	GetProfileByUsername(username string) *models.UserProfile
-	CreateNewProfile(username string) *models.UserProfile
-	UpdateProfile(username string, new *models.UserProfile)
+	CreateNewProfileByUserIdentifier(userIdentifier string) *models.UserProfile
+	UpdateProfileByUserIdentifier(userIdentifier string, new *models.UserProfile)
+
+	GetFullUserByUserIdentifier(userIdentifier string) *FullUser
+	GetFullUserByUsername(username string) *FullUser
 }
 
 type ServiceImpl struct {
@@ -16,14 +20,19 @@ func NewUserProfileServiceImpl(store UserProfileStore) *ServiceImpl {
 	return &ServiceImpl{store: store}
 }
 
-func (s ServiceImpl) GetProfileByUsername(username string) *models.UserProfile {
-	return s.store.getProfileByUsername(username)
+func (s ServiceImpl) CreateNewProfileByUserIdentifier(userIdentifier string) *models.UserProfile {
+	return s.store.createNewProfile(userIdentifier)
 }
 
-func (s ServiceImpl) CreateNewProfile(username string) *models.UserProfile {
-	return s.store.createNewProfile(username)
+func (s ServiceImpl) UpdateProfileByUserIdentifier(userIdentifier string, new *models.UserProfile) {
+	orig := s.store.findUserProfileByUserIdentifier(userIdentifier)
+	s.store.updateUserProfile(orig, new)
 }
 
-func (s ServiceImpl) UpdateProfile(username string, new *models.UserProfile) {
-	s.store.updateUserProfile(&models.UserProfile{Username: username}, new)
+func (s ServiceImpl) GetFullUserByUserIdentifier(userIdentifier string) *FullUser {
+	return s.store.findFullUserByUserIdentifier(userIdentifier)
+}
+
+func (s ServiceImpl) GetFullUserByUsername(username string) *FullUser {
+	return s.store.findFullUserByUsername(username)
 }

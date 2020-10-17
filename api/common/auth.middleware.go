@@ -11,18 +11,56 @@ const KAuthUsernameContextKey = "username"
 const KAuthUserLevelContextKey = "user_level"
 const KAuthErrorKey = "auth_error"
 const KIsAuthKey = "is_auth"
-const KIsSensitiveAuth = "is_sensitive_auth"
+const KIsSensitiveAuthKey = "is_sensitive_auth"
 
-func MiddleWareAuth(service serviceUser.Service) gin.HandlerFunc {
+// 请求头中 token 字段为空错误
+type ErrorAuthEmptyTokenHeader struct {}
+
+func (e ErrorAuthEmptyTokenHeader) Error() string {
+	return "token请求头为空"
+}
+
+// token 验证失败错误
+type ErrorAuthValidateWrong struct {}
+
+func (e ErrorAuthValidateWrong) Error() string {
+	return "token验证错误"
+}
+
+// MiddleWareAuth 的通过策略
+type MiddleWareAuthPolicy int
+
+const (
+	// MiddleWareAuth 的通过策略: 未登陆成功，直接拒绝，不会执行 handler
+	MiddleWareAuthPolicyReject MiddleWareAuthPolicy = iota
+
+	// MiddleWareAuth 的通过策略: 即时未登陆成功，也会执行 handler
+	MiddleWareAuthPolicyAccess
+)
+
+func MiddleWareAuth(service serviceUser.Service, accessPolicy MiddleWareAuthPolicy) gin.HandlerFunc {
+	doUnLogin := func(context *gin.Context, err error) {
+		if accessPolicy == MiddleWareAuthPolicyReject {
+			context.JSON(http.StatusUnauthorized, BaseResponse{
+				Code: 40001,
+				Message: err.Error(),
+			})
+			context.Abort()
+		} else if accessPolicy == MiddleWareAuthPolicyAccess {
+			context.Set(KIsAuthKey, false)
+			context.Set(KAuthErrorKey, err)
+			context.Set(KAuthUserIdentifierContextKey, nil)
+			context.Set(KAuthUsernameContextKey, nil)
+			context.Set(KAuthUserLevelContextKey, nil)
+			context.Set(KIsSensitiveAuthKey, nil)
+		}
+	}
+
 	return func(context *gin.Context) {
 		// 获取 Token
 		tokenStr := context.Request.Header.Get("Authorization")
 		if tokenStr == "" {
-			context.JSON(http.StatusUnauthorized, BaseResponse{
-				Code: 40001,
-				Message: "未登录",
-			})
-			context.Abort()
+			doUnLogin(context, ErrorAuthEmptyTokenHeader{})
 			return
 		}
 
@@ -31,13 +69,8 @@ func MiddleWareAuth(service serviceUser.Service) gin.HandlerFunc {
 		if err != nil {
 			HttpLogger(context, err, gin.H{
 				"bearer_token": tokenStr,
-			}).Info("用户授权时发生错误")
-			context.Set(KAuthErrorKey, err)
-			context.JSON(http.StatusUnauthorized, BaseResponse{
-				Code: 40001,
-				Message: "未登录",
-			})
-			context.Abort()
+			}).Debug("用户授权时发生错误")
+			doUnLogin(context, err)
 			return
 		}
 		if isValidate {
@@ -49,14 +82,10 @@ func MiddleWareAuth(service serviceUser.Service) gin.HandlerFunc {
 			context.Set(KAuthUserIdentifierContextKey, claims.UserIdentifier)
 			context.Set(KAuthUsernameContextKey, claims.Username)
 			context.Set(KAuthUserLevelContextKey, claims.UserAuthority)
-			context.Set(KIsSensitiveAuth, claims.SensitiveVerification)
-			context.Next()
+			context.Set(KIsSensitiveAuthKey, claims.SensitiveVerification)
+			return
 		} else {
-			context.JSON(http.StatusUnauthorized, BaseResponse{
-				Code: 40001,
-				Message: "未登录",
-			})
-			context.Abort()
+			doUnLogin(context, ErrorAuthValidateWrong{})
 			return
 		}
 	}

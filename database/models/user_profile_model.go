@@ -6,7 +6,7 @@ import "gorm.io/gorm"
 type UserProfile struct {
 	gorm.Model `json:"-"`
 	Uid string `json:"uid"`
-	Username string `json:"username"`
+	UserIdentifier string `json:"-"`
 	Nickname string `json:"nickname"`
 	AvatarFileKey string `json:"avatar_file_key"`
 }

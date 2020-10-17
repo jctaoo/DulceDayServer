@@ -33,7 +33,15 @@ func (e EndpointsImpl) MapHandlersToRoutes(router *gin.RouterGroup) *gin.RouterG
 	userGroup.POST("/register", e.register)
 	userGroup.POST("/login/email", e.loginWithEmail)
 	userGroup.POST("/login/username", e.loginWithUsername)
-	userGroup.POST("/login/sensitive/email", common.MiddleWareAuth(e.service), e.loginForSensitiveWithEmail)
-	userGroup.POST("/register/sensitive/email", common.MiddleWareAuth(e.service), e.registerForSensitiveWithEmail)
+	userGroup.POST(
+		"/login/sensitive/email",
+		common.MiddleWareAuth(e.service, common.MiddleWareAuthPolicyReject),
+		e.loginForSensitiveWithEmail,
+	)
+	userGroup.POST(
+		"/register/sensitive/email",
+		common.MiddleWareAuth(e.service, common.MiddleWareAuthPolicyReject),
+		e.registerForSensitiveWithEmail,
+	)
 	return userGroup
 }

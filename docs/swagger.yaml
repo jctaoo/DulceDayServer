@@ -7,15 +7,70 @@ definitions:
       message:
         type: string
     type: object
-  models.UserProfile:
+  moment.FullMoment:
     properties:
       avatar_file_key:
         type: string
+      content:
+        type: string
+      moment_id:
+        type: string
       nickname:
         type: string
+      star_count:
+        type: integer
+      stared:
+        type: boolean
       uid:
         type: string
       username:
+        type: string
+    type: object
+  moment.createMomentParameter:
+    properties:
+      content:
+        example: 是第一条动态呀
+        type: string
+    required:
+    - content
+    type: object
+  moment.createMomentResponse:
+    properties:
+      code:
+        type: integer
+      message:
+        type: string
+      moment_id:
+        type: string
+    type: object
+  moment.getMomentResponse:
+    properties:
+      code:
+        type: integer
+      message:
+        type: string
+      moment:
+        $ref: '#/definitions/moment.FullMoment'
+        type: object
+    type: object
+  moment.requestRecommendMomentsResponse:
+    properties:
+      code:
+        type: integer
+      message:
+        type: string
+      moments:
+        items:
+          $ref: '#/definitions/moment.FullMoment'
+        type: array
+    type: object
+  moment.toggleMomentStarResponse:
+    properties:
+      code:
+        type: integer
+      is_star_now:
+        type: boolean
+      message:
         type: string
     type: object
   user.loginResponse:
@@ -120,15 +175,26 @@ definitions:
     required:
     - email
     type: object
+  user_profile.FullUser:
+    properties:
+      avatar_file_key:
+        type: string
+      nickname:
+        type: string
+      uid:
+        type: string
+      username:
+        type: string
+    type: object
   user_profile.getProfileResponse:
     properties:
       code:
         type: integer
+      data:
+        $ref: '#/definitions/user_profile.FullUser'
+        type: object
       message:
         type: string
-      profile:
-        $ref: '#/definitions/models.UserProfile'
-        type: object
     type: object
   user_profile.updateAvatarResponse:
     properties:
@@ -166,6 +232,106 @@ info:
   title: DulceDayServer
   version: "1.0"
 paths:
+  /moment/create:
+    post:
+      parameters:
+      - description: 参数
+        in: body
+        name: newMoment
+        required: true
+        schema:
+          $ref: '#/definitions/moment.createMomentParameter'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/moment.createMomentResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/common.BaseResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/common.BaseResponse'
+      security:
+      - ApiKeyAuth: []
+      summary: 创建动态
+  /moment/get/{MomentID}:
+    get:
+      parameters:
+      - description: MomentID
+        in: path
+        name: MomentID
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/moment.getMomentResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/common.BaseResponse'
+      summary: 获取某个动态的详细信息
+  /moment/recommend:
+    get:
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/moment.requestRecommendMomentsResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/common.BaseResponse'
+      security:
+      - ApiKeyAuth: []
+      summary: 获取推荐的动态, 精准推送
+  /moment/recommend/hot:
+    get:
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/moment.requestRecommendMomentsResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/common.BaseResponse'
+      summary: 为路人获取推荐的动态
+  /moment/toggle_star/{MomentID}:
+    put:
+      parameters:
+      - description: MomentID
+        in: path
+        name: MomentID
+        required: true
+        type: string
+      produces:
+      - application/json
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/moment.toggleMomentStarResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/common.BaseResponse'
+      security:
+      - ApiKeyAuth: []
+      summary: "更改点赞\U0001F44D"
   /static/{key}:
     get:
       parameters:

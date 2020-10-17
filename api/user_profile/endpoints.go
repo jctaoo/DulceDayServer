@@ -2,8 +2,8 @@ package user_profile
 
 import (
 	"DulceDayServer/api/common"
+	serviceAuth "DulceDayServer/services/auth"
 	"DulceDayServer/services/static_storage"
-	serviceUser "DulceDayServer/services/user"
 	"DulceDayServer/services/user_profile"
 	"github.com/gin-gonic/gin"
 )
@@ -18,17 +18,17 @@ type Endpoints interface {
 
 type EndpointsImpl struct {
 	Endpoints
-	service user_profile.Service
-	userService serviceUser.Service
+	service       user_profile.Service
+	userService   serviceAuth.Service
 	staticStorage static_storage.Service
 }
 
-func NewEndpointsImpl(service user_profile.Service, userService serviceUser.Service, staticStorage static_storage.Service) *EndpointsImpl {
+func NewEndpointsImpl(service user_profile.Service, userService serviceAuth.Service, staticStorage static_storage.Service) *EndpointsImpl {
 	return &EndpointsImpl{service: service, userService: userService, staticStorage: staticStorage}
 }
 
 func (e EndpointsImpl) MapHandlersToRoutes(router *gin.RouterGroup) *gin.RouterGroup {
-	userGroup := router.Group("/user/profile")
+	userGroup := router.Group("/auth/profile")
 	userGroup.GET("/:Username", e.getProfile)
 
 	userGroup.GET(
@@ -49,4 +49,3 @@ func (e EndpointsImpl) MapHandlersToRoutes(router *gin.RouterGroup) *gin.RouterG
 
 	return userGroup
 }
-

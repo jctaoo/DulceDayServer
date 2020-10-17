@@ -1,4 +1,4 @@
-package user
+package auth
 
 import (
 	"DulceDayServer/config"
@@ -11,7 +11,7 @@ import (
 
 // 存储用户 Token 以支持灵活的基于 Token 的操作，如支持后期的可能出现的 OAuth 需求，以及 Token 的颁发与撤回功能
 type TokenStore interface {
-	addNewTokenToUser(token *models.TokenAuth, user *models.User)
+	addNewTokenToUser(token *models.TokenAuth, user *models.AuthUser)
 	updateToken(token *models.TokenAuth, ip string, tokenStr string)
 	deleteToken(token *models.TokenAuth)
 
@@ -22,7 +22,7 @@ type TokenStore interface {
 	checkTokenIsInActive(tokenStr string) bool
 	removeTokenFromInActiveList(tokenStr string)
 
-	findTokenByUserAndDeviceName(user *models.User, deviceName string) *models.TokenAuth
+	findTokenByUserAndDeviceName(user *models.AuthUser, deviceName string) *models.TokenAuth
 	findTokenByTokenStr(tokenStr string) *models.TokenAuth
 }
 
@@ -36,7 +36,7 @@ func NewTokenStoreImpl(db *gorm.DB, rdb *redis.Client) *TokenStoreImpl {
 	return &TokenStoreImpl{db: db, rdb: rdb}
 }
 
-func (t TokenStoreImpl) addNewTokenToUser(token *models.TokenAuth, user *models.User) {
+func (t TokenStoreImpl) addNewTokenToUser(token *models.TokenAuth, user *models.AuthUser) {
 	user.Tokens = append(user.Tokens, *token)
 	t.db.Save(user)
 }
@@ -90,9 +90,9 @@ func (t TokenStoreImpl) removeTokenFromInActiveList(tokenStr string) {
 	t.rdb.ZRem(context.Background(), revokeListName, tokenStr)
 }
 
-func (t TokenStoreImpl) findTokenByUserAndDeviceName(user *models.User, deviceName string) *models.TokenAuth {
+func (t TokenStoreImpl) findTokenByUserAndDeviceName(user *models.AuthUser, deviceName string) *models.TokenAuth {
 	token := &models.TokenAuth{}
-	t.db.Where(&models.TokenAuth{UserID: user.ID, DeviceName: deviceName}).Take(token)
+	t.db.Where(&models.TokenAuth{AuthUserID: user.ID, DeviceName: deviceName}).Take(token)
 	return token
 }
 

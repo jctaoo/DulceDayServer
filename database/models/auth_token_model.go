@@ -16,18 +16,18 @@ type TokenAuth struct {
 	StartTime  time.Time
 	ExpireTime time.Time
 	DeviceName string `json:"-"`
-	UserID     uint `json:"-"`
+	AuthUserID uint   `json:"-"`
 }
 
-func NewTokenAuthWithoutTokenStr(user *User, ip string, deviceName string) *TokenAuth {
+func NewTokenAuthWithoutTokenStr(user *AuthUser, ip string, deviceName string) *TokenAuth {
 	startTime := time.Now()
 	expiresTime := startTime.Unix() + config.SiteConfig.AuthTokenExpiresTime
 	return &TokenAuth{
-		Ip: ip,
-		StartTime: startTime,
+		Ip:         ip,
+		StartTime:  startTime,
 		ExpireTime: time.Unix(expiresTime, 0),
 		DeviceName: deviceName,
-		UserID: user.ID,
+		AuthUserID: user.ID,
 	}
 }
 

@@ -22,7 +22,7 @@ func (e EndpointsImpl) requestRecommendMoments(context *gin.Context) {
 	moments := e.service.GetRecommendMoments()
 	context.JSON(http.StatusOK, requestRecommendMomentsResponse{
 		BaseResponse: common.BaseResponse{
-			Code: 2000,
+			Code:    2000,
 			Message: "获取成功",
 		},
 		Moments: moments,
@@ -40,7 +40,7 @@ func (e EndpointsImpl) requestRecommendMomentsWithAuth(context *gin.Context) {
 	moments := e.service.GetRecommendMomentsWithUserIdentifier(authDetail.UserIdentifier)
 	context.JSON(http.StatusOK, requestRecommendMomentsResponse{
 		BaseResponse: common.BaseResponse{
-			Code: 2000,
+			Code:    2000,
 			Message: "获取成功",
 		},
 		Moments: moments,

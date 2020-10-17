@@ -2,9 +2,9 @@ package moment
 
 import (
 	"DulceDayServer/api/common"
+	serviceAuth "DulceDayServer/services/auth"
 	"DulceDayServer/services/moment"
 	"DulceDayServer/services/static_storage"
-	serviceUser "DulceDayServer/services/user"
 	"github.com/gin-gonic/gin"
 )
 
@@ -27,12 +27,12 @@ type Endpoints interface {
 }
 
 type EndpointsImpl struct {
-	service moment.Service
-	userService serviceUser.Service
+	service       moment.Service
+	userService   serviceAuth.Service
 	staticStorage static_storage.Service
 }
 
-func NewEndpointsImpl(service moment.Service, userService serviceUser.Service, staticStorage static_storage.Service) *EndpointsImpl {
+func NewEndpointsImpl(service moment.Service, userService serviceAuth.Service, staticStorage static_storage.Service) *EndpointsImpl {
 	return &EndpointsImpl{service: service, userService: userService, staticStorage: staticStorage}
 }
 

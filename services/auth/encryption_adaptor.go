@@ -1,4 +1,4 @@
-package user
+package auth
 
 import (
 	"crypto/md5"
@@ -14,9 +14,7 @@ type EncryptionAdaptor interface {
 }
 
 type EncryptionAdaptorImpl struct {
-
 }
-
 
 func NewEncryptionAdaptorImpl() *EncryptionAdaptorImpl {
 	return &EncryptionAdaptorImpl{}

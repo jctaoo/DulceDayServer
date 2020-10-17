@@ -4,6 +4,7 @@ import (
 	"DulceDayServer/api"
 	"DulceDayServer/api/common"
 	"DulceDayServer/config"
+	"DulceDayServer/database"
 	_ "DulceDayServer/docs"
 	"flag"
 	"fmt"
@@ -53,6 +54,9 @@ func main() {
 	log.SetLevel(log.PanicLevel)
 	log.SetReportCaller(true)
 
+	// 数据库迁移
+	database.MigrateDataBase(database.NewDB(), database.NewCache())
+
 	// gin 的初始化配置
 	engine := gin.Default()
 	if release {
@@ -70,10 +74,10 @@ func main() {
 	// api 配置
 	v1 := engine.Group("/v1")
 	api.SiteEndpoints{
-		UserEndpoints: UserEndpoints(),
-		UserProfileEndpoints: UserProfileEndpoints(),
+		UserEndpoints:          UserEndpoints(),
+		UserProfileEndpoints:   UserProfileEndpoints(),
 		StaticStorageEndpoints: StaticStorageEndpoints(),
-		MomentEndpoints: MomentEndpoints(),
+		MomentEndpoints:        MomentEndpoints(),
 	}.RouteGroups(v1)
 
 	// api 文档配置

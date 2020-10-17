@@ -15,7 +15,7 @@ type UserProfileStore interface {
 }
 
 type UserProfileStoreImpl struct {
-	db *gorm.DB
+	db  *gorm.DB
 	cdb *redis.Client
 }
 

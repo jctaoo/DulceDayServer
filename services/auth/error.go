@@ -1,7 +1,7 @@
-package user
+package auth
 
 // 用户不存在
-type ErrorUserNotFound struct {}
+type ErrorUserNotFound struct{}
 
 func (e ErrorUserNotFound) Error() string {
 	return "用户不存在"
@@ -9,7 +9,6 @@ func (e ErrorUserNotFound) Error() string {
 
 // 密码错误
 type ErrorPasswordWrong struct {
-
 }
 
 func (p ErrorPasswordWrong) Error() string {
@@ -18,7 +17,6 @@ func (p ErrorPasswordWrong) Error() string {
 
 // ID 在黑名单中
 type ErrorUserIdInBlackList struct {
-
 }
 
 func (I ErrorUserIdInBlackList) Error() string {
@@ -27,7 +25,6 @@ func (I ErrorUserIdInBlackList) Error() string {
 
 // Token 被 Revoke
 type ErrorTokenRevoke struct {
-
 }
 
 func (e ErrorTokenRevoke) Error() string {
@@ -36,7 +33,6 @@ func (e ErrorTokenRevoke) Error() string {
 
 // Token is InActive
 type ErrorTokenInActive struct {
-
 }
 
 func (e ErrorTokenInActive) Error() string {
@@ -44,7 +40,7 @@ func (e ErrorTokenInActive) Error() string {
 }
 
 // Bad token
-type ErrorTokenBad struct {}
+type ErrorTokenBad struct{}
 
 func (e ErrorTokenBad) Error() string {
 	return "Bad Token"
@@ -52,7 +48,6 @@ func (e ErrorTokenBad) Error() string {
 
 // Bad VerificationCode
 type ErrorBadVerificationCode struct {
-
 }
 
 func (e ErrorBadVerificationCode) Error() string {
@@ -61,10 +56,8 @@ func (e ErrorBadVerificationCode) Error() string {
 
 // IP 或 deviceName 异常
 type ErrorBadIpOrDeviceName struct {
-
 }
 
 func (e ErrorBadIpOrDeviceName) Error() string {
 	return "错误的IP或设备名"
 }
-

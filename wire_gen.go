@@ -8,12 +8,12 @@ package main
 import (
 	"DulceDayServer/api/moment"
 	static_storage2 "DulceDayServer/api/static_storage"
-	"DulceDayServer/api/user"
+	"DulceDayServer/api/auth"
 	"DulceDayServer/api/user_profile"
 	"DulceDayServer/database"
 	moment2 "DulceDayServer/services/moment"
 	"DulceDayServer/services/static_storage"
-	user2 "DulceDayServer/services/user"
+	user2 "DulceDayServer/services/auth"
 	user_profile2 "DulceDayServer/services/user_profile"
 	"github.com/google/wire"
 )
@@ -24,7 +24,7 @@ import (
 
 // Injectors from wire.go:
 
-func UserEndpoints() user.Endpoints {
+func UserEndpoints() auth.Endpoints {
 	encryptionAdaptorImpl := user2.NewEncryptionAdaptorImpl()
 	db := database.NewDB()
 	client := database.NewCache()
@@ -33,7 +33,7 @@ func UserEndpoints() user.Endpoints {
 	tokenGranterImpl := user2.NewTokenGranterImpl(tokenStoreImpl, tokenAdaptorImpl)
 	storeImpl := user2.NewStoreImpl(db, client)
 	serviceImpl := user2.NewServiceImpl(encryptionAdaptorImpl, tokenGranterImpl, storeImpl)
-	endpointsImpl := user.NewEndpointsImpl(serviceImpl)
+	endpointsImpl := auth.NewEndpointsImpl(serviceImpl)
 	return endpointsImpl
 }
 

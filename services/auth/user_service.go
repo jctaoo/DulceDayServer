@@ -1,4 +1,4 @@
-package user
+package auth
 
 import (
 	"DulceDayServer/database/models"
@@ -25,18 +25,18 @@ type Service interface {
 	Authorize(tokenStr string) (isValidate bool, claims TokenClaims, err error)
 
 	// 检查用户密码是否正确
-	// user: 完整的用户模型
+	// auth: 完整的用户模型
 	// password: 需要检验的密码
-	checkMatchPassword(user *models.User, password string) bool
+	checkMatchPassword(user *models.AuthUser, password string) bool
 
-	NewUser(user *models.User) *models.User
+	NewUser(user *models.AuthUser) *models.AuthUser
 
-	CheckUserInBlackList(userId *models.User) bool
+	CheckUserInBlackList(userId *models.AuthUser) bool
 	CheckUserInBlackListByUserIdentifier(userId string) bool
-	AddUserInBlackList(user *models.User)
-	RemoveUserFromBlackList(user *models.User)
+	AddUserInBlackList(user *models.AuthUser)
+	RemoveUserFromBlackList(user *models.AuthUser)
 
-	CheckUserExisting(user *models.User) bool
+	CheckUserExisting(user *models.AuthUser) bool
 	GenerateUserIdentifier() string
 }
 
@@ -51,7 +51,7 @@ func NewServiceImpl(encryptionAdaptor EncryptionAdaptor, tokenGranter TokenGrant
 }
 
 func (g *ServiceImpl) AuthenticateWithPassword(username string, email string, password string, ip string, deviceName string) (token string, err error) {
-	var user *models.User
+	var user *models.AuthUser
 	if username != "" {
 		user = g.userStore.findUserByUserName(username)
 	} else if email != "" {
@@ -78,7 +78,7 @@ func (g *ServiceImpl) AuthenticateWithPassword(username string, email string, pa
 }
 
 func (g *ServiceImpl) PrepareForAuthForSensitiveVerification(username string, email string, ip string, deviceName string) (verificationCode string, err error) {
-	var user *models.User
+	var user *models.AuthUser
 	if username != "" {
 		user = g.userStore.findUserByUserName(username)
 	} else if email != "" {
@@ -167,18 +167,18 @@ func (g *ServiceImpl) Authorize(tokenStr string) (isValidate bool, claims TokenC
 	return
 }
 
-func (g *ServiceImpl) checkMatchPassword(user *models.User, password string) bool {
+func (g *ServiceImpl) checkMatchPassword(user *models.AuthUser, password string) bool {
 	return g.encryptionAdaptor.verify(password, user.Password)
 }
 
-func (g *ServiceImpl) NewUser(user *models.User) *models.User {
+func (g *ServiceImpl) NewUser(user *models.AuthUser) *models.AuthUser {
 	// 将用户密码由 MD5 处理
 	user.Password = g.encryptionAdaptor.toHash(user.Password)
 	g.userStore.newUser(user)
 	return user
 }
 
-func (g *ServiceImpl) CheckUserInBlackList(user *models.User) bool {
+func (g *ServiceImpl) CheckUserInBlackList(user *models.AuthUser) bool {
 	return g.CheckUserInBlackListByUserIdentifier(user.Identifier)
 }
 
@@ -186,15 +186,15 @@ func (g *ServiceImpl) CheckUserInBlackListByUserIdentifier(userId string) bool {
 	return g.userStore.checkUserInBlackList(userId)
 }
 
-func (g *ServiceImpl) AddUserInBlackList(user *models.User) {
+func (g *ServiceImpl) AddUserInBlackList(user *models.AuthUser) {
 	g.userStore.addUserInBlackList(user)
 }
 
-func (g *ServiceImpl) RemoveUserFromBlackList(user *models.User) {
+func (g *ServiceImpl) RemoveUserFromBlackList(user *models.AuthUser) {
 	g.userStore.removeUserFromBlackList(user)
 }
 
-func (g *ServiceImpl) CheckUserExisting(user *models.User) bool {
+func (g *ServiceImpl) CheckUserExisting(user *models.AuthUser) bool {
 	return g.userStore.checkUserExisting(user)
 }
 

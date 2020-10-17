@@ -8,23 +8,23 @@ import (
 
 type Store interface {
 	// 创建新的 models.Moment
-	// content 为文字内容，userIdentifier 为发动态的 models.User
+	// content 为文字内容，userIdentifier 为发动态的 models.AuthUser
 	// 返回新创建的 models.Moment 的 MomentID
 	createNewMoment(content string, userIdentifier string) (momentId string)
 
-	// 给定 models.User 为某个 models.Moment 点赞, 插入相应 models.MomentStarUser 记录
+	// 给定 models.AuthUser 为某个 models.Moment 点赞, 插入相应 models.MomentStarUser 记录
 	// momentId 标示要点赞的 models.Moment 的 MomentID
-	// userIdentifier 标示要给该 models.Moment 点赞的 models.User
+	// userIdentifier 标示要给该 models.Moment 点赞的 models.AuthUser
 	starMoment(momentId string, userIdentifier string)
 
-	// 给定 models.User 为某个 models.Moment 取消点赞, 删除(非软删除)相应 models.MomentStarUser 记录
+	// 给定 models.AuthUser 为某个 models.Moment 取消点赞, 删除(非软删除)相应 models.MomentStarUser 记录
 	// momentId 标示要点赞的 models.Moment 的 MomentID
-	// userIdentifier 标示要给该 models.Moment 点赞的 models.User
+	// userIdentifier 标示要给该 models.Moment 点赞的 models.AuthUser
 	unStarMoment(momentId string, userIdentifier string)
 
-	// 检查给定 models.User 是否为给定 models.Moment 点赞
+	// 检查给定 models.AuthUser 是否为给定 models.Moment 点赞
 	// momentId 标示要点赞的 models.Moment 的 MomentID
-	// userIdentifier 标示要给该 models.Moment 点赞的 models.User
+	// userIdentifier 标示要给该 models.Moment 点赞的 models.AuthUser
 	checkIsStar(momentId string, userIdentifier string) bool
 
 	// 通过 MomentID 查找 FullMoment
@@ -39,7 +39,7 @@ type Store interface {
 }
 
 type StoreImpl struct {
-	db *gorm.DB
+	db  *gorm.DB
 	cdb *redis.Client
 }
 

@@ -18,7 +18,7 @@ type getProfileResponse struct {
 // @Security ApiKeyAuth
 // @Success 200 {object} getProfileResponse 获取成功
 // @Failure 401 {object} common.BaseResponse 获取失败, 授权失败
-// @Router /user/profile [get]
+// @Router /auth/profile [get]
 func (e *EndpointsImpl) getSelfProfile(context *gin.Context) {
 	authDetail := helpers.GetAuthDetail(context)
 	userIdentifier := authDetail.UserIdentifier
@@ -26,7 +26,7 @@ func (e *EndpointsImpl) getSelfProfile(context *gin.Context) {
 	if !fullUser.IsEmpty() {
 		context.JSON(http.StatusOK, getProfileResponse{
 			BaseResponse: common.BaseResponse{
-				Code: 1000,
+				Code:    1000,
 				Message: "获取成功",
 			},
 			Data: fullUser,
@@ -40,7 +40,7 @@ func (e *EndpointsImpl) getSelfProfile(context *gin.Context) {
 		fullUser := e.service.GetFullUserByUserIdentifier(userIdentifier)
 		context.JSON(http.StatusOK, getProfileResponse{
 			BaseResponse: common.BaseResponse{
-				Code: 1000,
+				Code:    1000,
 				Message: "获取成功",
 			},
 			Data: fullUser,
@@ -56,7 +56,7 @@ type getProfilePathParameter struct {
 // @Produce json
 // @Param username path string true "用户名"
 // @Success 200 {object} getProfileResponse 获取成功
-// @Router /user/profile/{username} [get]
+// @Router /auth/profile/{username} [get]
 func (e *EndpointsImpl) getProfile(context *gin.Context) {
 	pathParam := getProfilePathParameter{}
 	if err := context.ShouldBindUri(pathParam); err == nil {
@@ -65,7 +65,7 @@ func (e *EndpointsImpl) getProfile(context *gin.Context) {
 		if !fullUser.IsEmpty() {
 			context.JSON(http.StatusOK, getProfileResponse{
 				BaseResponse: common.BaseResponse{
-					Code: 1000,
+					Code:    1000,
 					Message: "获取成功",
 				},
 				Data: fullUser,
@@ -73,7 +73,7 @@ func (e *EndpointsImpl) getProfile(context *gin.Context) {
 		} else {
 			context.JSON(http.StatusNotFound, getProfileResponse{
 				BaseResponse: common.BaseResponse{
-					Code: 40001,
+					Code:    40001,
 					Message: "找不到 " + username + " 的 Profile",
 				},
 			})

@@ -14,7 +14,7 @@ type Moment struct {
 	// 使用类似 "/v1/moment/M12138" 的 Rest Api 来获取
 	MomentID string `json:"moment_id"`
 
-	// 发动态的用户的 Identifier 
+	// 发动态的用户的 Identifier
 	UserIdentifier string `json:"-"`
 
 	// 动态的文字内容
@@ -24,7 +24,7 @@ type Moment struct {
 // 图文动态的点赞👍
 type MomentStarUser struct {
 	gorm.Model
-	MomentID string `json:"-"`
+	MomentID       string `json:"-"`
 	UserIdentifier string `json:"-"`
 }
 
@@ -35,8 +35,8 @@ func (m MomentStarUser) IsEmpty() bool {
 func NewMoment(content string, userIdentifier string) *Moment {
 	id := "M" + helpers.GenerateRandomKey()
 	return &Moment{
-		MomentID: id,
+		MomentID:       id,
 		UserIdentifier: userIdentifier,
-		Content: content,
+		Content:        content,
 	}
 }

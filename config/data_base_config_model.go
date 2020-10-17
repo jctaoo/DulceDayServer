@@ -4,10 +4,10 @@ import "fmt"
 
 // 静态文件存储配置 (alioss, aws s3 等) 这里是 AliOSS
 type AliOssStaticStorageConfig struct {
-	Endpoint string
-	AccessKeyId string
-	AccessKeySecret string
-	BucketName string
+	Endpoint           string
+	AccessKeyId        string
+	AccessKeySecret    string
+	BucketName         string
 	ResourceExpiresSec int
 }
 
@@ -16,9 +16,9 @@ type DataBaseConfig struct {
 	Host string
 	Port string
 	// collection (for nosql) or table (for sql)
-	Collection string
-	User       string
-	Password   string
+	Collection      string
+	User            string
+	Password        string
 	QueryParameters string
 }
 
@@ -26,7 +26,7 @@ type DataBaseConfig struct {
 type CacheConfig struct {
 	Host string
 	Port string
-	DB int
+	DB   int
 
 	// 用户 ID 黑名单列表名字
 	BlackListName,
@@ -40,7 +40,7 @@ type CacheConfig struct {
 	VerificationCodeListName string
 }
 
-// like `user=gorm password=gorm dbname=gorm port=9920`
+// like `auth=gorm password=gorm dbname=gorm port=9920`
 // 参考 https://github.com/go-sql-driver/mysql#dsn-data-source-name 获取详情
 func (config DataBaseConfig) GetDSN() string {
 	return fmt.Sprintf(

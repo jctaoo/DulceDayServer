@@ -4,14 +4,14 @@ package main
 
 import (
 	"DulceDayServer/api/moment"
-	"DulceDayServer/api/user"
+	apiStaticStorage "DulceDayServer/api/static_storage"
+	"DulceDayServer/api/auth"
 	"DulceDayServer/api/user_profile"
 	"DulceDayServer/database"
-	"DulceDayServer/services/static_storage"
-	apiStaticStorage "DulceDayServer/api/static_storage"
-	serviceUser "DulceDayServer/services/user"
-	serviceUserProfile "DulceDayServer/services/user_profile"
 	serviceMoment "DulceDayServer/services/moment"
+	"DulceDayServer/services/static_storage"
+	serviceAuth "DulceDayServer/services/auth"
+	serviceUserProfile "DulceDayServer/services/user_profile"
 	"github.com/google/wire"
 )
 
@@ -23,23 +23,23 @@ var aliossStaticStorageServiceSet = wire.NewSet(
 )
 
 var userServiceSet = wire.NewSet(
-	serviceUser.NewServiceImpl,
-	wire.Bind(new(serviceUser.Service), new(*serviceUser.ServiceImpl)),
+	serviceAuth.NewServiceImpl,
+	wire.Bind(new(serviceAuth.Service), new(*serviceAuth.ServiceImpl)),
 
-	serviceUser.NewEncryptionAdaptorImpl,
-	wire.Bind(new(serviceUser.EncryptionAdaptor), new(*serviceUser.EncryptionAdaptorImpl)),
+	serviceAuth.NewEncryptionAdaptorImpl,
+	wire.Bind(new(serviceAuth.EncryptionAdaptor), new(*serviceAuth.EncryptionAdaptorImpl)),
 
-	serviceUser.NewTokenGranterImpl,
-	wire.Bind(new(serviceUser.TokenGranter), new(*serviceUser.TokenGranterImpl)),
+	serviceAuth.NewTokenGranterImpl,
+	wire.Bind(new(serviceAuth.TokenGranter), new(*serviceAuth.TokenGranterImpl)),
 
-	serviceUser.NewStoreImpl,
-	wire.Bind(new(serviceUser.Store), new(*serviceUser.StoreImpl)),
+	serviceAuth.NewStoreImpl,
+	wire.Bind(new(serviceAuth.Store), new(*serviceAuth.StoreImpl)),
 
-	serviceUser.NewTokenStoreImpl,
-	wire.Bind(new(serviceUser.TokenStore), new(*serviceUser.TokenStoreImpl)),
+	serviceAuth.NewTokenStoreImpl,
+	wire.Bind(new(serviceAuth.TokenStore), new(*serviceAuth.TokenStoreImpl)),
 
-	serviceUser.NewTokenAdaptorImpl,
-	wire.Bind(new(serviceUser.TokenAdaptor), new(*serviceUser.TokenAdaptorImpl)),
+	serviceAuth.NewTokenAdaptorImpl,
+	wire.Bind(new(serviceAuth.TokenAdaptor), new(*serviceAuth.TokenAdaptorImpl)),
 )
 
 var userProfileServiceSet = wire.NewSet(
@@ -55,12 +55,12 @@ var userEndpointsSet = wire.NewSet(
 	userServiceSet,
 )
 
-func UserEndpoints() user.Endpoints {
+func UserEndpoints() auth.Endpoints {
 	panic(
 		wire.Build(
-			user.NewEndpointsImpl,
+			auth.NewEndpointsImpl,
 			userEndpointsSet,
-			wire.Bind(new(user.Endpoints), new(*user.EndpointsImpl)),
+			wire.Bind(new(auth.Endpoints), new(*auth.EndpointsImpl)),
 		),
 	)
 }

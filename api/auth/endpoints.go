@@ -1,8 +1,8 @@
-package user
+package auth
 
 import (
 	"DulceDayServer/api/common"
-	"DulceDayServer/services/user"
+	"DulceDayServer/services/auth"
 	"github.com/gin-gonic/gin"
 )
 
@@ -19,17 +19,17 @@ type Endpoints interface {
 
 type EndpointsImpl struct {
 	Endpoints
-	service           user.Service
+	service auth.Service
 }
 
-func NewEndpointsImpl(genericService user.Service) *EndpointsImpl {
+func NewEndpointsImpl(genericService auth.Service) *EndpointsImpl {
 	return &EndpointsImpl{
-		service:           genericService,
+		service: genericService,
 	}
 }
 
 func (e EndpointsImpl) MapHandlersToRoutes(router *gin.RouterGroup) *gin.RouterGroup {
-	userGroup := router.Group("/user")
+	userGroup := router.Group("/auth")
 	userGroup.POST("/register", e.register)
 	userGroup.POST("/login/email", e.loginWithEmail)
 	userGroup.POST("/login/username", e.loginWithUsername)

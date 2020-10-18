@@ -40,7 +40,7 @@ type CacheConfig struct {
 	VerificationCodeListName string
 }
 
-// like `auth=gorm password=gorm dbname=gorm port=9920`
+// like `user=gorm password=gorm dbname=gorm port=9920`
 // 参考 https://github.com/go-sql-driver/mysql#dsn-data-source-name 获取详情
 func (config DataBaseConfig) GetDSN() string {
 	return fmt.Sprintf(

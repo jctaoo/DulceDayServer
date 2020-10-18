@@ -8,13 +8,14 @@ package main
 import (
 	"DulceDayServer/api/moment"
 	static_storage2 "DulceDayServer/api/static_storage"
-	"DulceDayServer/api/auth"
-	"DulceDayServer/api/user_profile"
+	"DulceDayServer/api/user"
+	user_profile2 "DulceDayServer/api/user_profile"
 	"DulceDayServer/database"
+	"DulceDayServer/services/auth"
 	moment2 "DulceDayServer/services/moment"
 	"DulceDayServer/services/static_storage"
-	user2 "DulceDayServer/services/auth"
-	user_profile2 "DulceDayServer/services/user_profile"
+	user2 "DulceDayServer/services/user"
+	"DulceDayServer/services/user_profile"
 	"github.com/google/wire"
 )
 
@@ -24,33 +25,37 @@ import (
 
 // Injectors from wire.go:
 
-func UserEndpoints() auth.Endpoints {
-	encryptionAdaptorImpl := user2.NewEncryptionAdaptorImpl()
+func UserEndpoints() user.Endpoints {
 	db := database.NewDB()
 	client := database.NewCache()
-	tokenStoreImpl := user2.NewTokenStoreImpl(db, client)
-	tokenAdaptorImpl := user2.NewTokenAdaptorImpl()
-	tokenGranterImpl := user2.NewTokenGranterImpl(tokenStoreImpl, tokenAdaptorImpl)
 	storeImpl := user2.NewStoreImpl(db, client)
-	serviceImpl := user2.NewServiceImpl(encryptionAdaptorImpl, tokenGranterImpl, storeImpl)
-	endpointsImpl := auth.NewEndpointsImpl(serviceImpl)
+	encryptionAdaptorImpl := auth.NewEncryptionAdaptorImpl()
+	tokenStoreImpl := auth.NewTokenStoreImpl(db, client)
+	tokenAdaptorImpl := auth.NewTokenAdaptorImpl()
+	tokenGranterImpl := auth.NewTokenGranterImpl(tokenStoreImpl, tokenAdaptorImpl)
+	authStoreImpl := auth.NewStoreImpl(db, client)
+	serviceImpl := auth.NewServiceImpl(encryptionAdaptorImpl, tokenGranterImpl, authStoreImpl)
+	userProfileStoreImpl := user_profile.NewUserProfileStoreImpl(db, client)
+	user_profileServiceImpl := user_profile.NewUserProfileServiceImpl(userProfileStoreImpl)
+	userServiceImpl := user2.NewServiceImpl(storeImpl, serviceImpl, user_profileServiceImpl)
+	endpointsImpl := user.NewEndpointsImpl(userServiceImpl, serviceImpl)
 	return endpointsImpl
 }
 
-func UserProfileEndpoints() user_profile.Endpoints {
+func UserProfileEndpoints() user_profile2.Endpoints {
 	db := database.NewDB()
 	client := database.NewCache()
-	userProfileStoreImpl := user_profile2.NewUserProfileStoreImpl(db, client)
-	serviceImpl := user_profile2.NewUserProfileServiceImpl(userProfileStoreImpl)
-	encryptionAdaptorImpl := user2.NewEncryptionAdaptorImpl()
-	tokenStoreImpl := user2.NewTokenStoreImpl(db, client)
-	tokenAdaptorImpl := user2.NewTokenAdaptorImpl()
-	tokenGranterImpl := user2.NewTokenGranterImpl(tokenStoreImpl, tokenAdaptorImpl)
-	storeImpl := user2.NewStoreImpl(db, client)
-	userServiceImpl := user2.NewServiceImpl(encryptionAdaptorImpl, tokenGranterImpl, storeImpl)
+	userProfileStoreImpl := user_profile.NewUserProfileStoreImpl(db, client)
+	serviceImpl := user_profile.NewUserProfileServiceImpl(userProfileStoreImpl)
+	encryptionAdaptorImpl := auth.NewEncryptionAdaptorImpl()
+	tokenStoreImpl := auth.NewTokenStoreImpl(db, client)
+	tokenAdaptorImpl := auth.NewTokenAdaptorImpl()
+	tokenGranterImpl := auth.NewTokenGranterImpl(tokenStoreImpl, tokenAdaptorImpl)
+	storeImpl := auth.NewStoreImpl(db, client)
+	authServiceImpl := auth.NewServiceImpl(encryptionAdaptorImpl, tokenGranterImpl, storeImpl)
 	bucket := database.NewAliOSS()
 	aliOSSStaticStorageService := static_storage.NewAliOSSStaticStorageService(bucket)
-	endpointsImpl := user_profile.NewEndpointsImpl(serviceImpl, userServiceImpl, aliOSSStaticStorageService)
+	endpointsImpl := user_profile2.NewEndpointsImpl(serviceImpl, authServiceImpl, aliOSSStaticStorageService)
 	return endpointsImpl
 }
 
@@ -66,15 +71,15 @@ func MomentEndpoints() moment.Endpoints {
 	client := database.NewCache()
 	storeImpl := moment2.NewStoreImpl(db, client)
 	serviceImpl := moment2.NewServiceImpl(storeImpl)
-	encryptionAdaptorImpl := user2.NewEncryptionAdaptorImpl()
-	tokenStoreImpl := user2.NewTokenStoreImpl(db, client)
-	tokenAdaptorImpl := user2.NewTokenAdaptorImpl()
-	tokenGranterImpl := user2.NewTokenGranterImpl(tokenStoreImpl, tokenAdaptorImpl)
-	userStoreImpl := user2.NewStoreImpl(db, client)
-	userServiceImpl := user2.NewServiceImpl(encryptionAdaptorImpl, tokenGranterImpl, userStoreImpl)
+	encryptionAdaptorImpl := auth.NewEncryptionAdaptorImpl()
+	tokenStoreImpl := auth.NewTokenStoreImpl(db, client)
+	tokenAdaptorImpl := auth.NewTokenAdaptorImpl()
+	tokenGranterImpl := auth.NewTokenGranterImpl(tokenStoreImpl, tokenAdaptorImpl)
+	authStoreImpl := auth.NewStoreImpl(db, client)
+	authServiceImpl := auth.NewServiceImpl(encryptionAdaptorImpl, tokenGranterImpl, authStoreImpl)
 	bucket := database.NewAliOSS()
 	aliOSSStaticStorageService := static_storage.NewAliOSSStaticStorageService(bucket)
-	endpointsImpl := moment.NewEndpointsImpl(serviceImpl, userServiceImpl, aliOSSStaticStorageService)
+	endpointsImpl := moment.NewEndpointsImpl(serviceImpl, authServiceImpl, aliOSSStaticStorageService)
 	return endpointsImpl
 }
 
@@ -84,18 +89,22 @@ var universalSet = wire.NewSet(database.NewCache, database.NewDB, database.NewAl
 
 var aliossStaticStorageServiceSet = wire.NewSet(static_storage.NewAliOSSStaticStorageService, wire.Bind(new(static_storage.Service), new(*static_storage.AliOSSStaticStorageService)))
 
-var userServiceSet = wire.NewSet(user2.NewServiceImpl, wire.Bind(new(user2.Service), new(*user2.ServiceImpl)), user2.NewEncryptionAdaptorImpl, wire.Bind(new(user2.EncryptionAdaptor), new(*user2.EncryptionAdaptorImpl)), user2.NewTokenGranterImpl, wire.Bind(new(user2.TokenGranter), new(*user2.TokenGranterImpl)), user2.NewStoreImpl, wire.Bind(new(user2.Store), new(*user2.StoreImpl)), user2.NewTokenStoreImpl, wire.Bind(new(user2.TokenStore), new(*user2.TokenStoreImpl)), user2.NewTokenAdaptorImpl, wire.Bind(new(user2.TokenAdaptor), new(*user2.TokenAdaptorImpl)))
+var authUserServiceSet = wire.NewSet(auth.NewServiceImpl, wire.Bind(new(auth.Service), new(*auth.ServiceImpl)), auth.NewEncryptionAdaptorImpl, wire.Bind(new(auth.EncryptionAdaptor), new(*auth.EncryptionAdaptorImpl)), auth.NewTokenGranterImpl, wire.Bind(new(auth.TokenGranter), new(*auth.TokenGranterImpl)), auth.NewStoreImpl, wire.Bind(new(auth.Store), new(*auth.StoreImpl)), auth.NewTokenStoreImpl, wire.Bind(new(auth.TokenStore), new(*auth.TokenStoreImpl)), auth.NewTokenAdaptorImpl, wire.Bind(new(auth.TokenAdaptor), new(*auth.TokenAdaptorImpl)))
 
-var userProfileServiceSet = wire.NewSet(user_profile2.NewUserProfileServiceImpl, wire.Bind(new(user_profile2.Service), new(*user_profile2.ServiceImpl)), user_profile2.NewUserProfileStoreImpl, wire.Bind(new(user_profile2.UserProfileStore), new(*user_profile2.UserProfileStoreImpl)))
+var userServiceSet = wire.NewSet(user2.NewStoreImpl, wire.Bind(new(user2.Store), new(*user2.StoreImpl)), user2.NewServiceImpl, wire.Bind(new(user2.Service), new(*user2.ServiceImpl)))
+
+var userProfileServiceSet = wire.NewSet(user_profile.NewUserProfileServiceImpl, wire.Bind(new(user_profile.Service), new(*user_profile.ServiceImpl)), user_profile.NewUserProfileStoreImpl, wire.Bind(new(user_profile.UserProfileStore), new(*user_profile.UserProfileStoreImpl)))
 
 var userEndpointsSet = wire.NewSet(
 	universalSet,
 	userServiceSet,
+	userProfileServiceSet,
+	authUserServiceSet,
 )
 
 var userProfileEndpointsSet = wire.NewSet(
 	universalSet,
-	userServiceSet,
+	authUserServiceSet,
 	userProfileServiceSet,
 	aliossStaticStorageServiceSet,
 )
@@ -109,7 +118,7 @@ var momentServiceSet = wire.NewSet(moment2.NewServiceImpl, wire.Bind(new(moment2
 
 var momentEndpointsSet = wire.NewSet(
 	universalSet,
-	userServiceSet,
+	authUserServiceSet,
 	momentServiceSet,
 	aliossStaticStorageServiceSet,
 )

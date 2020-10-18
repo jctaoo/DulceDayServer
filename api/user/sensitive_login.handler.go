@@ -1,4 +1,4 @@
-package auth
+package user
 
 import (
 	"DulceDayServer/api/common"
@@ -21,11 +21,11 @@ type sLoginResponse struct {
 // @Summary 使用邮箱进行敏感登陆验证, 需要事先登录
 // @Produce json
 // @Security ApiKeyAuth
-// @Param auth body sEmailLoginParameter true "参数"
+// @Param user body sEmailLoginParameter true "参数"
 // @Success 200 {object} loginResponse 登陆成功
 // @Failure 400 {object} common.BaseResponse 登陆失败, 信息不合规
 // @Failure 401 {object} common.BaseResponse 登陆失败, 未登录
-// @Router /auth/login/sensitive/email [post]
+// @Router /user/login/sensitive/email [post]
 func (e *EndpointsImpl) loginForSensitiveWithEmail(context *gin.Context) {
 	parameter := sEmailLoginParameter{}
 	authDetail := helpers.GetAuthDetail(context)

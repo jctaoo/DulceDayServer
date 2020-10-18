@@ -2,7 +2,6 @@ package auth
 
 import (
 	"DulceDayServer/database/models"
-	"github.com/satori/go.uuid"
 )
 
 type Service interface {
@@ -25,7 +24,7 @@ type Service interface {
 	Authorize(tokenStr string) (isValidate bool, claims TokenClaims, err error)
 
 	// 检查用户密码是否正确
-	// auth: 完整的用户模型
+	// user: 完整的用户模型
 	// password: 需要检验的密码
 	checkMatchPassword(user *models.AuthUser, password string) bool
 
@@ -37,7 +36,6 @@ type Service interface {
 	RemoveUserFromBlackList(user *models.AuthUser)
 
 	CheckUserExisting(user *models.AuthUser) bool
-	GenerateUserIdentifier() string
 }
 
 type ServiceImpl struct {
@@ -196,8 +194,4 @@ func (g *ServiceImpl) RemoveUserFromBlackList(user *models.AuthUser) {
 
 func (g *ServiceImpl) CheckUserExisting(user *models.AuthUser) bool {
 	return g.userStore.checkUserExisting(user)
-}
-
-func (g *ServiceImpl) GenerateUserIdentifier() string {
-	return uuid.NewV4().String()
 }

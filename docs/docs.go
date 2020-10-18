@@ -205,7 +205,7 @@ var doc = `{
                 ]
             }
         },
-        "/auth/login/email": {
+        "/user/login/email": {
             "post": {
                 "produces": [
                     "application/json"
@@ -214,11 +214,11 @@ var doc = `{
                 "parameters": [
                     {
                         "description": "参数",
-                        "name": "auth",
+                        "name": "user",
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/auth.loginWithEmailParameter"
+                            "$ref": "#/definitions/user.loginWithEmailParameter"
                         }
                     }
                 ],
@@ -226,7 +226,7 @@ var doc = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/auth.loginResponse"
+                            "$ref": "#/definitions/user.loginResponse"
                         }
                     },
                     "400": {
@@ -244,7 +244,7 @@ var doc = `{
                 }
             }
         },
-        "/auth/login/sensitive/email": {
+        "/user/login/sensitive/email": {
             "post": {
                 "security": [
                     {
@@ -258,11 +258,11 @@ var doc = `{
                 "parameters": [
                     {
                         "description": "参数",
-                        "name": "auth",
+                        "name": "user",
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/auth.sEmailLoginParameter"
+                            "$ref": "#/definitions/user.sEmailLoginParameter"
                         }
                     }
                 ],
@@ -270,7 +270,7 @@ var doc = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/auth.loginResponse"
+                            "$ref": "#/definitions/user.loginResponse"
                         }
                     },
                     "400": {
@@ -288,7 +288,7 @@ var doc = `{
                 }
             }
         },
-        "/auth/login/username": {
+        "/user/login/username": {
             "post": {
                 "produces": [
                     "application/json"
@@ -297,11 +297,11 @@ var doc = `{
                 "parameters": [
                     {
                         "description": "参数",
-                        "name": "auth",
+                        "name": "user",
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/auth.loginWithUsernameParameter"
+                            "$ref": "#/definitions/user.loginWithUsernameParameter"
                         }
                     }
                 ],
@@ -309,7 +309,7 @@ var doc = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/auth.loginResponse"
+                            "$ref": "#/definitions/user.loginResponse"
                         }
                     },
                     "400": {
@@ -327,7 +327,7 @@ var doc = `{
                 }
             }
         },
-        "/auth/profile": {
+        "/user/profile": {
             "get": {
                 "security": [
                     {
@@ -354,7 +354,7 @@ var doc = `{
                 }
             }
         },
-        "/auth/profile/update": {
+        "/user/profile/update": {
             "put": {
                 "security": [
                     {
@@ -392,7 +392,7 @@ var doc = `{
                 }
             }
         },
-        "/auth/profile/update/avatar": {
+        "/user/profile/update/avatar": {
             "put": {
                 "security": [
                     {
@@ -428,7 +428,7 @@ var doc = `{
                 }
             }
         },
-        "/auth/profile/{username}": {
+        "/user/profile/{username}": {
             "get": {
                 "produces": [
                     "application/json"
@@ -453,7 +453,7 @@ var doc = `{
                 }
             }
         },
-        "/auth/register": {
+        "/user/register": {
             "post": {
                 "produces": [
                     "application/json"
@@ -462,11 +462,11 @@ var doc = `{
                 "parameters": [
                     {
                         "description": "参数",
-                        "name": "auth",
+                        "name": "user",
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/auth.registerParameter"
+                            "$ref": "#/definitions/user.registerParameter"
                         }
                     }
                 ],
@@ -474,7 +474,7 @@ var doc = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/auth.registerResponse"
+                            "$ref": "#/definitions/user.registerResponse"
                         }
                     },
                     "400": {
@@ -486,7 +486,7 @@ var doc = `{
                 }
             }
         },
-        "/auth/register/sensitive/email": {
+        "/user/register/sensitive/email": {
             "post": {
                 "security": [
                     {
@@ -500,11 +500,11 @@ var doc = `{
                 "parameters": [
                     {
                         "description": "参数",
-                        "name": "auth",
+                        "name": "user",
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/auth.sEmailRegisterParameter"
+                            "$ref": "#/definitions/user.sEmailRegisterParameter"
                         }
                     }
                 ],
@@ -512,7 +512,7 @@ var doc = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/auth.loginResponse"
+                            "$ref": "#/definitions/user.loginResponse"
                         }
                     },
                     "400": {
@@ -644,7 +644,7 @@ var doc = `{
                 }
             }
         },
-        "auth.loginResponse": {
+        "user.loginResponse": {
             "type": "object",
             "properties": {
                 "code": {
@@ -658,7 +658,7 @@ var doc = `{
                 }
             }
         },
-        "auth.loginWithEmailParameter": {
+        "user.loginWithEmailParameter": {
             "type": "object",
             "required": [
                 "email",
@@ -682,7 +682,7 @@ var doc = `{
                 }
             }
         },
-        "auth.loginWithUsernameParameter": {
+        "user.loginWithUsernameParameter": {
             "type": "object",
             "required": [
                 "password",
@@ -706,7 +706,7 @@ var doc = `{
                 }
             }
         },
-        "auth.registerParameter": {
+        "user.registerParameter": {
             "type": "object",
             "required": [
                 "email",
@@ -731,7 +731,7 @@ var doc = `{
                 }
             }
         },
-        "auth.registerResponse": {
+        "user.registerResponse": {
             "type": "object",
             "properties": {
                 "code": {
@@ -742,7 +742,7 @@ var doc = `{
                 }
             }
         },
-        "auth.sEmailLoginParameter": {
+        "user.sEmailLoginParameter": {
             "type": "object",
             "required": [
                 "email",
@@ -766,7 +766,7 @@ var doc = `{
                 }
             }
         },
-        "auth.sEmailRegisterParameter": {
+        "user.sEmailRegisterParameter": {
             "type": "object",
             "required": [
                 "email"

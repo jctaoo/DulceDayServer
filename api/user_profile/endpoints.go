@@ -28,7 +28,7 @@ func NewEndpointsImpl(service user_profile.Service, userService serviceAuth.Serv
 }
 
 func (e EndpointsImpl) MapHandlersToRoutes(router *gin.RouterGroup) *gin.RouterGroup {
-	userGroup := router.Group("/auth/profile")
+	userGroup := router.Group("/user/profile")
 	userGroup.GET("/:Username", e.getProfile)
 
 	userGroup.GET(

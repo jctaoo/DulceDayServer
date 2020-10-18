@@ -346,17 +346,17 @@ paths:
       parameters:
       - description: 参数
         in: body
-        name: auth
+        name: user
         required: true
         schema:
-          $ref: '#/definitions/auth.loginWithEmailParameter'
+          $ref: '#/definitions/user.loginWithEmailParameter'
       produces:
       - application/json
       responses:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/auth.loginResponse'
+            $ref: '#/definitions/user.loginResponse'
         "400":
           description: Bad Request
           schema:
@@ -371,17 +371,17 @@ paths:
       parameters:
       - description: 参数
         in: body
-        name: auth
+        name: user
         required: true
         schema:
-          $ref: '#/definitions/auth.sEmailLoginParameter'
+          $ref: '#/definitions/user.sEmailLoginParameter'
       produces:
       - application/json
       responses:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/auth.loginResponse'
+            $ref: '#/definitions/user.loginResponse'
         "400":
           description: Bad Request
           schema:
@@ -398,17 +398,17 @@ paths:
       parameters:
       - description: 参数
         in: body
-        name: auth
+        name: user
         required: true
         schema:
-          $ref: '#/definitions/auth.loginWithUsernameParameter'
+          $ref: '#/definitions/user.loginWithUsernameParameter'
       produces:
       - application/json
       responses:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/auth.loginResponse'
+            $ref: '#/definitions/user.loginResponse'
         "400":
           description: Bad Request
           schema:
@@ -500,17 +500,17 @@ paths:
       parameters:
       - description: 参数
         in: body
-        name: auth
+        name: user
         required: true
         schema:
-          $ref: '#/definitions/auth.registerParameter'
+          $ref: '#/definitions/user.registerParameter'
       produces:
       - application/json
       responses:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/auth.registerResponse'
+            $ref: '#/definitions/user.registerResponse'
         "400":
           description: Bad Request
           schema:
@@ -521,17 +521,17 @@ paths:
       parameters:
       - description: 参数
         in: body
-        name: auth
+        name: user
         required: true
         schema:
-          $ref: '#/definitions/auth.sEmailRegisterParameter'
+          $ref: '#/definitions/user.sEmailRegisterParameter'
       produces:
       - application/json
       responses:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/auth.loginResponse'
+            $ref: '#/definitions/user.loginResponse'
         "400":
           description: Bad Request
           schema:

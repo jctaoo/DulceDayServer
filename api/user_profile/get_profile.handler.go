@@ -18,34 +18,18 @@ type getProfileResponse struct {
 // @Security ApiKeyAuth
 // @Success 200 {object} getProfileResponse 获取成功
 // @Failure 401 {object} common.BaseResponse 获取失败, 授权失败
-// @Router /auth/profile [get]
+// @Router /user/profile [get]
 func (e *EndpointsImpl) getSelfProfile(context *gin.Context) {
 	authDetail := helpers.GetAuthDetail(context)
 	userIdentifier := authDetail.UserIdentifier
 	fullUser := e.service.GetFullUserByUserIdentifier(userIdentifier)
-	if !fullUser.IsEmpty() {
-		context.JSON(http.StatusOK, getProfileResponse{
-			BaseResponse: common.BaseResponse{
-				Code:    1000,
-				Message: "获取成功",
-			},
-			Data: fullUser,
-		})
-	} else {
-		// 创建对应 UserProfile
-		common.HttpLogger(context, nil, gin.H{
-			"userIdentifier": userIdentifier,
-		}).Info(userIdentifier + "创建新的 UserProfile")
-		e.service.CreateNewProfileByUserIdentifier(userIdentifier)
-		fullUser := e.service.GetFullUserByUserIdentifier(userIdentifier)
-		context.JSON(http.StatusOK, getProfileResponse{
-			BaseResponse: common.BaseResponse{
-				Code:    1000,
-				Message: "获取成功",
-			},
-			Data: fullUser,
-		})
-	}
+	context.JSON(http.StatusOK, getProfileResponse{
+		BaseResponse: common.BaseResponse{
+			Code:    1000,
+			Message: "获取成功",
+		},
+		Data: fullUser,
+	})
 }
 
 type getProfilePathParameter struct {
@@ -56,7 +40,7 @@ type getProfilePathParameter struct {
 // @Produce json
 // @Param username path string true "用户名"
 // @Success 200 {object} getProfileResponse 获取成功
-// @Router /auth/profile/{username} [get]
+// @Router /user/profile/{username} [get]
 func (e *EndpointsImpl) getProfile(context *gin.Context) {
 	pathParam := getProfilePathParameter{}
 	if err := context.ShouldBindUri(pathParam); err == nil {

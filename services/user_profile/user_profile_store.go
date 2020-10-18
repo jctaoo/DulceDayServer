@@ -47,26 +47,18 @@ func (u UserProfileStoreImpl) findFullUserByUserIdentifier(userIdentifier string
 	fullUser := FullUser{
 		UserProfile: &models.UserProfile{},
 	}
-	query := u.db.Table("user_profiles")
-	query = query.Select("user_profiles.uid, user_profiles.nickname, users.username, " +
-		"users.identifier as user_identifier, user_profiles.avatar_file_key")
-	query = query.Joins("LEFT OUTER JOIN users ON user_profiles.user_identifier = " +
-		"users.identifier")
-	query = query.Where("users.identifier = ?", userIdentifier)
-	query = query.Group("user_profiles.id").Group("users.id")
+	query := buildBaseQueryForFullUser(u.db).Where(&models.UserProfile{
+		UserIdentifier: userIdentifier,
+	})
 	query.Scan(&fullUser)
 	return &fullUser
 }
 
 func (u UserProfileStoreImpl) findFullUserByUsername(username string) *FullUser {
 	fullUser := FullUser{}
-	query := u.db.Table("user_profiles")
-	query = query.Select("user_profiles.uid, user_profiles.nickname, users.username, " +
-		"users.identifier as user_identifier, user_profiles.avatar_file_key")
-	query = query.Joins("LEFT OUTER JOIN users ON user_profiles.user_identifier = " +
-		"users.identifier")
-	query = query.Where("users.username = ?", username)
-	query = query.Group("user_profiles.id").Group("users.id")
+	query := buildBaseQueryForFullUser(u.db).Where(&models.User{
+		Username: username,
+	})
 	query.Scan(&fullUser)
 	return &fullUser
 }

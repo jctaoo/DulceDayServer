@@ -5,11 +5,12 @@ package main
 import (
 	"DulceDayServer/api/moment"
 	apiStaticStorage "DulceDayServer/api/static_storage"
-	"DulceDayServer/api/auth"
+	"DulceDayServer/api/user"
 	"DulceDayServer/api/user_profile"
 	"DulceDayServer/database"
 	serviceMoment "DulceDayServer/services/moment"
 	"DulceDayServer/services/static_storage"
+	serviceUser "DulceDayServer/services/user"
 	serviceAuth "DulceDayServer/services/auth"
 	serviceUserProfile "DulceDayServer/services/user_profile"
 	"github.com/google/wire"
@@ -22,7 +23,7 @@ var aliossStaticStorageServiceSet = wire.NewSet(
 	wire.Bind(new(static_storage.Service), new(*static_storage.AliOSSStaticStorageService)),
 )
 
-var userServiceSet = wire.NewSet(
+var authUserServiceSet = wire.NewSet(
 	serviceAuth.NewServiceImpl,
 	wire.Bind(new(serviceAuth.Service), new(*serviceAuth.ServiceImpl)),
 
@@ -42,6 +43,14 @@ var userServiceSet = wire.NewSet(
 	wire.Bind(new(serviceAuth.TokenAdaptor), new(*serviceAuth.TokenAdaptorImpl)),
 )
 
+var userServiceSet = wire.NewSet(
+	serviceUser.NewStoreImpl,
+	wire.Bind(new(serviceUser.Store), new(*serviceUser.StoreImpl)),
+
+	serviceUser.NewServiceImpl,
+	wire.Bind(new(serviceUser.Service), new(*serviceUser.ServiceImpl)),
+)
+
 var userProfileServiceSet = wire.NewSet(
 	serviceUserProfile.NewUserProfileServiceImpl,
 	wire.Bind(new(serviceUserProfile.Service), new(*serviceUserProfile.ServiceImpl)),
@@ -53,21 +62,23 @@ var userProfileServiceSet = wire.NewSet(
 var userEndpointsSet = wire.NewSet(
 	universalSet,
 	userServiceSet,
+	userProfileServiceSet,
+	authUserServiceSet,
 )
 
-func UserEndpoints() auth.Endpoints {
+func UserEndpoints() user.Endpoints {
 	panic(
 		wire.Build(
-			auth.NewEndpointsImpl,
+			user.NewEndpointsImpl,
 			userEndpointsSet,
-			wire.Bind(new(auth.Endpoints), new(*auth.EndpointsImpl)),
+			wire.Bind(new(user.Endpoints), new(*user.EndpointsImpl)),
 		),
 	)
 }
 
 var userProfileEndpointsSet = wire.NewSet(
 	universalSet,
-	userServiceSet,
+	authUserServiceSet,
 	userProfileServiceSet,
 	aliossStaticStorageServiceSet,
 )
@@ -107,7 +118,7 @@ var momentServiceSet = wire.NewSet(
 
 var momentEndpointsSet = wire.NewSet(
 	universalSet,
-	userServiceSet,
+	authUserServiceSet,
 	momentServiceSet,
 	aliossStaticStorageServiceSet,
 )

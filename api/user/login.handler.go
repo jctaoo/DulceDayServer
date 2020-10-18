@@ -1,4 +1,4 @@
-package auth
+package user
 
 import (
 	"DulceDayServer/api/common"
@@ -26,11 +26,11 @@ type loginResponse struct {
 
 // @Summary 使用邮箱登陆
 // @Produce json
-// @Param auth body loginWithEmailParameter true "参数"
+// @Param user body loginWithEmailParameter true "参数"
 // @Success 200 {object} loginResponse 登陆成功
 // @Failure 400 {object} common.BaseResponse 登陆失败, 信息不合规
 // @Failure 401 {object} common.BaseResponse 登陆失败, 鉴权失败
-// @Router /auth/login/email [post]
+// @Router /user/login/email [post]
 func (e *EndpointsImpl) loginWithEmail(context *gin.Context) {
 	parameter := loginWithEmailParameter{}
 	if err := context.ShouldBindJSON(&parameter); err == nil {
@@ -44,11 +44,11 @@ func (e *EndpointsImpl) loginWithEmail(context *gin.Context) {
 
 // @Summary 使用用户名登陆
 // @Produce json
-// @Param auth body loginWithUsernameParameter true "参数"
+// @Param user body loginWithUsernameParameter true "参数"
 // @Success 200 {object} loginResponse 登陆成功
 // @Failure 400 {object} common.BaseResponse 登陆失败, 信息不合规
 // @Failure 401 {object} common.BaseResponse 登陆失败, 鉴权失败
-// @Router /auth/login/username [post]
+// @Router /user/login/username [post]
 func (e *EndpointsImpl) loginWithUsername(context *gin.Context) {
 	parameter := loginWithUsernameParameter{}
 	if err := context.ShouldBindJSON(&parameter); err == nil {

@@ -16,9 +16,10 @@ func MigrateDataBase(db *gorm.DB, cdb *redis.Client) {
 
 	// 常规迁移，每次运行前执行
 	err = db.AutoMigrate(
+		&models.User{},
+		&models.UserProfile{},
 		&models.AuthUser{},
 		&models.TokenAuth{},
-		&models.UserProfile{},
 		&models.Moment{},
 		&models.MomentStarUser{},
 	)

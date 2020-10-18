@@ -24,7 +24,7 @@ type updateAvatarResponse struct {
 // @Param file formData file true "头像图片"
 // @Success 200 {object} updateAvatarResponse 修改成功
 // @Failure 401 {object} common.BaseResponse 获取失败, 未登录
-// @Router /auth/profile/update/avatar [put]
+// @Router /user/profile/update/avatar [put]
 func (e *EndpointsImpl) updateAvatar(context *gin.Context) {
 	// 接收文件
 	file, header, err := context.Request.FormFile("file")

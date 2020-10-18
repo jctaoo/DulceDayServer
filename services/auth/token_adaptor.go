@@ -59,7 +59,7 @@ func (t TokenAdaptorImpl) genericGenerateTokenStr(tokenAuth *models.TokenAuth, u
 	tokenClaims := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
 	token, err := tokenClaims.SignedString(jwtSecret)
 	if err != nil {
-		logrus.WithFields(logrus.Fields{"tokenAuth": tokenAuth, "auth": user}).WithError(err).Error("生成 TokenStr 发生错误")
+		logrus.WithFields(logrus.Fields{"tokenAuth": tokenAuth, "user": user}).WithError(err).Error("生成 TokenStr 发生错误")
 	}
 	return token
 }

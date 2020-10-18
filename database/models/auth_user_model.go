@@ -4,7 +4,7 @@ import (
 	"gorm.io/gorm"
 )
 
-// 用于登录的 AuthUser, 区别于用于表现用户信息的 UserProfile
+// 用于登录的 AuthUser, 区别于用于表现用户信息的 User
 type AuthUser struct {
 	gorm.Model `json:"-"`
 

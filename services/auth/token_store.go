@@ -38,7 +38,7 @@ func NewTokenStoreImpl(db *gorm.DB, rdb *redis.Client) *TokenStoreImpl {
 
 func (t TokenStoreImpl) addNewTokenToUser(token *models.TokenAuth, user *models.AuthUser) {
 	user.Tokens = append(user.Tokens, *token)
-	t.db.Save(user)
+	t.db.Save(user) // todo 优化
 }
 
 func (t TokenStoreImpl) updateToken(tokenAuth *models.TokenAuth, ip string, newToken string) {

@@ -2,13 +2,15 @@ package models
 
 import "gorm.io/gorm"
 
-// 用于表现用户信息的，区别于用于登录的 User
+// UserProfile 用与表现用户信息
 type UserProfile struct {
-	gorm.Model `json:"-"`
-	Uid string `json:"uid"`
-	UserIdentifier string `json:"-"`
-	Nickname string `json:"nickname"`
-	AvatarFileKey string `json:"avatar_file_key"`
+	gorm.Model     `json:"-"`
+
+	// User 的外键，User.UserIdentifier --> UserProfile.UserIdentifier
+	UserIdentifier string `gorm:"type:VARCHAR(50);unique" json:"-"`
+
+	Nickname       string `json:"nickname"`
+	AvatarFileKey  string `json:"avatar_file_key"`
 }
 
 func (u UserProfile) IsEmpty() bool {

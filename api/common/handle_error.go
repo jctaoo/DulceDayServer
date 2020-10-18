@@ -13,12 +13,12 @@ func HandleHttpErr(err error, context *gin.Context) {
 	if errs, ok := err.(validator.ValidationErrors); ok {
 		errMessage, _ := json.Marshal(TranslateValidateErr(errs, context))
 		context.JSON(http.StatusBadRequest, BaseResponse{
-			Code: 4001,
+			Code:    4001,
 			Message: string(errMessage),
 		})
 	} else {
 		context.JSON(http.StatusBadRequest, BaseResponse{
-			Code: 4002,
+			Code:    4002,
 			Message: err.Error(),
 		})
 	}

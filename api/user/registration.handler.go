@@ -2,15 +2,14 @@ package user
 
 import (
 	"DulceDayServer/api/common"
-	"DulceDayServer/database/models"
 	"github.com/gin-gonic/gin"
 	"net/http"
 )
 
 type registerParameter struct {
-	Username string `json:"username" binding:"gte=1,required" example:"bob"` // 用户名
+	Username string `json:"username" binding:"gte=1,required" example:"bob"`              // 用户名
 	Password string `json:"password" binding:"required,min=8,max=18" example:"qwerty123"` // 密码
-	Email string `json:"email" binding:"email,required" example:"haha@test.com"` // 邮箱
+	Email    string `json:"email" binding:"email,required" example:"haha@test.com"`       // 邮箱
 }
 
 type registerResponse struct {
@@ -27,29 +26,18 @@ func (e *EndpointsImpl) register(context *gin.Context) {
 	parameter := registerParameter{}
 	if err := context.ShouldBindJSON(&parameter); err == nil {
 		email, username, password := parameter.Email, parameter.Username, parameter.Password
-		user := &models.User{
-			Username: username,
-			Password: password,
-			Email:    email,
-		}
-		// 检查用户是否存在
-		if !e.service.CheckUserExisting(user) {
-			// 生成唯一id
-			newIdentifier := e.service.GenerateUserIdentifier()
-			user.Identifier = newIdentifier
-			// 存储用户
-			user = e.service.NewUser(user)
-			// 用户创建成功
+		if !e.service.CheckUserExisting(username, email) {
+			e.service.Register(username, email, password)
 			context.JSON(http.StatusCreated, registerResponse{
 				BaseResponse: common.BaseResponse{
-					Code: 2001,
+					Code:    2001,
 					Message: "注册成功",
 				},
 			})
 		} else {
 			context.JSON(http.StatusBadRequest, registerResponse{
 				BaseResponse: common.BaseResponse{
-					Code: 4000,
+					Code:    4000,
 					Message: "用户已经存在",
 				},
 			})

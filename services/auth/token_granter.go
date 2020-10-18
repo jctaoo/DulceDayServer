@@ -1,4 +1,4 @@
-package user
+package auth
 
 import (
 	"DulceDayServer/config"
@@ -9,9 +9,9 @@ import (
 
 type TokenGranter interface {
 	// 授予 Token (鉴权的末尾--颁发 Token)
-	grantToken(user *models.User, ip string, deviceName string) string
+	grantToken(user *models.AuthUser, ip string, deviceName string) string
 	// 为敏感信息授予 Token
-	grantTokenForSensitiveVerification(user *models.User, ip string, deviceName string) string
+	grantTokenForSensitiveVerification(user *models.AuthUser, ip string, deviceName string) string
 	// 检验敏感信息 Token
 	checkTokenForSensitiveVerification(tokenStr string, ip string, deviceName string) (isValidate bool, claims TokenClaims, err error)
 
@@ -36,7 +36,7 @@ func NewTokenGranterImpl(tokenStore TokenStore, tokenAdaptor TokenAdaptor) *Toke
 	return &TokenGranterImpl{tokenStore: tokenStore, tokenAdaptor: tokenAdaptor}
 }
 
-func (t TokenGranterImpl) grantToken(user *models.User, ip string, deviceName string) string {
+func (t TokenGranterImpl) grantToken(user *models.AuthUser, ip string, deviceName string) string {
 	// 查看是否有相应的 Token 记录
 	tokenAuth := t.tokenStore.findTokenByUserAndDeviceName(user, deviceName)
 	if !tokenAuth.IsEmpty() {
@@ -59,10 +59,10 @@ func (t TokenGranterImpl) grantToken(user *models.User, ip string, deviceName st
 	}
 }
 
-func (t TokenGranterImpl) grantTokenForSensitiveVerification(user *models.User, ip string, deviceName string) string {
+func (t TokenGranterImpl) grantTokenForSensitiveVerification(user *models.AuthUser, ip string, deviceName string) string {
 	// 生成 TokenAuth 存入持久化数据库
 	tokenAuth := models.NewTokenAuthWithoutTokenStr(user, ip, deviceName)
-	tokenAuth.ExpireTime = time.Unix(time.Now().Unix() + config.SiteConfig.VerificationTokenExpiresTime, 0)
+	tokenAuth.ExpireTime = time.Unix(time.Now().Unix()+config.SiteConfig.VerificationTokenExpiresTime, 0)
 	tokenStr := t.tokenAdaptor.generateTokenStrForSensitiveVerification(tokenAuth, user) // 生成 TokenStr，其中 TokenStr 中放入是否属于铭感验证的标识
 	tokenAuth.TokenStr = tokenStr
 	t.tokenStore.addNewTokenToUser(tokenAuth, user)

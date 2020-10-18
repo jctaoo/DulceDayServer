@@ -2,7 +2,6 @@ package database
 
 import (
 	"DulceDayServer/config"
-	"DulceDayServer/database/models"
 	"fmt"
 	"github.com/aliyun/aliyun-oss-go-sdk/oss"
 	"github.com/go-redis/redis/v8"
@@ -20,24 +19,11 @@ func NewDB() *gorm.DB {
 		os.Exit(-1)
 	}
 	if db != nil {
+		// 连接池
 		sqlDB, _ := db.DB()
 		sqlDB.SetMaxIdleConns(10)
 		sqlDB.SetMaxOpenConns(100)
 		sqlDB.SetConnMaxLifetime(time.Hour)
-
-		err := db.AutoMigrate(
-			&models.User{},
-			&models.TokenAuth{},
-			&models.UserProfile{},
-			&models.Moment{},
-			&models.MomentStarUser{},
-			&models.PurchaseItem{},
-		)
-
-		if err != nil {
-			fmt.Println("Some Error Occurred When Migrate Table")
-			os.Exit(-1)
-		}
 	} else {
 		fmt.Println("Cannot set connection pool.")
 		os.Exit(-1)
@@ -48,8 +34,8 @@ func NewDB() *gorm.DB {
 func NewCache() *redis.Client {
 	addr := fmt.Sprintf("%s:%s", config.SiteConfig.CacheConfig.Host, config.SiteConfig.CacheConfig.Port)
 	client := redis.NewClient(&redis.Options{
-		Addr: addr,
-		DB: config.SiteConfig.CacheConfig.DB,
+		Addr:     addr,
+		DB:       config.SiteConfig.CacheConfig.DB,
 		PoolSize: 10,
 	})
 	return client

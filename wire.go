@@ -4,13 +4,15 @@ package main
 
 import (
 	"DulceDayServer/api/moment"
+	apiStaticStorage "DulceDayServer/api/static_storage"
 	"DulceDayServer/api/store"
 	"DulceDayServer/api/user"
 	"DulceDayServer/api/user_profile"
 	"DulceDayServer/database"
+	serviceMoment "DulceDayServer/services/moment"
 	"DulceDayServer/services/static_storage"
-	apiStaticStorage "DulceDayServer/api/static_storage"
 	serviceUser "DulceDayServer/services/user"
+	serviceAuth "DulceDayServer/services/auth"
 	serviceUserProfile "DulceDayServer/services/user_profile"
 	serviceMoment "DulceDayServer/services/moment"
 	serviceStore "DulceDayServer/services/store"
@@ -24,24 +26,32 @@ var aliossStaticStorageServiceSet = wire.NewSet(
 	wire.Bind(new(static_storage.Service), new(*static_storage.AliOSSStaticStorageService)),
 )
 
+var authUserServiceSet = wire.NewSet(
+	serviceAuth.NewServiceImpl,
+	wire.Bind(new(serviceAuth.Service), new(*serviceAuth.ServiceImpl)),
+
+	serviceAuth.NewEncryptionAdaptorImpl,
+	wire.Bind(new(serviceAuth.EncryptionAdaptor), new(*serviceAuth.EncryptionAdaptorImpl)),
+
+	serviceAuth.NewTokenGranterImpl,
+	wire.Bind(new(serviceAuth.TokenGranter), new(*serviceAuth.TokenGranterImpl)),
+
+	serviceAuth.NewStoreImpl,
+	wire.Bind(new(serviceAuth.Store), new(*serviceAuth.StoreImpl)),
+
+	serviceAuth.NewTokenStoreImpl,
+	wire.Bind(new(serviceAuth.TokenStore), new(*serviceAuth.TokenStoreImpl)),
+
+	serviceAuth.NewTokenAdaptorImpl,
+	wire.Bind(new(serviceAuth.TokenAdaptor), new(*serviceAuth.TokenAdaptorImpl)),
+)
+
 var userServiceSet = wire.NewSet(
-	serviceUser.NewServiceImpl,
-	wire.Bind(new(serviceUser.Service), new(*serviceUser.ServiceImpl)),
-
-	serviceUser.NewEncryptionAdaptorImpl,
-	wire.Bind(new(serviceUser.EncryptionAdaptor), new(*serviceUser.EncryptionAdaptorImpl)),
-
-	serviceUser.NewTokenGranterImpl,
-	wire.Bind(new(serviceUser.TokenGranter), new(*serviceUser.TokenGranterImpl)),
-
 	serviceUser.NewStoreImpl,
 	wire.Bind(new(serviceUser.Store), new(*serviceUser.StoreImpl)),
 
-	serviceUser.NewTokenStoreImpl,
-	wire.Bind(new(serviceUser.TokenStore), new(*serviceUser.TokenStoreImpl)),
-
-	serviceUser.NewTokenAdaptorImpl,
-	wire.Bind(new(serviceUser.TokenAdaptor), new(*serviceUser.TokenAdaptorImpl)),
+	serviceUser.NewServiceImpl,
+	wire.Bind(new(serviceUser.Service), new(*serviceUser.ServiceImpl)),
 )
 
 var userProfileServiceSet = wire.NewSet(
@@ -55,6 +65,8 @@ var userProfileServiceSet = wire.NewSet(
 var userEndpointsSet = wire.NewSet(
 	universalSet,
 	userServiceSet,
+	userProfileServiceSet,
+	authUserServiceSet,
 )
 
 func UserEndpoints() user.Endpoints {
@@ -69,7 +81,7 @@ func UserEndpoints() user.Endpoints {
 
 var userProfileEndpointsSet = wire.NewSet(
 	universalSet,
-	userServiceSet,
+	authUserServiceSet,
 	userProfileServiceSet,
 	aliossStaticStorageServiceSet,
 )
@@ -109,7 +121,7 @@ var momentServiceSet = wire.NewSet(
 
 var momentEndpointsSet = wire.NewSet(
 	universalSet,
-	userServiceSet,
+	authUserServiceSet,
 	momentServiceSet,
 	aliossStaticStorageServiceSet,
 )
@@ -123,6 +135,7 @@ func MomentEndpoints() moment.Endpoints {
 		),
 	)
 }
+
 
 var storeServiceSet = wire.NewSet(
 	serviceStore.NewPurchasesProviderImpl,

@@ -8,9 +8,9 @@ import (
 )
 
 type sEmailLoginParameter struct {
-	VerificationCode string `json:"verificationCode" binding:"required" example:"623597"` // 验证码
-	Email string `json:"email" binding:"email,required" example:"haha@test.com"` // 邮箱
-	DeviceName string `json:"device_name,omitempty" example:"bob的iPhone"` // 登录的设备的名字，浏览器为 “浏览器(ip所在的城市)”
+	VerificationCode string `json:"verificationCode" binding:"required" example:"623597"`   // 验证码
+	Email            string `json:"email" binding:"email,required" example:"haha@test.com"` // 邮箱
+	DeviceName       string `json:"device_name,omitempty" example:"bob的iPhone"`             // 登录的设备的名字，浏览器为 “浏览器(ip所在的城市)”
 }
 
 type sLoginResponse struct {
@@ -36,20 +36,20 @@ func (e *EndpointsImpl) loginForSensitiveWithEmail(context *gin.Context) {
 		if err != nil {
 			common.HttpLogger(context, err, gin.H{
 				"verificationCode": parameter.VerificationCode,
-				"email": parameter.Email,
-				"username": authDetail.Username,
-				"deviceName": deviceName,
+				"email":            parameter.Email,
+				"username":         authDetail.Username,
+				"deviceName":       deviceName,
 			}).Info("用户使用邮箱进行敏感登陆验证时发生鉴权错误")
 			context.JSON(http.StatusUnauthorized, sLoginResponse{
 				BaseResponse: common.BaseResponse{
-					Code: 4000,
+					Code:    4000,
 					Message: "敏感登陆验证错误",
 				},
 			})
 		} else {
 			context.JSON(http.StatusOK, sLoginResponse{
 				BaseResponse: common.BaseResponse{
-					Code: 2000,
+					Code:    2000,
 					Message: "登陆成功",
 				},
 				Token: tokenStr,

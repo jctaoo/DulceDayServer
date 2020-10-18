@@ -31,7 +31,7 @@ func (e EndpointsImpl) getMoment(context *gin.Context) {
 		m := e.service.GetMomentByMomentId(momentId, authDetail.UserIdentifier)
 		context.JSON(http.StatusOK, getMomentResponse{
 			BaseResponse: common.BaseResponse{
-				Code: 2000,
+				Code:    2000,
 				Message: "获取成功",
 			},
 			Moment: m,

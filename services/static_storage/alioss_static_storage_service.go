@@ -10,7 +10,6 @@ type AliOSSStaticStorageService struct {
 	bucket *oss.Bucket
 }
 
-
 func NewAliOSSStaticStorageService(bucket *oss.Bucket) *AliOSSStaticStorageService {
 	return &AliOSSStaticStorageService{bucket: bucket}
 }
@@ -27,4 +26,3 @@ func (a AliOSSStaticStorageService) SaveImage(reader io.Reader, key string) erro
 func (a AliOSSStaticStorageService) GetFileUrl(key string) (url string, err error) {
 	return a.bucket.SignURL(key, oss.HTTPGet, int64(config.SiteConfig.AliOssStaticStorageConfig.ResourceExpiresSec))
 }
-

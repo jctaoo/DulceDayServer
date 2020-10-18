@@ -8,15 +8,15 @@ import (
 )
 
 type loginWithEmailParameter struct {
-	Password string `json:"password" binding:"required" example:"qwerty123"` // 密码
-	Email string `json:"email" binding:"email,required" example:"haha@test.com"` // 邮箱
-	DeviceName string `json:"device_name,omitempty" example:"bob的iPhone"` // 登录的设备的名字，浏览器为 “浏览器(ip所在的城市)”
+	Password   string `json:"password" binding:"required" example:"qwerty123"`        // 密码
+	Email      string `json:"email" binding:"email,required" example:"haha@test.com"` // 邮箱
+	DeviceName string `json:"device_name,omitempty" example:"bob的iPhone"`             // 登录的设备的名字，浏览器为 “浏览器(ip所在的城市)”
 }
 
 type loginWithUsernameParameter struct {
-	Password string `json:"password" binding:"required" example:"qwerty123"`  // 密码
-	Username string `json:"username" binding:"required" example:"bob"`  // 用户名
-	DeviceName string `json:"device_name,omitempty" example:"bob的iPhone"` // 登录的设备的名字，浏览器为 “浏览器(ip所在的城市)”
+	Password   string `json:"password" binding:"required" example:"qwerty123"` // 密码
+	Username   string `json:"username" binding:"required" example:"bob"`       // 用户名
+	DeviceName string `json:"device_name,omitempty" example:"bob的iPhone"`      // 登录的设备的名字，浏览器为 “浏览器(ip所在的城市)”
 }
 
 type loginResponse struct {
@@ -69,21 +69,21 @@ func (e *EndpointsImpl) login(context *gin.Context, email string, username strin
 	token, err := e.service.AuthenticateWithPassword(username, email, password, ip, deviceName)
 	if err != nil {
 		common.HttpLogger(context, err, gin.H{
-			"email": email,
-			"username": username,
-			"password": password,
+			"email":      email,
+			"username":   username,
+			"password":   password,
 			"deviceName": deviceName,
 		}).Info("用户登陆时发生鉴权错误")
 		context.JSON(http.StatusUnauthorized, loginResponse{
 			BaseResponse: common.BaseResponse{
-				Code: 4000,
+				Code:    4000,
 				Message: "鉴权错误",
 			},
 		})
 	} else {
 		context.JSON(http.StatusOK, loginResponse{
 			BaseResponse: common.BaseResponse{
-				Code: 2000,
+				Code:    2000,
 				Message: "登陆成功",
 			},
 			Token: token,

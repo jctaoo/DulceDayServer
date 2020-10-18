@@ -10,8 +10,8 @@ import (
 )
 
 type SiteEndpoints struct {
-	UserEndpoints user.Endpoints
-	UserProfileEndpoints user_profile.Endpoints
+	UserEndpoints          user.Endpoints
+	UserProfileEndpoints   user_profile.Endpoints
 	StaticStorageEndpoints static_storage.Endpoints
 	MomentEndpoints moment.Endpoints
 	StoreEndpoints store.Endpoints

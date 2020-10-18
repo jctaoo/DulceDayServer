@@ -19,11 +19,11 @@ func MiddleWareLog() gin.HandlerFunc {
 		statusCode := context.Writer.Status()
 		clientIP := context.ClientIP()
 		logrus.WithFields(logrus.Fields{
-			"statusCode": statusCode,
+			"statusCode":  statusCode,
 			"latencyTime": latencyTime,
-			"ip": clientIP,
-			"method": reqMethod,
-			"uri": reqUri,
+			"ip":          clientIP,
+			"method":      reqMethod,
+			"uri":         reqUri,
 		}).Info("receive request")
 	}
 }

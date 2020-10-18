@@ -31,7 +31,7 @@ func (e EndpointsImpl) createMoment(context *gin.Context) {
 		mid := e.service.CreateNewMoment(parameter.Content, authDetail.UserIdentifier)
 		context.JSON(http.StatusCreated, createMomentResponse{
 			BaseResponse: common.BaseResponse{
-				Code: 2001,
+				Code:    2001,
 				Message: "创建成功",
 			},
 			MomentID: mid,

@@ -34,7 +34,7 @@ func (e *EndpointsImpl) updateProfile(context *gin.Context) {
 		e.service.UpdateProfileByUserIdentifier(authDetail.UserIdentifier, newProfile)
 		context.JSON(http.StatusOK, updateProfileResponse{
 			BaseResponse: common.BaseResponse{
-				Code: 2000,
+				Code:    2000,
 				Message: "修改成功",
 			},
 			Nickname: newProfile.Nickname,

@@ -1,4 +1,4 @@
-package user
+package auth
 
 // redis 中 ID BlackList 的 score 值常量
 const kUserIdBlackListScore = 100

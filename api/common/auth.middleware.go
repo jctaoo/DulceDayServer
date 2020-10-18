@@ -1,7 +1,7 @@
 package common
 
 import (
-	serviceUser "DulceDayServer/services/user"
+	serviceAuth "DulceDayServer/services/auth"
 	"github.com/gin-gonic/gin"
 	"net/http"
 )
@@ -14,14 +14,14 @@ const KIsAuthKey = "is_auth"
 const KIsSensitiveAuthKey = "is_sensitive_auth"
 
 // 请求头中 token 字段为空错误
-type ErrorAuthEmptyTokenHeader struct {}
+type ErrorAuthEmptyTokenHeader struct{}
 
 func (e ErrorAuthEmptyTokenHeader) Error() string {
 	return "token请求头为空"
 }
 
 // token 验证失败错误
-type ErrorAuthValidateWrong struct {}
+type ErrorAuthValidateWrong struct{}
 
 func (e ErrorAuthValidateWrong) Error() string {
 	return "token验证错误"
@@ -38,11 +38,11 @@ const (
 	MiddleWareAuthPolicyAccess
 )
 
-func MiddleWareAuth(service serviceUser.Service, accessPolicy MiddleWareAuthPolicy) gin.HandlerFunc {
+func MiddleWareAuth(service serviceAuth.Service, accessPolicy MiddleWareAuthPolicy) gin.HandlerFunc {
 	doUnLogin := func(context *gin.Context, err error) {
 		if accessPolicy == MiddleWareAuthPolicyReject {
 			context.JSON(http.StatusUnauthorized, BaseResponse{
-				Code: 40001,
+				Code:    40001,
 				Message: err.Error(),
 			})
 			context.Abort()
@@ -76,7 +76,7 @@ func MiddleWareAuth(service serviceUser.Service, accessPolicy MiddleWareAuthPoli
 		if isValidate {
 			HttpLogger(context, nil, gin.H{
 				"bearer_token": tokenStr,
-				"claims": claims,
+				"claims":       claims,
 			}).Debug("用户授权成功")
 			context.Set(KIsAuthKey, true)
 			context.Set(KAuthUserIdentifierContextKey, claims.UserIdentifier)

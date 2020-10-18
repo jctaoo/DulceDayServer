@@ -2,202 +2,68 @@ package user
 
 import (
 	"DulceDayServer/database/models"
-	"github.com/satori/go.uuid"
+	"DulceDayServer/helpers"
+	"DulceDayServer/services/auth"
+	"DulceDayServer/services/user_profile"
 )
 
+// user.Service 仅用作 user 模块的服务，其他模块对于授权鉴权服务的调用直接使用 auth 模块
 type Service interface {
-	// 鉴权, 并返回 Token 字符串
-	// username: 可空
-	// email: 可空 (优先使用 username)
-	// password: 密码
+	// 注册
+	Register(username string, email string, password string)
+
+	// 使用密码鉴权
 	AuthenticateWithPassword(username string, email string, password string, ip string, deviceName string) (token string, err error)
 
-	// 为敏感信息鉴权做准备，生成验证码，并存在缓存数据库中
-	// username: 必填
-	// email: 可空 (优先使用 email)
+	// 为敏感信息鉴权做准备，生成验证码
 	PrepareForAuthForSensitiveVerification(username string, email string, ip string, deviceName string) (verificationCode string, err error)
-	// 为敏感信息鉴权, 并返回 Token 字符串
-	// email: 可空 (优先使用 email)
-	// verificationCode: 验证码
+
+	// 敏感操作鉴权
 	AuthenticateForSensitiveVerification(email string, verificationCode string, ip string, deviceName string) (token string, err error)
 
-	// 授权
-	Authorize(tokenStr string) (isValidate bool, claims TokenClaims, err error)
-
-	// 检查用户密码是否正确
-	// user: 完整的用户模型
-	// password: 需要检验的密码
-	checkMatchPassword(user *models.User, password string) bool
-
-	NewUser(user *models.User) *models.User
-
-	CheckUserInBlackList(userId *models.User) bool
-	CheckUserInBlackListByUserIdentifier(userId string) bool
-	AddUserInBlackList(user *models.User)
-	RemoveUserFromBlackList(user *models.User)
-
-	CheckUserExisting(user *models.User) bool
-	GenerateUserIdentifier() string
+	CheckUserExisting(username string, email string) bool
 }
 
 type ServiceImpl struct {
-	encryptionAdaptor EncryptionAdaptor
-	tokenGranter      TokenGranter
-	userStore         Store
+	store Store
+	authService auth.Service
+	profileService user_profile.Service
 }
 
-func NewServiceImpl(encryptionAdaptor EncryptionAdaptor, tokenGranter TokenGranter, userStore Store) *ServiceImpl {
-	return &ServiceImpl{encryptionAdaptor: encryptionAdaptor, tokenGranter: tokenGranter, userStore: userStore}
+func NewServiceImpl(store Store, authService auth.Service, profileService user_profile.Service) *ServiceImpl {
+	return &ServiceImpl{store: store, authService: authService, profileService: profileService}
 }
 
-func (g *ServiceImpl) AuthenticateWithPassword(username string, email string, password string, ip string, deviceName string) (token string, err error) {
-	var user *models.User
-	if username != "" {
-		user = g.userStore.findUserByUserName(username)
-	} else if email != "" {
-		user = g.userStore.findUserByEmail(email)
+func (s ServiceImpl) Register(username string, email string, password string) {
+	authUser := &models.AuthUser{
+		Username: username,
+		Password: password,
+		Email:    email,
 	}
-	if user == nil {
-		err = ErrorUserNotFound{}
-		return
-	}
-
-	// 检验 UserId 字符串是否在 BlackList 中
-	inBlackList := g.CheckUserInBlackList(user)
-	if inBlackList {
-		err = ErrorUserIdInBlackList{}
-		return
-	}
-	// 检查密码是否正确
-	if !g.checkMatchPassword(user, password) {
-		err = ErrorPasswordWrong{}
-		return
-	}
-	token = g.tokenGranter.grantToken(user, ip, deviceName)
-	return
+	identifier := helpers.GenerateRandomUserID()
+	// 在user模块加入相应记录
+	up := s.profileService.CreateNewProfileByUserIdentifier(identifier)
+	s.store.NewUser(identifier, authUser.Username, *up)
+	// 在授权鉴权模块加入记录
+	authUser.Identifier = identifier
+	s.authService.NewUser(authUser)
 }
 
-func (g *ServiceImpl) PrepareForAuthForSensitiveVerification(username string, email string, ip string, deviceName string) (verificationCode string, err error) {
-	var user *models.User
-	if username != "" {
-		user = g.userStore.findUserByUserName(username)
-	} else if email != "" {
-		user = g.userStore.findUserByEmail(email)
-	}
-	if user == nil {
-		err = ErrorUserNotFound{}
-		return
-	}
-
-	// 检验 UserId 字符串是否在 BlackList 中
-	inBlackList := g.CheckUserInBlackList(user)
-	if inBlackList {
-		err = ErrorUserIdInBlackList{}
-		return
-	}
-
-	// 生成 Token
-	tokenStr := g.tokenGranter.grantTokenForSensitiveVerification(user, ip, deviceName)
-
-	// 生成验证码，验证方式(邮箱等)为键，验证码为值(包含 tokenStr)
-	verificationKey := email
-	verificationCode = g.encryptionAdaptor.generateVerificationCode()
-	// 存入缓存数据库
-	g.userStore.saveVerificationCode(verificationKey, g.encryptionAdaptor.toHash(verificationCode), tokenStr)
-
-	return
+func (s ServiceImpl) AuthenticateWithPassword(username string, email string, password string, ip string, deviceName string) (token string, err error) {
+	return s.authService.AuthenticateWithPassword(username, email, password, ip, deviceName)
 }
 
-func (g *ServiceImpl) AuthenticateForSensitiveVerification(email string, verificationCode string, ip string, deviceName string) (token string, err error) {
-	var code, tokenStr string
-	doFailure := func() {
-		// 若不成功 Revoke 相应 Token
-		g.tokenGranter.RevokeTokenStr(tokenStr)
-	}
-
-	// 校验验证码
-	code, tokenStr = g.userStore.getVerificationCode(email)
-	g.userStore.removeVerificationCode(email) // 删除验证码键值
-	if code == "" || tokenStr == "" {
-		// 为空错误
-		err = ErrorBadVerificationCode{}
-		doFailure()
-		return
-	}
-	if !g.encryptionAdaptor.verify(verificationCode, code) {
-		// 验证码错误
-		err = ErrorBadVerificationCode{}
-		doFailure()
-		return
-	}
-	// 验证成功后从 InActiveTokens 中移除
-	g.tokenGranter.ActiveToken(tokenStr)
-
-	// 校验 tokenStr
-	var isValidate bool
-	var claims TokenClaims
-	isValidate, claims, err = g.tokenGranter.checkTokenForSensitiveVerification(tokenStr, ip, deviceName)
-	if !isValidate || err != nil {
-		return
-	}
-
-	// 检验 UserId 字符串是否在 BlackList 中
-	inBlackList := g.CheckUserInBlackListByUserIdentifier(claims.UserIdentifier)
-	if inBlackList {
-		err = ErrorUserIdInBlackList{}
-		return
-	}
-
-	// 当校验成功时，返回 TokenStr
-	token = tokenStr
-	return
+func (s ServiceImpl) PrepareForAuthForSensitiveVerification(username string, email string, ip string, deviceName string) (verificationCode string, err error) {
+	return s.authService.PrepareForAuthForSensitiveVerification(username, email, ip, deviceName)
 }
 
-func (g *ServiceImpl) Authorize(tokenStr string) (isValidate bool, claims TokenClaims, err error) {
-	isValidate, claims, err = g.tokenGranter.authorize(tokenStr)
-	if !isValidate || err != nil {
-		return
-	}
-	// 检验 UserId 字符串是否在 BlackList 中
-	inBlackList := g.CheckUserInBlackListByUserIdentifier(claims.UserIdentifier)
-	if inBlackList {
-		err = ErrorUserIdInBlackList{}
-		return
-	}
-	return
+func (s ServiceImpl) AuthenticateForSensitiveVerification(email string, verificationCode string, ip string, deviceName string) (token string, err error) {
+	return s.authService.AuthenticateForSensitiveVerification(email, verificationCode, ip, deviceName)
 }
 
-func (g *ServiceImpl) checkMatchPassword(user *models.User, password string) bool {
-	return g.encryptionAdaptor.verify(password, user.Password)
-}
-
-func (g *ServiceImpl) NewUser(user *models.User) *models.User {
-	// 将用户密码由 MD5 处理
-	user.Password = g.encryptionAdaptor.toHash(user.Password)
-	g.userStore.newUser(user)
-	return user
-}
-
-func (g *ServiceImpl) CheckUserInBlackList(user *models.User) bool {
-	return g.CheckUserInBlackListByUserIdentifier(user.Identifier)
-}
-
-func (g *ServiceImpl) CheckUserInBlackListByUserIdentifier(userId string) bool {
-	return g.userStore.checkUserInBlackList(userId)
-}
-
-func (g *ServiceImpl) AddUserInBlackList(user *models.User) {
-	g.userStore.addUserInBlackList(user)
-}
-
-func (g *ServiceImpl) RemoveUserFromBlackList(user *models.User) {
-	g.userStore.removeUserFromBlackList(user)
-}
-
-func (g *ServiceImpl) CheckUserExisting(user *models.User) bool {
-	return g.userStore.checkUserExisting(user)
-}
-
-func (g *ServiceImpl) GenerateUserIdentifier() string {
-	return uuid.NewV4().String()
+func (s ServiceImpl) CheckUserExisting(username string, email string) bool {
+	return s.authService.CheckUserExisting(&models.AuthUser{
+		Username: username,
+		Email:    email,
+	})
 }

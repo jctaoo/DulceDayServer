@@ -18,9 +18,9 @@ func (e *EndpointsImpl) getFile(context *gin.Context) {
 	target, err := e.staticStorageService.GetFileUrl(param)
 
 	common.HttpLogger(context, err, gin.H{
-		"key": param,
+		"key":    param,
 		"target": err,
-	}).Debug("静态资源重定向，key:" + param, "目标 url:" + target)
+	}).Debug("静态资源重定向，key:"+param, "目标 url:"+target)
 
 	if err != nil {
 		context.String(http.StatusNotFound, "未找到相应资源")

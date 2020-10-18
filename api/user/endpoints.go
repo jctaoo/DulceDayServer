@@ -2,6 +2,7 @@ package user
 
 import (
 	"DulceDayServer/api/common"
+	"DulceDayServer/services/auth"
 	"DulceDayServer/services/user"
 	"github.com/gin-gonic/gin"
 )
@@ -19,12 +20,14 @@ type Endpoints interface {
 
 type EndpointsImpl struct {
 	Endpoints
-	service           user.Service
+	service user.Service
+	authService auth.Service
 }
 
-func NewEndpointsImpl(genericService user.Service) *EndpointsImpl {
+func NewEndpointsImpl(service user.Service, authService auth.Service) *EndpointsImpl {
 	return &EndpointsImpl{
-		service:           genericService,
+		service: service,
+		authService: authService,
 	}
 }
 
@@ -35,12 +38,12 @@ func (e EndpointsImpl) MapHandlersToRoutes(router *gin.RouterGroup) *gin.RouterG
 	userGroup.POST("/login/username", e.loginWithUsername)
 	userGroup.POST(
 		"/login/sensitive/email",
-		common.MiddleWareAuth(e.service, common.MiddleWareAuthPolicyReject),
+		common.MiddleWareAuth(e.authService, common.MiddleWareAuthPolicyReject),
 		e.loginForSensitiveWithEmail,
 	)
 	userGroup.POST(
 		"/register/sensitive/email",
-		common.MiddleWareAuth(e.service, common.MiddleWareAuthPolicyReject),
+		common.MiddleWareAuth(e.authService, common.MiddleWareAuthPolicyReject),
 		e.registerForSensitiveWithEmail,
 	)
 	return userGroup

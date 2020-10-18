@@ -23,29 +23,13 @@ func (e *EndpointsImpl) getSelfProfile(context *gin.Context) {
 	authDetail := helpers.GetAuthDetail(context)
 	userIdentifier := authDetail.UserIdentifier
 	fullUser := e.service.GetFullUserByUserIdentifier(userIdentifier)
-	if !fullUser.IsEmpty() {
-		context.JSON(http.StatusOK, getProfileResponse{
-			BaseResponse: common.BaseResponse{
-				Code: 1000,
-				Message: "获取成功",
-			},
-			Data: fullUser,
-		})
-	} else {
-		// 创建对应 UserProfile
-		common.HttpLogger(context, nil, gin.H{
-			"userIdentifier": userIdentifier,
-		}).Info(userIdentifier + "创建新的 UserProfile")
-		e.service.CreateNewProfileByUserIdentifier(userIdentifier)
-		fullUser := e.service.GetFullUserByUserIdentifier(userIdentifier)
-		context.JSON(http.StatusOK, getProfileResponse{
-			BaseResponse: common.BaseResponse{
-				Code: 1000,
-				Message: "获取成功",
-			},
-			Data: fullUser,
-		})
-	}
+	context.JSON(http.StatusOK, getProfileResponse{
+		BaseResponse: common.BaseResponse{
+			Code:    1000,
+			Message: "获取成功",
+		},
+		Data: fullUser,
+	})
 }
 
 type getProfilePathParameter struct {
@@ -66,7 +50,7 @@ func (e *EndpointsImpl) getProfile(context *gin.Context) {
 		if !fullUser.IsEmpty() {
 			context.JSON(http.StatusOK, getProfileResponse{
 				BaseResponse: common.BaseResponse{
-					Code: 1000,
+					Code:    1000,
 					Message: "获取成功",
 				},
 				Data: fullUser,
@@ -74,7 +58,7 @@ func (e *EndpointsImpl) getProfile(context *gin.Context) {
 		} else {
 			context.JSON(http.StatusNotFound, getProfileResponse{
 				BaseResponse: common.BaseResponse{
-					Code: 40001,
+					Code:    40001,
 					Message: "找不到 " + username + " 的 Profile",
 				},
 			})

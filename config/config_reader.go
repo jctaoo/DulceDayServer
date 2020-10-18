@@ -9,35 +9,35 @@ import (
 )
 
 type tomlConfig struct {
-	AppConfigs map[string]appConfig
-	DataBaseConfigs map[string]dataBaseConfig
-	CacheConfigs map[string]cacheConfig
+	AppConfigs                 map[string]appConfig
+	DataBaseConfigs            map[string]dataBaseConfig
+	CacheConfigs               map[string]cacheConfig
 	AliOssStaticStorageConfigs map[string]aliOssStaticStorageConfig
 }
 
 type appConfig struct {
-	AppName string
-	AppAddress string
-	AuthTokenExpiresTime int64
+	AppName                      string
+	AppAddress                   string
+	AuthTokenExpiresTime         int64
 	VerificationTokenExpiresTime int64
-	AuthTokenSecret string
-	DefaultDeviceName string
-	AvatarSizeMB int
+	AuthTokenSecret              string
+	DefaultDeviceName            string
+	AvatarSizeMB                 int
 }
 
 type dataBaseConfig struct {
-	Host string
-	Port string
-	Collection string
-	User       string
-	Password   string
+	Host            string
+	Port            string
+	Collection      string
+	User            string
+	Password        string
 	QueryParameters string
 }
 
 type cacheConfig struct {
 	Host string
 	Port string
-	DB int
+	DB   int
 	BlackListName,
 	RevokeTokenListName,
 	IPBlackListName,
@@ -46,10 +46,10 @@ type cacheConfig struct {
 }
 
 type aliOssStaticStorageConfig struct {
-	Endpoint string
-	AccessKeyId string
-	AccessKeySecret string
-	BucketName string
+	Endpoint           string
+	AccessKeyId        string
+	AccessKeySecret    string
+	BucketName         string
 	ResourceExpiresSec int
 }
 

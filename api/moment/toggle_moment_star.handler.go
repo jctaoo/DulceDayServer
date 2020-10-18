@@ -31,7 +31,7 @@ func (e EndpointsImpl) toggleMomentStar(context *gin.Context) {
 		isStarNow := e.service.ToggleStarMoment(pathParameter.MomentID, authDetail.UserIdentifier)
 		context.JSON(http.StatusOK, toggleMomentStarResponse{
 			BaseResponse: common.BaseResponse{
-				Code: 2000,
+				Code:    2000,
 				Message: "更改成功",
 			},
 			IsStarNow: isStarNow,
@@ -40,4 +40,3 @@ func (e EndpointsImpl) toggleMomentStar(context *gin.Context) {
 		common.HandleHttpErr(err, context)
 	}
 }
-

@@ -219,6 +219,48 @@ var doc = `{
                         }
                     }
                 }
+            },
+            "put": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "summary": "添加商品信息",
+                "parameters": [
+                    {
+                        "description": "参数",
+                        "name": "purchases",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/store.putPurchasesParameter"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/store.putPurchasesResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/common.BaseResponse"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/common.BaseResponse"
+                        }
+                    }
+                }
             }
         },
         "/user/login/email": {
@@ -568,21 +610,13 @@ var doc = `{
         "models.PurchaseItem": {
             "type": "object",
             "properties": {
-                "description": {
-                    "description": "描述",
-                    "type": "string"
-                },
-                "name": {
-                    "description": "商品名称",
+                "identifier": {
+                    "description": "商品 ID",
                     "type": "string"
                 },
                 "type": {
                     "description": "商品类型，详见 PurchaseType",
                     "type": "integer"
-                },
-                "usd_price": {
-                    "description": "价格（单位为美元）\n存放为字符串类型以保证精度",
-                    "type": "string"
                 }
             }
         },
@@ -606,9 +640,6 @@ var doc = `{
                 },
                 "stared": {
                     "type": "boolean"
-                },
-                "uid": {
-                    "type": "string"
                 },
                 "username": {
                     "type": "string"
@@ -681,6 +712,29 @@ var doc = `{
                 },
                 "is_star_now": {
                     "type": "boolean"
+                },
+                "message": {
+                    "type": "string"
+                }
+            }
+        },
+        "store.putPurchasesParameter": {
+            "type": "object",
+            "properties": {
+                "purchases": {
+                    "description": "商品信息",
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/models.PurchaseItem"
+                    }
+                }
+            }
+        },
+        "store.putPurchasesResponse": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "type": "integer"
                 },
                 "message": {
                     "type": "string"
@@ -852,9 +906,6 @@ var doc = `{
                     "type": "string"
                 },
                 "nickname": {
-                    "type": "string"
-                },
-                "uid": {
                     "type": "string"
                 },
                 "username": {

@@ -9,20 +9,12 @@ definitions:
     type: object
   models.PurchaseItem:
     properties:
-      description:
-        description: 描述
-        type: string
-      name:
-        description: 商品名称
+      identifier:
+        description: 商品 ID
         type: string
       type:
         description: 商品类型，详见 PurchaseType
         type: integer
-      usd_price:
-        description: |-
-          价格（单位为美元）
-          存放为字符串类型以保证精度
-        type: string
     type: object
   moment.FullMoment:
     properties:
@@ -38,8 +30,6 @@ definitions:
         type: integer
       stared:
         type: boolean
-      uid:
-        type: string
       username:
         type: string
     type: object
@@ -87,6 +77,21 @@ definitions:
         type: integer
       is_star_now:
         type: boolean
+      message:
+        type: string
+    type: object
+  store.putPurchasesParameter:
+    properties:
+      purchases:
+        description: 商品信息
+        items:
+          $ref: '#/definitions/models.PurchaseItem'
+        type: array
+    type: object
+  store.putPurchasesResponse:
+    properties:
+      code:
+        type: integer
       message:
         type: string
     type: object
@@ -209,8 +214,6 @@ definitions:
       avatar_file_key:
         type: string
       nickname:
-        type: string
-      uid:
         type: string
       username:
         type: string
@@ -380,6 +383,32 @@ paths:
           schema:
             $ref: '#/definitions/store.requestPurchasesResponse'
       summary: 获取所有内购商品
+    put:
+      parameters:
+      - description: 参数
+        in: body
+        name: purchases
+        required: true
+        schema:
+          $ref: '#/definitions/store.putPurchasesParameter'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/store.putPurchasesResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/common.BaseResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/common.BaseResponse'
+      security:
+      - ApiKeyAuth: []
+      summary: 添加商品信息
   /user/login/email:
     post:
       parameters:

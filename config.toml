@@ -26,7 +26,7 @@ appId = "1530675138"
 [dataBaseConfigs]
     [dataBaseConfigs.development]
     Host = "localhost"
-    Port = "3306"
+    Port = "7001"
     Collection = "DulceDay"
     User = "root"
     Password = "123456"
@@ -44,7 +44,7 @@ appId = "1530675138"
 [cacheConfigs]
     [cacheConfigs.development]
     Host = "localhost"
-    Port = "6379"
+    Port = "7002"
     DB = 1
     BlackListName = "BlackList"
 	RevokeTokenListName = "RevokeTokens"

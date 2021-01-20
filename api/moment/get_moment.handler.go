@@ -2,7 +2,6 @@ package moment
 
 import (
 	"DulceDayServer/api/common"
-	"DulceDayServer/api/helpers"
 	"DulceDayServer/services/moment"
 	"github.com/gin-gonic/gin"
 	"net/http"
@@ -25,7 +24,7 @@ type getMomentResponse struct {
 // @Router /moment/get/{MomentID} [get]
 func (e EndpointsImpl) getMoment(context *gin.Context) {
 	pathParameter := &getMomentPathParameter{}
-	authDetail := helpers.GetAuthDetail(context)
+	authDetail := common.GetAuthDetail(context)
 	if err := context.ShouldBindUri(pathParameter); err == nil {
 		momentId := pathParameter.MomentID
 		m := e.service.GetMomentByMomentId(momentId, authDetail.UserIdentifier)

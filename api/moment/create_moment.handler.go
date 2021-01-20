@@ -2,7 +2,6 @@ package moment
 
 import (
 	"DulceDayServer/api/common"
-	"DulceDayServer/api/helpers"
 	"github.com/gin-gonic/gin"
 	"net/http"
 )
@@ -26,7 +25,7 @@ type createMomentResponse struct {
 // @Router /moment/create [post]
 func (e EndpointsImpl) createMoment(context *gin.Context) {
 	parameter := &createMomentParameter{}
-	authDetail := helpers.GetAuthDetail(context)
+	authDetail := common.GetAuthDetail(context)
 	if err := context.ShouldBindJSON(parameter); err == nil {
 		mid := e.service.CreateNewMoment(parameter.Content, authDetail.UserIdentifier)
 		context.JSON(http.StatusCreated, createMomentResponse{

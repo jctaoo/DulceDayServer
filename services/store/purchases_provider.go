@@ -8,6 +8,7 @@ import (
 // 用于获取商品信息，商品状态及其优惠信息等
 type PurchasesProvider interface {
 	GetPurchases() *[]models.PurchaseItem
+	PutPurchases(purchases *[]models.PurchaseItem)
 }
 
 type PurchasesProviderImpl struct {
@@ -20,4 +21,8 @@ func NewPurchasesProviderImpl(repo Repository) *PurchasesProviderImpl {
 
 func (p PurchasesProviderImpl) GetPurchases() *[]models.PurchaseItem {
 	return p.repo.GetPurchases()
+}
+
+func (p PurchasesProviderImpl) PutPurchases(purchases *[]models.PurchaseItem) {
+	p.repo.PutPurchases(purchases)
 }

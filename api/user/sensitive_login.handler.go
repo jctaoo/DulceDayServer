@@ -2,7 +2,6 @@ package user
 
 import (
 	"DulceDayServer/api/common"
-	"DulceDayServer/api/helpers"
 	"github.com/gin-gonic/gin"
 	"net/http"
 )
@@ -28,7 +27,7 @@ type sLoginResponse struct {
 // @Router /user/login/sensitive/email [post]
 func (e *EndpointsImpl) loginForSensitiveWithEmail(context *gin.Context) {
 	parameter := sEmailLoginParameter{}
-	authDetail := helpers.GetAuthDetail(context)
+	authDetail := common.GetAuthDetail(context)
 	if err := context.ShouldBindJSON(&parameter); err == nil {
 		ip := context.ClientIP()
 		deviceName := parameter.DeviceName

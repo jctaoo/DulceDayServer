@@ -2,7 +2,6 @@ package user
 
 import (
 	"DulceDayServer/api/common"
-	"DulceDayServer/api/helpers"
 	"github.com/gin-gonic/gin"
 	"net/http"
 )
@@ -26,7 +25,7 @@ type sRegisterResponse struct {
 // @Router /user/register/sensitive/email [post]
 func (e *EndpointsImpl) registerForSensitiveWithEmail(context *gin.Context) {
 	parameter := sEmailRegisterParameter{}
-	authDetail := helpers.GetAuthDetail(context)
+	authDetail := common.GetAuthDetail(context)
 	if err := context.ShouldBindJSON(&parameter); err == nil {
 		ip := context.ClientIP()
 		verificationCode, err := e.service.PrepareForAuthForSensitiveVerification(

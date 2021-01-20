@@ -15,8 +15,11 @@ func NewDB() *gorm.DB {
 	dsn := config.SiteConfig.DataBaseConfig.GetDSN()
 	db, dbErr := gorm.Open(mysql.Open(dsn), &gorm.Config{})
 	if dbErr != nil {
-		fmt.Println("Some Error Occurred When Connect DB. ", dbErr)
+		fmt.Println("Some Error Occurred When Connect DB server. ", dbErr)
+		fmt.Printf("DSN is: %s\n", dsn)
 		os.Exit(-1)
+	} else {
+		fmt.Printf("Connect DB successfully. DSN is: %s\n", dsn)
 	}
 	if db != nil {
 		// 连接池
@@ -25,7 +28,7 @@ func NewDB() *gorm.DB {
 		sqlDB.SetMaxOpenConns(100)
 		sqlDB.SetConnMaxLifetime(time.Hour)
 	} else {
-		fmt.Println("Cannot set connection pool.")
+		fmt.Println("Cannot set connection pool for persistence DB.")
 		os.Exit(-1)
 	}
 	return db
@@ -38,6 +41,7 @@ func NewCache() *redis.Client {
 		DB:       config.SiteConfig.CacheConfig.DB,
 		PoolSize: 10,
 	})
+	fmt.Printf("Connected cache server. addr is: %s\n", addr)
 	return client
 }
 

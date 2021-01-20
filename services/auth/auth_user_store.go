@@ -41,7 +41,7 @@ func (u StoreImpl) newUser(user *models.AuthUser) *models.AuthUser {
 func (u StoreImpl) checkUserInBlackList(userId string) bool {
 	userIdBlackListName := config.SiteConfig.CacheConfig.BlackListName
 	val := u.rdb.ZScore(context.Background(), userIdBlackListName, userId).Val()
-	if val == kUserIdBlackListScore {
+	if val == KUserIdBlackListScore {
 		return true
 	}
 	return false
@@ -49,7 +49,7 @@ func (u StoreImpl) checkUserInBlackList(userId string) bool {
 
 func (u StoreImpl) addUserInBlackList(user *models.AuthUser) {
 	userIdBlackListName := config.SiteConfig.CacheConfig.BlackListName
-	u.rdb.ZAdd(context.Background(), userIdBlackListName, &redis.Z{Member: user.Identifier, Score: kUserIdBlackListScore})
+	u.rdb.ZAdd(context.Background(), userIdBlackListName, &redis.Z{Member: user.Identifier, Score: KUserIdBlackListScore})
 }
 
 func (u StoreImpl) removeUserFromBlackList(user *models.AuthUser) {

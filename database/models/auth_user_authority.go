@@ -5,7 +5,7 @@ type AuthorityLevel int
 // 用户角色（权限）
 const (
 	// 一般用户
-	AuthorityUser AuthorityLevel = iota
+	AuthorityLevelUser AuthorityLevel = iota
 	// 系统最高管理人员
-	AuthorityRoot
+	AuthorityLevelRoot
 )

@@ -1,6 +1,7 @@
 package common
 
 import (
+	"DulceDayServer/database/models"
 	serviceAuth "DulceDayServer/services/auth"
 	"github.com/gin-gonic/gin"
 	"net/http"
@@ -27,6 +28,13 @@ func (e ErrorAuthValidateWrong) Error() string {
 	return "token验证错误"
 }
 
+// 鉴权等级错误
+type ErrorAuthorityLevel struct{}
+
+func (e ErrorAuthorityLevel) Error() string {
+	return "错误的鉴权等级"
+}
+
 // MiddleWareAuth 的通过策略
 type MiddleWareAuthPolicy int
 
@@ -38,6 +46,23 @@ const (
 	MiddleWareAuthPolicyAccess
 )
 
+// gin 鉴权等级中间件
+// 注意：在 MiddleWareAuth 之后使用
+func MiddleWareAuthorityLevel(
+	level models.AuthorityLevel,
+) gin.HandlerFunc {
+	return func(context *gin.Context) {
+		detail := GetAuthDetail(context)
+		print(detail.AuthUserLevel, level)
+		if detail.AuthUserLevel < level {
+			HandleHttpErr(ErrorAuthorityLevel{}, context)
+			context.Abort()
+			return
+		}
+	}
+}
+
+// gin 鉴权中间件
 func MiddleWareAuth(service serviceAuth.Service, accessPolicy MiddleWareAuthPolicy) gin.HandlerFunc {
 	doUnLogin := func(context *gin.Context, err error) {
 		if accessPolicy == MiddleWareAuthPolicyReject {
@@ -81,7 +106,7 @@ func MiddleWareAuth(service serviceAuth.Service, accessPolicy MiddleWareAuthPoli
 			context.Set(KIsAuthKey, true)
 			context.Set(KAuthUserIdentifierContextKey, claims.UserIdentifier)
 			context.Set(KAuthUsernameContextKey, claims.Username)
-			context.Set(KAuthUserLevelContextKey, claims.UserAuthority)
+			context.Set(KAuthUserLevelContextKey, int(claims.UserAuthority))
 			context.Set(KIsSensitiveAuthKey, claims.SensitiveVerification)
 			return
 		} else {

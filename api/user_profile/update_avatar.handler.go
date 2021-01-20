@@ -2,7 +2,6 @@ package user_profile
 
 import (
 	"DulceDayServer/api/common"
-	"DulceDayServer/api/helpers"
 	"DulceDayServer/config"
 	"DulceDayServer/database/models"
 	globalHelper "DulceDayServer/helpers"
@@ -70,7 +69,7 @@ func (e *EndpointsImpl) updateAvatar(context *gin.Context) {
 	}
 
 	// 存放头像路径到持久化数据库中
-	authDetail := helpers.GetAuthDetail(context)
+	authDetail := common.GetAuthDetail(context)
 	e.service.UpdateProfileByUserIdentifier(authDetail.UserIdentifier, &models.UserProfile{
 		AvatarFileKey: avatarKey,
 	})

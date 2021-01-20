@@ -2,7 +2,6 @@ package user_profile
 
 import (
 	"DulceDayServer/api/common"
-	"DulceDayServer/api/helpers"
 	"DulceDayServer/services/user_profile"
 	"github.com/gin-gonic/gin"
 	"net/http"
@@ -20,7 +19,7 @@ type getProfileResponse struct {
 // @Failure 401 {object} common.BaseResponse 获取失败, 授权失败
 // @Router /user/profile [get]
 func (e *EndpointsImpl) getSelfProfile(context *gin.Context) {
-	authDetail := helpers.GetAuthDetail(context)
+	authDetail := common.GetAuthDetail(context)
 	userIdentifier := authDetail.UserIdentifier
 	fullUser := e.service.GetFullUserByUserIdentifier(userIdentifier)
 	context.JSON(http.StatusOK, getProfileResponse{

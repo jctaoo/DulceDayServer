@@ -22,6 +22,7 @@ func MigrateDataBase(db *gorm.DB, cdb *redis.Client) {
 		&models.TokenAuth{},
 		&models.Moment{},
 		&models.MomentStarUser{},
+		&models.PurchaseItem{},
 	)
 	if err != nil {
 		fmt.Println("Some Error Occurred When Migrate Table")

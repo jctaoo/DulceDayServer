@@ -86,11 +86,17 @@ func MomentEndpoints() moment.Endpoints {
 }
 
 func StoreEndpoints() store.Endpoints {
+	encryptionAdaptorImpl := auth.NewEncryptionAdaptorImpl()
 	db := database.NewDB()
 	client := database.NewCache()
+	tokenStoreImpl := auth.NewTokenStoreImpl(db, client)
+	tokenAdaptorImpl := auth.NewTokenAdaptorImpl()
+	tokenGranterImpl := auth.NewTokenGranterImpl(tokenStoreImpl, tokenAdaptorImpl)
+	storeImpl := auth.NewStoreImpl(db, client)
+	serviceImpl := auth.NewServiceImpl(encryptionAdaptorImpl, tokenGranterImpl, storeImpl)
 	repositoryImpl := store2.NewRepositoryImpl(db, client)
 	purchasesProviderImpl := store2.NewPurchasesProviderImpl(repositoryImpl)
-	endpointsImpl := store.NewEndpointsImpl(purchasesProviderImpl)
+	endpointsImpl := store.NewEndpointsImpl(serviceImpl, purchasesProviderImpl)
 	return endpointsImpl
 }
 
@@ -139,4 +145,5 @@ var storeServiceSet = wire.NewSet(store2.NewPurchasesProviderImpl, wire.Bind(new
 var storeEndpointsSet = wire.NewSet(
 	universalSet,
 	storeServiceSet,
+	authUserServiceSet,
 )

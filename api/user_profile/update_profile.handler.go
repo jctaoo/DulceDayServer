@@ -2,7 +2,6 @@ package user_profile
 
 import (
 	"DulceDayServer/api/common"
-	"DulceDayServer/api/helpers"
 	"DulceDayServer/database/models"
 	"github.com/gin-gonic/gin"
 	"net/http"
@@ -26,7 +25,7 @@ type updateProfileResponse struct {
 // @Router /user/profile/update [put]
 func (e *EndpointsImpl) updateProfile(context *gin.Context) {
 	var parameter updateProfileParameter
-	authDetail := helpers.GetAuthDetail(context)
+	authDetail := common.GetAuthDetail(context)
 	if err := context.ShouldBindJSON(&parameter); err == nil {
 		newProfile := &models.UserProfile{
 			Nickname: parameter.Nickname,

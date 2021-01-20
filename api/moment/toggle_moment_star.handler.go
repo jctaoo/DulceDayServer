@@ -2,7 +2,6 @@ package moment
 
 import (
 	"DulceDayServer/api/common"
-	"DulceDayServer/api/helpers"
 	"github.com/gin-gonic/gin"
 	"net/http"
 )
@@ -25,7 +24,7 @@ type toggleMomentStarResponse struct {
 // @Failure 401 {object} common.BaseResponse 登陆失败, 未登录
 // @Router /moment/toggle_star/{MomentID} [put]
 func (e EndpointsImpl) toggleMomentStar(context *gin.Context) {
-	authDetail := helpers.GetAuthDetail(context)
+	authDetail := common.GetAuthDetail(context)
 	pathParameter := &toggleMomentStarPathParameter{}
 	if err := context.ShouldBindUri(pathParameter); err == nil {
 		isStarNow := e.service.ToggleStarMoment(pathParameter.MomentID, authDetail.UserIdentifier)

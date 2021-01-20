@@ -1,7 +1,6 @@
-package helpers
+package common
 
 import (
-	"DulceDayServer/api/common"
 	"DulceDayServer/database/models"
 	"github.com/gin-gonic/gin"
 )
@@ -31,7 +30,7 @@ type AuthDetail struct {
 
 func GetAuthDetail(context *gin.Context) *AuthDetail {
 	var err error = nil
-	e, exists := context.Get(common.KAuthErrorKey)
+	e, exists := context.Get(KAuthErrorKey)
 	if exists {
 		contextErr, ok := e.(error)
 		if ok {
@@ -40,11 +39,11 @@ func GetAuthDetail(context *gin.Context) *AuthDetail {
 	}
 
 	return &AuthDetail{
-		UserIdentifier:  context.GetString(common.KAuthUserIdentifierContextKey),
-		Username:        context.GetString(common.KAuthUsernameContextKey),
-		AuthUserLevel:   models.AuthorityLevel(context.GetInt(common.KAuthUserLevelContextKey)),
+		UserIdentifier:  context.GetString(KAuthUserIdentifierContextKey),
+		Username:        context.GetString(KAuthUsernameContextKey),
+		AuthUserLevel:   models.AuthorityLevel(context.GetInt(KAuthUserLevelContextKey)),
 		Error:           err,
-		IsAuth:          context.GetBool(common.KIsAuthKey),
-		IsSensitiveAuth: context.GetBool(common.KIsSensitiveAuthKey),
+		IsAuth:          context.GetBool(KIsAuthKey),
+		IsSensitiveAuth: context.GetBool(KIsSensitiveAuthKey),
 	}
 }

@@ -8,10 +8,11 @@ import (
 
 type Repository interface {
 	GetPurchases() *[]models.PurchaseItem
+	PutPurchases(purchases *[]models.PurchaseItem)
 }
 
 type RepositoryImpl struct {
-	db *gorm.DB
+	db  *gorm.DB
 	cdb *redis.Client
 }
 
@@ -25,3 +26,12 @@ func (r RepositoryImpl) GetPurchases() *[]models.PurchaseItem {
 	return &purchases
 }
 
+func (r RepositoryImpl) PutPurchases(purchases *[]models.PurchaseItem) {
+	if len(*purchases) == 0 {
+		return
+	}
+	r.db.Session(
+		&gorm.Session{AllowGlobalUpdate: true},
+	).Unscoped().Delete(&models.PurchaseItem{})
+	r.db.Create(purchases)
+}

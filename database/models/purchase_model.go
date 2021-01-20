@@ -26,4 +26,7 @@ type PurchaseItem struct {
 
 	// 商品类型，详见 PurchaseType
 	Type PurchaseType `json:"type"`
+
+	// 商品 ID
+	Identifier string `json:"identifier"`
 }

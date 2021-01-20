@@ -9,13 +9,12 @@ import (
 	"DulceDayServer/api/user"
 	"DulceDayServer/api/user_profile"
 	"DulceDayServer/database"
+	serviceAuth "DulceDayServer/services/auth"
 	serviceMoment "DulceDayServer/services/moment"
 	"DulceDayServer/services/static_storage"
-	serviceUser "DulceDayServer/services/user"
-	serviceAuth "DulceDayServer/services/auth"
-	serviceUserProfile "DulceDayServer/services/user_profile"
-	serviceMoment "DulceDayServer/services/moment"
 	serviceStore "DulceDayServer/services/store"
+	serviceUser "DulceDayServer/services/user"
+	serviceUserProfile "DulceDayServer/services/user_profile"
 	"github.com/google/wire"
 )
 
@@ -136,7 +135,6 @@ func MomentEndpoints() moment.Endpoints {
 	)
 }
 
-
 var storeServiceSet = wire.NewSet(
 	serviceStore.NewPurchasesProviderImpl,
 	wire.Bind(new(serviceStore.PurchasesProvider), new(*serviceStore.PurchasesProviderImpl)),
@@ -148,6 +146,7 @@ var storeServiceSet = wire.NewSet(
 var storeEndpointsSet = wire.NewSet(
 	universalSet,
 	storeServiceSet,
+	authUserServiceSet,
 )
 
 func StoreEndpoints() store.Endpoints {

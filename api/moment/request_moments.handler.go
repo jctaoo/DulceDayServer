@@ -2,7 +2,6 @@ package moment
 
 import (
 	"DulceDayServer/api/common"
-	"DulceDayServer/api/helpers"
 	"DulceDayServer/services/moment"
 	"github.com/gin-gonic/gin"
 	"net/http"
@@ -36,7 +35,7 @@ func (e EndpointsImpl) requestRecommendMoments(context *gin.Context) {
 // @Failure 401 {object} common.BaseResponse 登陆失败, 未登录
 // @Router /moment/recommend [get]
 func (e EndpointsImpl) requestRecommendMomentsWithAuth(context *gin.Context) {
-	authDetail := helpers.GetAuthDetail(context)
+	authDetail := common.GetAuthDetail(context)
 	moments := e.service.GetRecommendMomentsWithUserIdentifier(authDetail.UserIdentifier)
 	context.JSON(http.StatusOK, requestRecommendMomentsResponse{
 		BaseResponse: common.BaseResponse{

@@ -15,7 +15,7 @@ type putPurchasesResponse struct {
 	common.BaseResponse
 }
 
-// @Summary 添加商品信息
+// @Summary 重设内购商品信息
 // @Produce json
 // @Security ApiKeyAuth
 // @Param purchases body putPurchasesParameter true "参数"

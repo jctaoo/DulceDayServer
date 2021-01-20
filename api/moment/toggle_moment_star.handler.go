@@ -22,7 +22,7 @@ type toggleMomentStarResponse struct {
 // @Param MomentID path string true "MomentID"
 // @Success 200 {object} toggleMomentStarResponse 更改成功
 // @Failure 401 {object} common.BaseResponse 登陆失败, 未登录
-// @Router /moment/toggle_star/{MomentID} [put]
+// @Router /moment/toggle_star/{MomentID} [patch]
 func (e EndpointsImpl) toggleMomentStar(context *gin.Context) {
 	authDetail := common.GetAuthDetail(context)
 	pathParameter := &toggleMomentStarPathParameter{}

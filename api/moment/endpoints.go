@@ -58,7 +58,7 @@ func (e EndpointsImpl) MapHandlersToRoutes(router *gin.RouterGroup) *gin.RouterG
 		e.createMoment,
 	)
 
-	group.PUT(
+	group.PATCH(
 		"/toggle_star/:MomentID",
 		common.MiddleWareAuth(e.userService, common.MiddleWareAuthPolicyReject),
 		e.toggleMomentStar,

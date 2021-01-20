@@ -22,7 +22,7 @@ type updateProfileResponse struct {
 // @Param userProfile body updateProfileParameter true "参数"
 // @Success 200 {object} updateProfileResponse 获取成功
 // @Failure 401 {object} common.BaseResponse 获取失败, 授权失败
-// @Router /user/profile/update [put]
+// @Router /user/profile/update [patch]
 func (e *EndpointsImpl) updateProfile(context *gin.Context) {
 	var parameter updateProfileParameter
 	authDetail := common.GetAuthDetail(context)

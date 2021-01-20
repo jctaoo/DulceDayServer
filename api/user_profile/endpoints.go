@@ -36,12 +36,12 @@ func (e EndpointsImpl) MapHandlersToRoutes(router *gin.RouterGroup) *gin.RouterG
 		common.MiddleWareAuth(e.userService, common.MiddleWareAuthPolicyReject),
 		e.getSelfProfile,
 	)
-	userGroup.PUT(
+	userGroup.PATCH(
 		"/update",
 		common.MiddleWareAuth(e.userService, common.MiddleWareAuthPolicyReject),
 		e.updateProfile,
 	)
-	userGroup.PUT(
+	userGroup.PATCH(
 		"/update/avatar",
 		common.MiddleWareAuth(e.userService, common.MiddleWareAuthPolicyReject),
 		e.updateAvatar,

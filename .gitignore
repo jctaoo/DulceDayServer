@@ -53,3 +53,7 @@ Temporary Items
 
 # End of https://www.toptal.com/developers/gitignore/api/go,macos
 .idea/
+
+wire_gen.go
+/docs
+/build

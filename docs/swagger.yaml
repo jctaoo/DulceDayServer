@@ -342,7 +342,7 @@ paths:
             $ref: '#/definitions/common.BaseResponse'
       summary: 为路人获取推荐的动态
   /moment/toggle_star/{MomentID}:
-    put:
+    patch:
       parameters:
       - description: MomentID
         in: path
@@ -408,7 +408,7 @@ paths:
             $ref: '#/definitions/common.BaseResponse'
       security:
       - ApiKeyAuth: []
-      summary: 添加商品信息
+      summary: 重设内购商品信息
   /user/login/email:
     post:
       parameters:
@@ -523,7 +523,7 @@ paths:
             $ref: '#/definitions/common.BaseResponse'
       summary: 获取用户信息
   /user/profile/update:
-    put:
+    patch:
       parameters:
       - description: 参数
         in: body
@@ -546,7 +546,7 @@ paths:
       - ApiKeyAuth: []
       summary: 更新用户信息
   /user/profile/update/avatar:
-    put:
+    patch:
       parameters:
       - description: 头像图片
         in: formData

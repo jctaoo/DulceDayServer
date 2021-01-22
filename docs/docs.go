@@ -155,7 +155,7 @@ var doc = `{
             }
         },
         "/moment/toggle_star/{MomentID}": {
-            "put": {
+            "patch": {
                 "security": [
                     {
                         "ApiKeyAuth": []
@@ -229,7 +229,7 @@ var doc = `{
                 "produces": [
                     "application/json"
                 ],
-                "summary": "添加商品信息",
+                "summary": "重设内购商品信息",
                 "parameters": [
                     {
                         "description": "参数",
@@ -413,7 +413,7 @@ var doc = `{
             }
         },
         "/user/profile/update": {
-            "put": {
+            "patch": {
                 "security": [
                     {
                         "ApiKeyAuth": []
@@ -451,7 +451,7 @@ var doc = `{
             }
         },
         "/user/profile/update/avatar": {
-            "put": {
+            "patch": {
                 "security": [
                     {
                         "ApiKeyAuth": []

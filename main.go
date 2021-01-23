@@ -77,8 +77,9 @@ func main() {
 		UserEndpoints:          UserEndpoints(),
 		UserProfileEndpoints:   UserProfileEndpoints(),
 		StaticStorageEndpoints: StaticStorageEndpoints(),
-		MomentEndpoints: MomentEndpoints(),
-		StoreEndpoints: StoreEndpoints(),
+		MomentEndpoints:        MomentEndpoints(),
+		StoreEndpoints:         StoreEndpoints(),
+		GraphQL:                GraphqlEndpoints(),
 	}.RouteGroups(v1)
 
 	// api 文档配置

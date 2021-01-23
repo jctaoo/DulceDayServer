@@ -12,6 +12,7 @@ import (
 	"DulceDayServer/api/user"
 	user_profile2 "DulceDayServer/api/user_profile"
 	"DulceDayServer/database"
+	"DulceDayServer/graphql"
 	"DulceDayServer/services/auth"
 	moment2 "DulceDayServer/services/moment"
 	"DulceDayServer/services/static_storage"
@@ -100,6 +101,11 @@ func StoreEndpoints() store.Endpoints {
 	return endpointsImpl
 }
 
+func GraphqlEndpoints() graphql.Endpoints {
+	endpointsImpl := graphql.NewEndpointsImpl()
+	return endpointsImpl
+}
+
 // wire.go:
 
 var universalSet = wire.NewSet(database.NewCache, database.NewDB, database.NewAliOSS)
@@ -147,3 +153,5 @@ var storeEndpointsSet = wire.NewSet(
 	storeServiceSet,
 	authUserServiceSet,
 )
+
+var graphqlEndpointsSet = wire.NewSet()

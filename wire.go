@@ -9,6 +9,7 @@ import (
 	"DulceDayServer/api/user"
 	"DulceDayServer/api/user_profile"
 	"DulceDayServer/database"
+	graphql "DulceDayServer/graphql"
 	serviceAuth "DulceDayServer/services/auth"
 	serviceMoment "DulceDayServer/services/moment"
 	"DulceDayServer/services/static_storage"
@@ -155,6 +156,18 @@ func StoreEndpoints() store.Endpoints {
 			store.NewEndpointsImpl,
 			storeEndpointsSet,
 			wire.Bind(new(store.Endpoints), new(*store.EndpointsImpl)),
+		),
+	)
+}
+
+var graphqlEndpointsSet = wire.NewSet()
+
+func GraphqlEndpoints() graphql.Endpoints {
+	panic(
+		wire.Build(
+			graphql.NewEndpointsImpl,
+			//graphqlEndpointsSet,
+			wire.Bind(new(graphql.Endpoints), new(*graphql.EndpointsImpl)),
 		),
 	)
 }

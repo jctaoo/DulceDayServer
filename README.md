@@ -1,5 +1,4 @@
 # DulceDayServer
-一个轻社区app, 内置直播, 帮助用户找到身边的兴趣圈
 
 ## 前置条件
 - 安装 docker 以及 docker-compose
